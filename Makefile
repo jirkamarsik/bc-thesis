@@ -16,4 +16,4 @@ thesis.dvi: thesis.tex tex/frontmatter.tex tex/introduction.tex tex/conclusion.t
 	latex $<
 
 clean:
-	rm -f *.log *.dvi *.aux *.toc *.lof *.out tex/*.aux thesis.ps thesis.pdf
+	rm -f *.log *.dvi *.aux *.toc *.lof *.out tex/*.aux thesis.ps 
