@@ -26,6 +26,15 @@
 % \setlength\headheight{0mm}
 % \let\openright=\cleardoublepage
 
+
+\usepackage{setspace}
+% Rady z KSI veli pouzit line spacing >= 1.5. Nevim, jestli je tim mysleno
+% one-and-a-half line spacing v setspace anebo nastaveni baselinestretch.
+% onehalfspacing nastavuje baselinestretch na zhruba 1.3 a doublespacing na
+% asi 1.6.
+\onehalfspacing
+%\doublespacing
+
 %% Pokud používáte csLaTeX (doporučeno):
 %\usepackage{czech}
 %% Pokud nikoliv:
@@ -93,17 +102,19 @@
 
 %%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných
 %%% souborech
-\include{tex/introduction}
-\include{tex/chap1}
-\include{tex/chap2}
+\include{tex/intro}
+\include{tex/analysis}
+\include{tex/maxent}
+\include{tex/impl}
+\include{tex/userdoc}
+\include{tex/eval}
+\include{tex/outro}
 
-% Ukázka použití některých konstrukcí LateXu (odkomentujte, chcete-li)
-\include{tex/examples}
-
-\include{tex/conclusion}
+\appendix
+\include{tex/appendix}
 
 %%% Seznam použité literatury
-\include{tex/bibliography}
+\include{tex/biblio}
 
 %%% Tabulky v bakalářské práci, existují-li.
 \chapwithtoc{List of Tables}
