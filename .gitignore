@@ -1,0 +1,8 @@
+*.log
+*.dvi
+*.aux
+*.toc
+*.lof
+*.out
+thesis.ps
+thesis.pdf
