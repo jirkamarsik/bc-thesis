@@ -107,7 +107,7 @@ pipeline from RoughTokenizer to OutputFormatter are less likely to stall on
 I/O.
 
 
-\section{Modes of execution}
+\section{Modes of Execution}
 \label{sec:impl-modes}
 
 The tokenizer has to be trained on annotated data, it has to be able to use
@@ -196,3 +196,170 @@ An advantage to using this mode might be that when the user does not demand the
 logging of contexts as in the evaluation mode, the time-costly FeatureExtractor
 and Classifier can be replaced with a SimplePreparer, which only removes the
 ambiguities in the abovementioned way.
+
+\section{Rough Tokenization}
+\label{sec:impl-roughtok}
+
+One of the first problems encountered when designing the tokenizer was
+the implementation of rough tokenization. The task of rough tokenization is to
+take the definitions of decision points and then be able to detect all such
+points in any given input.
+
+The possible positions for a \maysplit{} decision point are defined by pairs
+of regular expression: a poisition is to be marked as a \maysplit{} point if
+and only if the first expression matches a suffix of the characters preceding
+it and the second expression matches a prefix of the characters following it.
+\mayjoin{} decision points are defined almost the same way, except that the
+characters following the position of a \mayjoin{} must start with a string of
+blank characters and then continue with the string matched by the regular
+expression. \maybreaksentence{} points, on the other hand, are defined simply
+by two sets of characters. If a position follows a character from the first
+set or precedes a character from the second set, then that position is a
+\maybreaksentence{}.
+
+\subsection{Regular Expression Libraries}
+\label{ssec:impl-roughtok-regex}
+
+The reference implementation of the trainable tokenizer written in Perl used a
+disjunction regular expression to match the prefix of the unprocessed input.
+The original idea was to use PCRE or some other regular expression
+implementation to write a similar algorithm.
+
+The naive approach might have us trying to search for the possible suffixes of
+\mayjoin{}s and \maysplit{}s which are preceded by their specified prefixes.
+Soon we would learn that finding one decision point may lock us out of finding
+another one. For example, given the string \example{abcd} and \maysplit{}
+regular expression pairs \example{a} - \example{bc} and \example{b} -
+\example{c}, we match the \example{bc} according to the leftmost longest match
+convention properly registering the \maysplit{} between \example{a} and
+\example{bc}, but we lose the opportunity to find the \maysplit{} between
+\example{b} and \example{c}.
+
+If try to search for each of these pairs of regular expressions individually,
+we can still miss some points as demonstrated by the following example. Let the
+string in question be \example{abab} and the \maysplit{} regular
+expression pair \example{a} - \example{b(ab)*}. Any attempt to search for the
+suffix \example{b(ab)*} would yield the \example{bab} substring due to the
+leftmost longest match convention unless we either modify the user's regular
+expression, modify the regular expression matching function or try to search
+for the suffix from every position in the text.
+
+We do not want to be patching the user's regular expressions because we would
+probably have to restrict ourselves to a narrower set of regular expressions
+and even then it would have been harrowing to actually implement such a system
+and prove its correctness. Writing our own regular expression matching engine
+is also out of the scope of this work. The third option on the list, searching
+for the suffix (or prefix) from every position in the text, seems like a
+performance killer. Performance-wise speaking, during the planning phase of
+development, prototypes of the naive method of regular expression rough
+tokenization were implemented using both Boost.Regex and PCRE. The average time
+spent on a 10 MB file with a credible set of splitting and joining rules
+(breaking English contractions apart, separating words from punctuation
+etc...) was over 10.8 seconds for Boost.Regex and over 4.9 seconds using PCRE.
+The test were performed on a development laptop with the Intel Core 2 Duo T7500
+processor.
+
+\subsection{Lexical Analyzer Generators}
+
+During the initial planning, there was another radically different proposal for
+handling rough tokenization which motivated the early prototypes.
+
+The goal of rough tokenization is to scan large volumes of text and detect
+patterns described by regular expressions. This kind of problem has been
+already solved many times using lexical analyzer generators such as flex. These
+tools take rules, which are pairs of regular expressions and actions written as
+code. The lexical analyzer generator then creates a program from these rules
+which reads a stream of text and tries to match a prefix of the yet unmatched
+input with these regular expressions and reacts to the matches with the
+supplied actions. More advanced tools enable the definition of several analyzer
+modes with different rules and enables the actions to switch between them.
+
+The lexical analyzer generator selected for our tokenizer was Quex. Its most
+important feature is that it is able to work on Unicode code points instead of
+single-byte characters and that it uses libiconv and ICU to process text in any
+encoding. Quex can also be very fast because it does not encode the resulting
+automaton into a table which drives some general template program, but instead
+it generates low level C++ code which mimics the behaviour of the automaton.
+
+The naive way of rough tokenization presented in
+subsection~\ref{ssec:impl-roughtok-regex} was implemented in a prototype to
+evaluate the performance benefits stemming from the use of compiled lexers
+generated by Quex. When run with the same tokenization rules and on the same
+data as the rough tokenizers in subsection~\ref{ssec:impl-roughtok-regex}, the
+Quex generated lexer finished on average in a little over 0.9 seconds. But the
+generated lexer was making the same mistakes as the first approaches using
+regular expressions. As we grew to know more of the functionality available to
+us in Quex and the specifics of its operation, we were able to arrive at a
+lexer which detects every possible decision point and does so in about 1.9
+seconds on the same data set with which we tested the other methods. The
+details of this final method are presented in
+subsection~\ref{ssec:impl-roughtok-solution}.
+
+\subsection{The Solution}
+\label{ssec:impl-roughtok-solution}
+
+Many of the observations about the task at hand made in
+subsection~\ref{ssec:impl-roughtok-regex} still hold when designing a Quex
+generated lexer. The final implementation processes the input one character
+at a time. At each position in the text, rules for matching the suffixes of
+possible \maysplit{}s and \mayjoin{}s are in play. Each of these rules has a
+precondition in Quex that the preceding text must match the prefix of the
+respective \maysplit{} or \mayjoin{} rule. These aren't implemented by
+backtracking and searching for the regular expression in the already processed
+input. Instead, Quex maintains a set of flags which inform it which of the
+preconditions are met at the current position. The \maybreaksentence{} rules
+are implemented in a similar way as their definitions are basically
+specializations of the \maysplit{} and \mayjoin{} definitions (single
+characters for prefix or suffix instead of regular expressions).
+
+When the lexer matches a suffix of a rule, it sends the last characters read
+since the last decision point or whitespace as a rough token and signals the
+respective decision point. Quex would now automatically adjust our position in
+the text right behind the matched suffix but we override this behaviour and
+move back to the position of the newly found decision point so other decision
+points may be found. This alone would cause an infinite loop and so upon
+returning to the original position we also scratch the detected decision point
+from the set of applicable rules. If another decision point is found, we do the
+same until we find all types of decision points at the current location or none
+of the rules match anymore. In that case, the lowest priority action takes
+place which reads another character from the stream and starts looking for all
+possible decision points again.
+
+This scratching out of rules is implemented using 8 different modes for all the
+different sets of decision points we might be looking for. We start at the
+topmost mode where we are looking for any of the 3 possible decision points. If
+one of them is found, we continue at the same location in a mode which looks
+for the remaining 2 possible decision points. In the final implementation,
+there is also a demand for unexpanded HTML entities to be treated as single
+rough tokens. This demand is met by adding another variable to the state of the
+lexer (whether we are currently reading an entity) which results in the 16
+modes seen in the current implementation.
+
+\subsection{Technical Implementation}
+\label{ssec:impl-roughtok-technical}
+
+In the finished application, the regular expressions which define the placement
+of decision points are read from user-written configuration files. A Quex
+source file containing modes for detecting all of the decision points
+referenced by the user is then output to a temporary file. CMake is invoked to
+probe the user's system for the compiling essentials, to generate a project for
+the user's preferred build system and to write the command needed to start the
+build to a file. This file is read and the command within it is run, which
+executes Quex on the generated source file and then compiles the result into a
+shared module. This process is therefore platform-agnostic as it doesn't rely
+on a specific C++ compiler or build system and uses only CMake and Quex which
+are multiplatform and are required to build the tokenizer itself.
+
+This compiled shared module is then loaded using the libtool's dynamic loading
+library which is a wrapper for the platform-specific dynamic loading functions.
+The entire code generation and compilation process takes under 5 seconds on the
+development laptop. The tokenizer tracks the set of files used to generate the
+rough tokenizer along with their timestamps and only regenerates and recompiles
+it when changes have been made.
+
+\section{Design Rationale}
+\label{sec:impl-ratio}
+
+\subsection{The Separation of Text Cleaning from Rough Tokenization}
+
+When the first 
