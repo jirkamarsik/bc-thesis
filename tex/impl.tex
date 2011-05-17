@@ -20,7 +20,7 @@ figure~\ref{fig:all-parts}.
   \label{fig:all-parts}
 \end{figure}
 
-\subsection{\class{TextCleaner}}
+\subsection{TextCleaner}
 \label{ssec:impl-overview-textcleaner}
 
 Any input which is read by the tokenizer is first processed with the
@@ -32,7 +32,7 @@ undone in the output. This allows the tokenizer to process XML marked up
 content as if it was plaintext. The XML markup thus cannot be broken by and
 does not interfere with the tokenization process.
 
-\subsection{\class{RoughTokenizer}}
+\subsection{RoughTokenizer}
 \label{ssec:impl-overview-roughtokenizer}
 
 The \class{RoughTokenizer}'s goal is to examine the cleaned input stream and
@@ -59,7 +59,7 @@ The rough tokenizer detects all decision points in the text and produces a
 stream of discrete rough tokens with metadata about surrounding whitespace and
 decision points.
 
-\subsection{\class{FeatureExtractor}}
+\subsection{FeatureExtractor}
 \label{ssec:impl-overview-featureextractor}
 
 The rough tokens produced by the \class{RoughTokenizer} are tagged with
@@ -74,7 +74,7 @@ Because the task carried out by the \class{FeatureExtractor} is a context free
 function of a single rough token's contents, multiple \class{FeatureExtractor}s
 can run simultaneously, each processing a different part of the token stream.
 
-\subsection{\class{Classifier}}
+\subsection{Classifier}
 \label{ssec:impl-overview-classifier}
 
 The \class{Classifier} is the interface to the Maximum Entropy Toolkit. It
@@ -93,7 +93,7 @@ outcome to annotate the rough tokens. The rough tokens are then processed by
 the \class{OutputFormatter} which implements the token and sentence breaks
 predicted by the model.
 
-\subsection{\class{OutputFormatter}}
+\subsection{OutputFormatter}
 \label{ssec:impl-overview-outputformatter}
 
 After all the token and sentence boundaries have been disambiguated by the
@@ -104,7 +104,7 @@ and sentence boundaries by line breaks. It is also the duty of the
 which means that XML is reinserted into the proper places and former HTML
 entities and character references replace their expanded counterparts.
 
-\subsection{\class{Encoder}}
+\subsection{Encoder}
 \label{ssec:impl-overview-encoder}
 
 The \class{Encoder} receives the text output by the \class{OutputFormatter} and
@@ -447,24 +447,26 @@ us to simply pass a pointer to this stream to the Quex lexer as if it were a
 file handle and we would not have to trouble ourselves with any string
 marshalling.
 
-A class which does just this was implemented by Alexander Nasonov and published
-on the Boost maling list in 2003. However, it didn't meet with much
-understanding on the list as people tended to associate the class' name, pipe,
-with OS-level pipes. The pipestreams have been resurrected for this project and
-they made writing the transfer of text between the \class{TextCleaner}, the
-\class{Encoder} and the parts of the TBB pipeline very simple.
+A class which does just this was implemented by Alexander Nasonov and
+published on the Boost maling list in 2003. However, it didn't meet with much
+understanding on the list as people tended to associate the class' name,
+\class{pipe}, with OS-level pipes. The pipestreams have been resurrected for
+this project and they made writing the transfer of text between the
+\class{TextCleaner}, the \class{Encoder} and the parts of the TBB pipeline
+very simple.
 
 The pipestreams were used to connect the \class{TextCleaner} and
 \class{Encoder} to the TBB pipeline. The \class{TextCleaner} and the
 \class{Encoder} both have a do\_\-work method which does all the work. In the
 case of the \class{TextCleaner}, it uses a Quex generated lexer to find XML
-markup and entities in the input file. It optionally transforms these segments,
-reports them to the \class{OutputFormatter} and writes the transformed input to
-an opipestream (an output pipestream). The \class{Encoder} on the other hand
-reads from an ipipestream (an input pipestream), transcodes the text read and
-writes it to the output file. The use of pipestreams to connect the TBB
-pipeline world with the I/O world might also have a performance advantage,
-because TBB pipelines are not optimized for I/O heavy operations and perform
-badly when stalling on I/O. These input/output threads (those which run the
-do\_\-work methods) might decrease the probability of a pipeline thread waiting
-for I/O by filling the pipestream buffers while working on a different CPU.
+markup and entities in the input file. It optionally transforms these
+segments, reports them to the \class{OutputFormatter} and writes the
+transformed input to an \class{opipestream} (an output pipestream). The
+\class{Encoder} on the other hand reads from an \class{ipipestream} (an input
+pipestream), transcodes the text read and writes it to the output file. The
+use of pipestreams to connect the TBB pipeline world with the I/O world might
+also have a performance advantage, because TBB pipelines are not optimized for
+I/O heavy operations and perform badly when stalling on I/O. These
+input/output threads (those which run the do\_\-work methods) might decrease
+the probability of a pipeline thread waiting for I/O by filling the pipestream
+buffers while working on a different CPU.
