@@ -352,8 +352,8 @@ one of them is found, we continue at the same location in a mode which looks
 for the remaining 2 possible decision points. In the final implementation,
 there is also a demand for unexpanded HTML entities to be treated as single
 rough tokens. This demand is met by adding another variable to the state of
-the lexer (whether we are currently reading an entity) which results in the
-16 modes seen in the current implementation.
+the lexer (whether we are about to read an entity) which results in the 16
+modes seen in the current implementation.
 
 \subsection{Technical Implementation}
 \label{ssec:impl-roughtok-technical}
@@ -439,13 +439,13 @@ system. However, it would have been cumbersome to implement the
 feeds it to the buffer of the generated lexer, tries to tokenize the incomplete
 chunk of text and then send the retrieved tokens along. The C++ Standard
 Library already offers a widely used and supported FIFO structure for
-transmitting continuous text, the std::iostream. In its stringstream
-incarnation, it allows one agent to write text to it using the standard output
-operators of C++ and then later another agent can use the standard input
-operators to read and parse its contents. Such a standard mechanism would allow
-us to simply pass a pointer to this stream to the Quex lexer as if it were a
-file handle and we would not have to trouble ourselves with any string
-marshalling.
+transmitting continuous text, the \class{std::iostream}. In its
+\class{stringstream} incarnation, it allows one agent to write text to it using
+the standard output operators of C++ and then later another agent can use the
+standard input operators to read and parse its contents. Such a standard
+mechanism would allow us to simply pass a pointer to this stream to the Quex
+lexer as if it were a file handle and we would not have to trouble ourselves
+with any string marshalling.
 
 A class which does just this was implemented by Alexander Nasonov and
 published on the Boost maling list in 2003. However, it didn't meet with much
