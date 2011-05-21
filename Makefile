@@ -11,7 +11,7 @@ thesis.ps: thesis.dvi
 	dvips -o $@ -D600 -t a4 $<
 
 # LaTeX je potreba spustit dvakrat, aby spravne spocital odkazy
-thesis.dvi: thesis.tex tex/frontmatter.tex tex/intro.tex tex/analysis.tex\
+thesis.dvi: thesis.tex tex/frontmatter.tex tex/intro.tex tex/survey.tex\
             tex/maxent.tex tex/impl.tex tex/userdoc.tex tex/eval.tex\
             tex/outro.tex tex/appendix.tex tex/biblio.tex img/all-parts.eps\
             img/train-parts.eps img/tokenize-parts.eps

@@ -1,0 +1,101 @@
+\chapter{A Survey of Other Solutions}
+\label{chap:survey}
+
+Placeholder text?
+
+\section{RE}
+\label{sec:survey-re}
+
+The system referred to as RE in [] is an example of a purely
+\newterm{rule-based} system. It does not need any training data, but instead it
+relies on explicit linguistic knowledge such as lists of abbreviations and
+custom regular expressions. The RE system in particular works by scanning the
+input text for periods and then inspecting the tokens surrounding it. If the
+surrounding tokens do not match a combination of the user's regular
+expressions, the period is marked as a sentence boundary.
+
+Our tokenizer also allows the user to define regular expressions against which
+neighboring tokens will be checked (not only neighboring tokens, a token at any
+distance can be examined, which can be important as we saw in the
+introduction). The crucial difference between the RE system and our tokenizer
+is that the outcomes of all these regular expression tests are not explicitly
+mapped to the disambiguation of the potential boundary by the programmer or the
+user. Instead, our system relies on already tokenized data from which it learns
+how to combine the outcomes of these regular expression tests into a
+tokenization decision.
+
+\section{MxTerminator}
+\label{sec:survey-mxterm}
+
+Contrary to RE, MxTerminator is a \newterm{supervised machine-learning} system.
+This means that the tool has to be supplied with already tokenized data from
+which the classifier infers the logic behind tokenization. The classifier in
+this case is based on maximum entropy models, the same mathematical foundation
+on which our system is built.
+
+The MxTerminator scans the text for a list of potential sentence terminators
+and presents the classifier with features of the neighboring tokens. The
+features include the word containing the potential sentence terminator, the
+words preceding and following it, the presence of particular characters in the
+current word and whether the current word is a honorific or a corporate
+designator (e.g.\ Corp.). All of these are easily expressed using regular
+expressions and lists of tokens and so it should be quite easy to produce a
+system very similar to MxTerminator using a specific configuration.
+
+There is also a more general version of the MxTerminator which does not rely on
+precompiled lists of honorifics and other abbreviations. In this version, the
+MxTerminator first scans the training data and searches for words containing a
+period which does not serve as a sentence terminator. The features passed to
+the maximum entropy classifier then consist only of the trigram of words
+containing the potential sentence terminator and values describing whether the
+individual words belong to the abbreviations induced from training data in the
+previous step. With our tokenizer it is also possible to scan the training data
+and extract a list of induced abbreviations. These can then be stored in a
+token list and the tokenizer can be configured to check whether tokens are in
+that list and pass the result to the classifier.
+
+\section{Riley}
+\label{sec:survey-riley}
+
+Riley uses a method of classification different from the MxTerminator. Instead
+of using a maximum entropy classifier, he builds a regression tree. The
+following features are used to disambiguate the period (let $a$ be the word
+containing the period in question and $b$ the following word):
+
+\begin{itemize}
+  \item Probability of $a$ occuring at the end of a sentence
+  \item Probability of $b$ occuring at the beginning of a sentence
+  \item Length of $a$
+  \item Length of $b$
+  \item Case of $a$
+  \item Case of $b$
+  \item Any punctuation after the period
+  \item Abbreviation class of $a$
+\end{itemize}
+
+A training dataset the size of approximately 25 million words was used to
+estimate the probabilities of individual words occuring near sentence
+boundaries. Thanks to such detailed information, the system was found to
+perform notably well.
+
+The first two features used in the regression tree have a natural counterpart
+in the maximum entropy model. When the text of a token is being passed to the
+maximum entropy classifier during training, it estimates a parameter for each
+type of token encountered and each possible outcome (no boundary, token
+boundary, sentence boundary). What this parameter does, basically, is that it
+describes and retains in the model the probability of encountering a specific
+token together with a specific outcome. The equivalent of a probability of a
+certain token occuring near the sentence boundary would therefore be the
+maximum entropy model's parameter corresponding to the event of that token
+appearing together with the sentence boundary outcome.
+
+As for the length features, our tokenizer uses a more general form of a maximum
+entropy feature which allows for real feature values instead of only binary
+(the only such feature in use, however, is the built-in length of a token).
+The remaining parameters can be described by binary features defined as regular
+expressions supplied by the user.
+
+\section{Satz}
+\label{sec:survey-satz}
+
+One of the early attempts 
