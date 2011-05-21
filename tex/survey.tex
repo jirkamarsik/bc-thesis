@@ -98,4 +98,29 @@ expressions supplied by the user.
 \section{Satz}
 \label{sec:survey-satz}
 
-One of the early attempts 
+The Satz system is another supervised machine-learning system for sentence
+boundary disambiguation. It is very unique in that it does not rely on the
+superficial characteristics of the shape of the surrounding tokens. Instead, it
+passes to the underlying classifier the probability distribution of parts of
+speech for every token within the context of the potential sentence boundary.
+It is therefore necessary to supply a lexicon giving the part of speech
+distribution. If a word is not part of any lexicon, a series of heuristics try
+to guess a safe probability distribution given the word's suffix, case,
+internal punctuation etc... Thanks to the generalization provided by the part
+of speech categories, the system required relatively small amounts of training
+data to acheive solid performance.
+
+In our system, the user is limited to defining binary features and so passing
+the probability distributions to the classifier would be out of the question.
+However, the authors of the Satz system performed an experiment wherein they
+replaced the non-zero probabilities with ones (basically switching from part of
+speech probabilities to flags indicating if a given part of speech is
+possible). The results of this experiment showed that the resulting system was
+trained faster and performed better than the original. Luckily our tokenizer
+allows the user to easily define binary features using lists of tokens, i.e.\
+lexicons. The only problem would be the heuristics employed with out of
+vocabulary words. While all of them can be easily expressed as regular
+expressions in our system, there is yet no mechanism to make the tokenizer
+treat a part of speech found in a lexicon and a part of speech guessed by a
+heuristic as the same feature.
+
