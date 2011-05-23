@@ -1,2 +1,88 @@
 \chapter{Maximum Entropy Models}
 \label{chap:maxent}
+
+We want to construct a probabilistic model which gives us a probability
+$p(a,b)$ of an outcome\footnote{The terminology used in computational
+linguistics often clashes with the one used in probability theory. What is in
+probability theory usually known as an outcome is here referred to as an
+\newterm{event}. These events are pairs of \newterm{contexts} and
+\newterm{outcomes}, where the context is the data we have available when we
+want a prediction and the outcome is what we want to predict.} $a$ occuring
+with context $b$. We want this model to be very close to the observed training
+data, meaning that the data's probability given our model $p$ is high.
+
+However, we do not want the maximum likelihood model because we
+are aware that the observed data does not cover all the possible situations.
+Instead, we want a model that shares a lot of properties with the observed
+data. We express these properties as binary functions on the space of events
+$E$ and we call these functions \newterm{features}\footnote{The term features
+is also commonly used in machine learning to denote a part of the context. When
+it will be important to differentiate these two meaning in other parts of the
+work, the term \newterm{maximum entropy features} will be used to refer to the
+features defined here.}. In most implementations, including ours, these binary
+features are restricted to the following form
+
+\begin{equation}
+\label{eq:common-feature}
+f(a,b) =
+\begin{cases}
+  1 & \text{if } a=o \text{ and } p(b) \\
+  0 & \text{else}
+\end{cases}
+\end{equation}
+
+where $o$ is an outcome and $p$ is a context predicate. We want the constructed
+model $p$ to share the expected values of these feature functions with the
+empirical model $\bar{p}$. What this means is that the probability of $f(a,b)$
+being 1 is the same in both models.
+
+Let us say we have chosen several such features we want retained in our model,
+now we need to select some model from the set of complying models. This is the
+point where the maximum entropy entropy principle comes into play. The basic
+idea of the maximum entropy principle was nicely hinted at by Laplace:
+
+\begin{quote}
+When one has no information to distinguish between the probability of two
+events, the best strategy is to consider them equally likely.
+\end{quote}
+
+We would like to have a distribution which conforms to the requirements imposed
+by the features but is otherwise unbiased, it is as close to uniform as
+possible without violating the features' requirements. A standard measure of
+the uniformity of a distribution is entropy
+
+\[
+H(p) = -\sum_{x \in E} p(x) \log p(x)
+\]
+
+We would like to find a distribution which adheres to the features' constraints
+and maximizes the maximum entropy. It can be shown (see e.g.\ Ratnaparkhi) that
+the such a distribution is of the following form
+
+\begin{equation}
+\label{eq:exp-model}
+p(x) = \pi \prod_{j=1}^k \alpha_j^{f_j(x)}
+\end{equation}
+
+where $f_j(x)$ for $j \in \{1,\dotsc,k\}$ are the features we want to retain
+and $0 < \alpha_j < \infty$. More interestingly, the maximum entropy model
+adhering to the features' constraints is equal to the maximum likelihood model
+having the shape in \ref{eq:exp-model} (we call them \newterm{exponential
+models}). 
+
+Given the set of features we want to retain in our model, we can now employ an
+unrestricted optimization algorithm to find the parameters of the exponential
+model which maximizes the likelihood of the training data.
+
+Once we wrap our minds around the definition of an exponential model and the
+possible features from \ref{eq:common-feature}, we can see that when predicting
+an outcome given a context, each predicate which holds for the context votes
+for each outcome by multiplying its probability. The probability is multiplied
+by the parameter of the exponential model corresponding to the feature which
+is constructed from the outcome and predicate in question. The probability is
+either increased or decreased depending on how often was that predicate
+encountered with the same outcome in the training data.
+
+In practice, the features (in the machine learning sense of the word) being
+passed to the maximum entropy classifier are the predicates which combine with
+the outcomes to form the maximum entropy features.
