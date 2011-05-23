@@ -65,14 +65,14 @@ p(x) = \pi \prod_{j=1}^k \alpha_j^{f_j(x)}
 \end{equation}
 
 where $f_j(x)$ for $j \in \{1,\dotsc,k\}$ are the features we want to retain
-and $0 < \alpha_j < \infty$. More interestingly, the maximum entropy model
+and $0 < \alpha_j,\pi < \infty$. More interestingly, the maximum entropy model
 adhering to the features' constraints is equal to the maximum likelihood model
 having the shape in \ref{eq:exp-model} (we call them \newterm{exponential
 models}). 
 
 Given the set of features we want to retain in our model, we can now employ an
 unrestricted optimization algorithm to find the parameters of the exponential
-model which maximizes the likelihood of the training data.
+model which maximize the likelihood of the training data.
 
 Once we wrap our minds around the definition of an exponential model and the
 possible features from \ref{eq:common-feature}, we can see that when predicting
@@ -86,3 +86,52 @@ encountered with the same outcome in the training data.
 In practice, the features (in the machine learning sense of the word) being
 passed to the maximum entropy classifier are the predicates which combine with
 the outcomes to form the maximum entropy features.
+
+\section{Available Implementations}
+\label{sec:maxent-impl}
+
+There are several notable implementations of maximum entropy estimators
+available. The one we chose for our tokenizer was the Maximum Entropy Modeling
+Toolkit for Python and C++ written by Zhang Le. The toolkit offers a nice clean
+API with which we are able to feed training events to the estimator and then
+launch a training procedure which finds the optimal parameters. The resulting
+model can be easily saved to a file and loaded later. The API is complete with
+functions for evaluating the probabilities of (context, outcome) pairs and
+derived convenience functions for predicting outcomes from contexts. The
+supported estimation algorithms include GIS and L-BFGS. The L-BFGS
+implementation provided by Jorge Nocedal is written in Fortran with large scale
+datasets in mind. When the various algorithms for estimating the parameters of
+a maximum entropy model were evaluated, L-BFGS clearly outdid the GIS, IIS,
+gradient and conjugate gradient algorithms.
+
+Other implementations were contemplated, however they would require more effort
+to integrate more seamlessly into our tokenizer. The main reason behind this is
+that the abovementioned toolkit is the only one supplying a C++ API. The other
+toolkits only have either command line interfaces or are written in different
+languages. Of these toolkits, only a few offer anything worth the effort.
+
+Our problem with the toolkits written in Python and Java (the most notable
+being NLTK and the Stanford Classifier) is that while predicting an outcome of
+a potential boundary, we rely on the disambiguation of the preceding
+boundaries. This means that if we were to use NLTK or the Stanford Classifier
+for prediction, we would have to switch from C++ to Java or Python to perform
+the disambiguation for every ambiguous boundary individually. This could be
+worked around by using the toolkits only for training and then writing our own
+implementation of the exponential model's evaluate functions.
+
+But even if we did integrate these alternative implementation, the Java
+implementations would have a hard time outperforming the Fortran L-BFGS
+implementation. The methods in SciPy might be more viable though.
+
+The only alternative solution which looked intriguing is the Toolkit for
+Advanced Discriminative Modeling (TADM) by Robert Malouf. The toolkit lacks an
+API and relies only on a command line interface. This would mean that during
+training the collected events would have to be stored in a file and TADM would
+have to be invoked using the \funcname{system} function. An implementation of
+an exponential model would then be needed including loading the model from the
+file, evaluating the probabilities of events and predicting the most probable
+outcome. If too much time is spent estimating the model's parameters on a
+machine which might greatly benefit from the PETSc and TAO optimizations used
+in TADM, it might be worthwhile to change the tokenizer to use TADM.
+
+
