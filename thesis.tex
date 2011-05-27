@@ -110,26 +110,29 @@
 \include{tex/survey}
 \include{tex/maxent}
 \include{tex/impl}
-\include{tex/userdoc}
 \include{tex/eval}
 \include{tex/outro}
 
-\appendix
-\include{tex/appendix}
+%\appendix
+%\include{tex/appendix}
 
 %%% Seznam použité literatury
-\include{tex/biblio}
+%\include{tex/biblio}
+\bibliographystyle{czechiso}
+\bibliography{sources}
 
 %%% Tabulky v bakalářské práci, existují-li.
-\chapwithtoc{List of Tables}
+\listoftables
 
 %%% Použité zkratky v bakalářské práci, existují-li, včetně jejich vysvětlení.
-\chapwithtoc{List of Abbreviations}
+%\chapwithtoc{List of Abbreviations}
 
 %%% Přílohy k bakalářské práci, existují-li (různé dodatky jako výpisy
 %%% programů, diagramy apod.). Každá příloha musí být alespoň jednou
 %%% odkazována z vlastního textu práce. Přílohy se číslují.
 \chapwithtoc{Attachments}
+
+\input{tex/readme}
 
 \openright
 \end{document}

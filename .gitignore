@@ -5,6 +5,9 @@
 *.aux
 *.toc
 *.lof
+*.lot
 *.out
+*.bbl
+*.blg
 thesis.ps
 thesis.pdf

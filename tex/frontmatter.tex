@@ -28,7 +28,7 @@ Faculty of Mathematics and Physics
 \vspace{15mm}
 
 % Název práce přesně podle zadání
-{\LARGE\bfseries Fast and Trainable Tokenizer for Natural Languages}
+{\LARGE\bfseries Fast and Trainable Tokenizer \\ for Natural Languages}
 
 \vfill
 
@@ -101,6 +101,7 @@ signature
 \setlength\parindent{0mm}
 \setlength\parskip{5mm}
 
+\begin{singlespace}
 \begin{otherlanguage}{czech}
 
 Název práce:
@@ -121,15 +122,33 @@ RNDr. Ondřej Bojar Ph.D., Ústav formální a aplikované lingvistiky
 Abstrakt:
 % abstrakt v rozsahu 80-200 slov; nejedná se však o opis zadání bakalářské
 % práce
+V této práci představujeme systém pro dezambiguaci hranic mezi tokeny a větami
+v textu. Charakteristickým znakem programu je jeho značná konfigurovatelnost
+and všestrannost, jelikož si tokenizér dokáže poradit i s nepřerušovaným
+čínským textem. Tokenizér v jádru používá klasifikátory založené na modelech s
+maximální entropií a jedná se tudíž o učící se systém, kterému je nutné
+předložit již tokenizovaná data k trénování. Program je doplněn nástrojem pro
+hlášení úspěšnosti tokenizace, což pomáhá zejména při rychlém vývoji a ladění
+tokenizačního procesu. Program používá pouze multiplatformní knihovny a při
+vývoji byl kladen důraz zejména na efektivitu a správnost.
+Samotná práce se skládá z přehledu dalších nástrojů na tokenizaci a segmentaci
+textu a krátkého úvodu do modelů s maximální entropií. Velkou část práce pak
+tvoří popis samotné implementace systému. Práce je nakonec završena
+vyhodnocením úspěšnosti několika tokenizačních metod implementovaných skrz
+tento systém.
 
 Klíčová slova:
+tokenizace, segmentace, maximální entropie, předzpracování textu
 % 3 až 5 klíčových slov
 
 \end{otherlanguage}
+\end{singlespace}
 
 \vss}\nobreak\vbox to 0.49\vsize{
 \setlength\parindent{0mm}
 \setlength\parskip{5mm}
+
+\begin{singlespace}
 
 Title:
 Fast and Trainable Tokenizer for Natural Languages
@@ -148,11 +167,28 @@ RNDr. Ondřej Bojar Ph.D., Institute of Formal and Applied Linguistics
 % mimo MFF UK v angličtině
 
 Abstract:
-% abstrakt v rozsahu 80-200 slov v angličtině; nejedná se však o překlad
-% zadání bakalářské práce
+In this thesis, we present a data-driven system for disambiguating token and
+sentence boundaries in linguistic data. The system is highly configurable and
+versatile to the point its tokenization abilities are able to satisfactorily
+segment unbroken Chinese text. The tokenizer relies on maximum entropy
+classifiers and requires tokenized and segmented text as training data. The
+program is complete with a tool for reporting the performance of the
+tokenization which helps rapidly develop and tune the tokenization process. The
+program is written using multiplatform libraries only and with emphasis on
+speed and completeness.
+The thesis itself consists of a survey of other tools for text tokenization and
+segmentation and a short introduction to maximum entropy modelling. A large
+part of the thesis is the description of the internal implementation. The
+thesis then ends with an evaluation of several example tokenization methods
+implemented using the system.
+% abstrakt v rozsahu 80-200 slov v angličtině; nejedná se však o překlad zadání
+% bakalářské práce
 
 Keywords:
 % 3 až 5 klíčových slov v angličtině
+tokenization, segmentation, maximum entropy, text preprocessing
+
+\end{singlespace}
 
 \vss}
 
