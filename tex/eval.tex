@@ -22,9 +22,9 @@ Section~\ref{survey-chinese} which is also based on maximum entropy models. The
 basic features used in that system were ported to our formalism. The biggest
 difference between the systems was the fact that the original Chinese tokenizer
 classified individual characters as being single words or the beginnings,
-middles or ends of a multi-character word. Our tokenizer is constrained by our
-fomalism and so we must immediately classify each character boundary whether it
-forms an token boundary.
+middles or ends of a multi-character word. However, the classifier used in
+our system is binary and it decides for each character boundary whether it
+forms a token boundary or not.
 
 We were able to obtain the same data on which the original tokenizer was
 developed, which happen to be the training data for the Second International
@@ -34,7 +34,7 @@ the supplied data for training. The provided data consists of 4 datasets
 provided by Academia Sinica, City University of Hong Kong, Peking University
 and Microsoft Research. Each of these datasets adopts slightly different
 tokenization standards and so we train and test our tokenizer on the datasets
-individually. Each dataset comes with a training part and a testing. We
+individually. Each dataset comes with a training part and a testing part. We
 strictly used only the training part when developing our tokenizer and used the
 testing part only at the end to evaluate our results. The only thing we knew
 about the testing data in advance was its size which helped us choose a
