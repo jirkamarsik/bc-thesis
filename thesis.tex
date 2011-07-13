@@ -117,9 +117,12 @@
 %\include{tex/appendix}
 
 %%% Seznam použité literatury
-%\include{tex/biblio}
-\bibliographystyle{czechiso}
-\bibliography{sources}
+\nocite{*}
+\bibliographystyle{iso690}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{sbd,maxent,seg,web}
 
 %%% Tabulky v bakalářské práci, existují-li.
 \listoftables
