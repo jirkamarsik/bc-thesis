@@ -15,7 +15,8 @@ thesis.dvi: thesis.tex tex/frontmatter.tex tex/intro.tex tex/survey.tex\
             tex/maxent.tex tex/impl.tex tex/userdoc.tex tex/eval.tex\
             tex/outro.tex tex/appendix.tex img/all-parts.eps\
             img/train-parts.eps img/tokenize-parts.eps tex/readme.tex\
-            sbd.bib maxent.bib seg.bib web.bib
+            sbd.bib maxent.bib seg.bib web.bib img/decisionpoints.eps\
+            img/quexexample.eps
 	latex $<
 	bibtex thesis
 	latex $<

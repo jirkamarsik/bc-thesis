@@ -3,8 +3,8 @@
 
 In this chapter we describe the internal design of the tokenizer and provide
 rationale for the choices behind it. We explore the problem of rough
-tokenization more deeply as it posed one the biggest challenges in building the
-system. Finally, we talk about the multi-threading tools which were used to
+tokenization more deeply as it posed one of the biggest challenges in building
+the system. Finally, we talk about the multi-threading tools which were used to
 enable parallelism in the tokenizer.
 
 
@@ -12,7 +12,7 @@ enable parallelism in the tokenizer.
 \label{sec:impl-overview}
 
 The data flow between the various subsystems can be seen in
-figure~\ref{fig:all-parts}.
+Figure~\ref{fig:all-parts}.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{img/all-parts.eps}
@@ -132,12 +132,12 @@ few different setups for performing these varied tasks.
 When running in the training mode, the tokenizer cleans the input, identifies
 decision points signalling potential token and sentence boundaries, tags the
 rough tokens with the user's properties and sends them to the
-\class{Classifier}. The \class{Classifier} is aligns this stream of rough
-tokens with the annotated text. For each decision point, the properties of the
-tokens within context and the outcome inferred from the aligned data are sent
-to the Maximum Entropy Toolkit to serve as training data. After all the input
-files have been processed and the training examples collected, the maximum
-entropy model is computed and stored in a file for later use.
+\class{Classifier}. The \class{Classifier} aligns this stream of rough tokens
+with the annotated text. For each decision point, the properties of the tokens
+within context and the outcome inferred from the aligned data are sent to the
+Maximum Entropy Toolkit to serve as training data. After all the input files
+have been processed and the training examples collected, the maximum entropy
+model is computed and stored in a file for later use.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{img/train-parts.eps}
@@ -146,12 +146,13 @@ entropy model is computed and stored in a file for later use.
   \label{fig:train-parts}
 \end{figure}
 
-There is no output processing in the training mode as the only output produced
-are warning messages about token and sentence boundaries found in the annotated
-version which are not even marked as potential boundaries in the raw input.
-This is a signal to the user that he should perhaps modify the tokenization
-scheme to account for more possible boundaries or to check his annotated data.
-The setup of the system can be seen on figure~\ref{fig:train-parts}.
+There is no output processing in the training mode as the only output produced,
+apart from the saved maxent model file, are warning messages about token and
+sentence boundaries found in the annotated version which are not even marked as
+potential boundaries in the raw input. This is a signal to the user that he
+should perhaps modify the tokenization scheme to account for more possible
+boundaries or to check his annotated data. The setup of the system can be seen
+on Figure~\ref{fig:train-parts}.
 
 \subsection{Tokenization}
 \label{ssec:impl-modes-tokenize}
@@ -165,7 +166,7 @@ decision point given its context. This outcome is used to resolve the
 disambiguation is stored in the relevant rough token's metadata. These
 annotated tokens are then printed through the \class{OutputFormatter} and
 encoded with the \class{Encoder}. See the setup of the system in this mode on
-figure~\ref{fig:tokenize-parts}.
+Figure~\ref{fig:tokenize-parts}.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{img/tokenize-parts.eps}
@@ -181,7 +182,7 @@ When tweaking and developing a tokenization system (the selected training data,
 the configured parameters in the tokenization scheme) it is vital to have
 feedback on the shortcomings of your system. The evaluation mode was designed
 just for this purpose. It works in a way similar to the training mode (see
-figure~\ref{fig:train-parts}). The \class{Classifier} aligns the rough tokens
+Figure~\ref{fig:train-parts}). The \class{Classifier} aligns the rough tokens
 with the annotated text and extracts the contextual properties from the tokens
 and the true outcome from the annotated data. However, instead of recording
 them it uses an already trained model and queries it for its predicted outcome.
@@ -203,7 +204,7 @@ probabilistic model.
 \label{ssec:impl-modes-prepare}
 
 The preparation is the last and least essential mode of the tokenizer. It is
-similar to the tokenization mode (see figure~\ref{fig:tokenize-parts}), but
+similar to the tokenization mode (see Figure~\ref{fig:tokenize-parts}), but
 instead of querying the probabilistic model for an outcome, the
 \class{Classifier} simply confirms all potential boundaries (\maysplit{}
 becomes a token boundary and \maybreaksentence{} becomes a sentence boundary).
@@ -221,31 +222,43 @@ abovementioned way.
 
 One of the first problems encountered when designing the tokenizer was the
 implementation of rough tokenization. The task of rough tokenization is to take
-the definitions of decision points and then be able to detect all such points
+the definitions of decision points and then to be able to detect all such points
 in any given input.
 
 The possible positions for a \maysplit{} decision point are defined by pairs of
-regular expressions: a poisition is to be marked as a \maysplit{} point if and
-only if the first expression matches a suffix of the characters preceding it
-and the second expression matches a prefix of the characters following it.
-\mayjoin{} decision points are defined almost the same way, except that the
-characters following the position of a \mayjoin{} must start with a string of
-blank characters and then continue with the string matched by the regular
-expression. \maybreaksentence{} points, on the other hand, are defined simply
-by two sets of characters. If a position follows a character from the first set
-or precedes a character from the second set, then that position is a
-\maybreaksentence{}.
+regular expressions: a position is to be marked as a \maysplit{} point if and
+only if the first expression (prefix) matches some of the characters
+leading to the position and the second expression (suffix) matches some of
+the characters following it. \mayjoin{} decision points are defined almost the
+same way, except that the characters following the position of a \mayjoin{}
+must start with a string of blank characters and then continue with the string
+matched by the regular expression. \maybreaksentence{} points, on the other
+hand, are defined simply by two sets of characters. If a position follows a
+character from the first set or precedes a character from the second set, then
+that position is a \maybreaksentence{}. See Figure \ref{fig:decision-points} for an example.
+
+\begin{figure}
+  \includegraphics[width=0.618033988\textwidth]{img/decisionpoints.eps}
+  \caption{An example sentence marked with demonstratory decision points. The
+           definition of the decision point placement is described below the
+           sentence. The sitting wedge triangle represents a \maysplit{}, the
+           upside triangle marks a \mayjoin{}s and a circle marks the
+           \maybreaksentence{} positions. The whitespace and the decision
+           points divide the text into rough tokens.}
+  \label{fig:decision-points}
+\end{figure}
+
 
 \subsection{Regular Expression Libraries}
 \label{ssec:impl-roughtok-regex}
 
 The reference implementation of the trainable tokenizer written in Perl used a
 disjunction regular expression to match the prefix of the unprocessed input.
-The original idea was to use PCRE or some other regular expression
-implementation to write a similar algorithm.
+Our original idea was to use PCRE \cite{web-pcre} or some other regular expression
+implementation \cite{web-boost,web-re2} to write a similar algorithm.
 
 The naive approach might have us trying to search for the possible suffixes of
-\mayjoin{}s and \maysplit{}s which are preceded by their specified prefixes.
+\mayjoin{}s and \maysplit{}s which are preceded by their respective prefixes.
 Soon we would learn that finding one decision point may lock us out of finding
 another one. For example, given the string \example{abcd} and \maysplit{}
 regular expression pairs \example{a} - \example{bc} and \example{b} -
@@ -254,18 +267,20 @@ convention properly registering the \maysplit{} between \example{a} and
 \example{bc}, but we lose the opportunity to find the \maysplit{} between
 \example{b} and \example{c}.
 
-If try to search for each of these pairs of regular expressions individually,
-we can still miss some points as demonstrated by the following example. Let the
-string in question be \example{abab} and the \maysplit{} regular expression
-pair \example{a} - \example{b(ab)*}. Any attempt to search for the suffix
-\example{b(ab)*} would yield the \example{bab} substring due to the leftmost
-longest match convention unless we either modify the user's regular expression,
-modify the regular expression matching function or try to search for the suffix
-from every position in the text.
+If we try to search for each of these pairs of regular expressions
+individually, we might still miss some points as demonstrated by the following
+example. Let the string in question be \example{abab} and the \maysplit{}
+regular expression pair \example{a} - \example{b(ab)*}. Any attempt to search
+for the suffix \example{b(ab)*} would yield the \example{bab} substring due to
+the leftmost longest match convention (and never just the final \example{b},
+which means that position will not trigger a \maysplit). There are solutions to
+this problem such as modifying the user's regular expression, modifyng the
+regular expression matching function or searching for the suffix from every
+position in the text, but they are all either difficult or ineffective.
 
 We do not want to be patching the user's regular expressions because we would
 probably have to restrict ourselves to a narrower set of regular expressions
-and even then it would have been harrowing to actually implement such a system
+and even then it would have been challenging to actually implement such a system
 and prove its correctness. Writing our own regular expression matching engine
 is also out of the scope of this work. The third option on the list, searching
 for the suffix (or prefix) from every position in the text, seems like a
@@ -294,12 +309,13 @@ input with these regular expressions and reacts to the matches with the
 supplied actions. More advanced tools enable the definition of several analyzer
 modes with different rules and enables the actions to switch between them.
 
-The lexical analyzer generator selected for our tokenizer was Quex. Its most
-important feature is that it is able to work on Unicode code points instead of
-single-byte characters and that it uses libiconv and ICU to process text in any
-encoding. Quex can also be very fast because it does not encode the resulting
-automaton into a table which drives some general template program, but instead
-it generates low level C++ code which mimics the behaviour of the automaton.
+The lexical analyzer generator selected for our tokenizer was Quex
+\cite{web-quex}. Its most important feature is that it is able to work on
+Unicode code points instead of single-byte characters and that it uses libiconv
+and ICU to process text in any encoding. Quex can also be very fast because it
+does not encode the resulting automaton into a table which drives some general
+program, but instead it generates low level C++ code which mimics the behaviour
+of the automaton.
 
 The naive way of rough tokenization presented in
 subsection~\ref{ssec:impl-roughtok-regex} was implemented in a prototype to
@@ -318,32 +334,46 @@ subsection~\ref{ssec:impl-roughtok-solution}.
 \subsection{The Solution}
 \label{ssec:impl-roughtok-solution}
 
+\begin{figure}
+  \includegraphics[width=0.618033988\textwidth]{img/quexexample.eps}
+  \caption{An example of real-world implemented rough tokenization. The
+  generated Quex lexer is at the signified position in the input. Given its
+  position, the lexer takes into consideration only rules 1 and 3, as these are
+  the only rules whose preconditions have been met. Rule 1 can match the
+  input at the current position and so a \maysplit{} is announced and the
+  word read so far ("2") is reported as a rough token. The lexer now
+  automatically advances by the length of the matched string, but we manually
+  step back to the original position in hope of finding more decision points
+  at the current position and the positions within the matched string. When no
+  further decision points are to be found at the current location (as is the
+  case here), we move one character ahead.}
+  \label{fig:quex-example}
+\end{figure}
+
 Many of the observations about the task at hand made in
 subsection~\ref{ssec:impl-roughtok-regex} still hold when designing a Quex
 generated lexer. The final implementation processes the input one character at
 a time. At each position in the text, rules for matching the suffixes of
 possible \maysplit{}s and \mayjoin{}s are in play. Each of these rules has a
-precondition in Quex that the preceding text must match the prefix of the
-respective \maysplit{} or \mayjoin{} rule. These aren't implemented by
-backtracking and searching for the regular expression in the already processed
-input. Instead, Quex maintains a set of flags which inform it which of the
-preconditions are met at the current position. The \maybreaksentence{} rules
+condition in Quex that the preceding text must match the prefix of the
+respective \maysplit{} or \mayjoin{} rule. The \maybreaksentence{} rules
 are implemented in a similar way as their definitions are basically
 specializations of the \maysplit{} and \mayjoin{} definitions (single
-characters for prefix or suffix instead of regular expressions).
+characters for prefix or suffix instead of regular expressions). An example of
+such Quex rules can be seen on Figure~\ref{fig:quex-example}.
 
-When the lexer matches a suffix of a rule, it sends the last characters read
-since the last decision point or whitespace as a rough token and signals the
-respective decision point. Quex would now automatically adjust our position in
-the text right behind the matched suffix but we override this behaviour and
-move back to the position of the newly found decision point so other decision
-points may be found. This alone would cause an infinite loop and so upon
-returning to the original position we also scratch the detected decision point
-from the set of applicable rules. If another decision point is found, we do the
-same until we find all types of decision points at the current location or none
-of the rules match anymore. In that case, the lowest priority action takes
-place which reads another character from the stream and starts looking for all
-possible decision points again.
+When the lexer matches the suffix of a decision point rule, it sends the last
+characters read since the last decision point or whitespace as a rough token
+and signals the decision point. Quex would now automatically advance our
+position in the text right behind the matched suffix, but we override this
+behaviour and move back to the position of the newly found decision point so
+other decision points may be found. This alone would cause an infinite loop and
+so upon returning to the original position we also scratch the detected
+decision point from the set of applicable rules. If another decision point is
+found, we do the same until we find all types of decision points at the current
+location or none of the rules match anymore. In that case, the lowest priority
+action takes place which reads another character from the stream and starts
+looking for decision points at the next position.
 
 This scratching out of rules is implemented using 8 different modes for all the
 different sets of decision points we might be looking for. We start at the
@@ -361,19 +391,19 @@ modes seen in the current implementation.
 In the finished application, the regular expressions which define the placement
 of decision points are read from user-written configuration files. A Quex
 source file containing modes for detecting all of the decision points
-referenced by the user is then output to a temporary file. CMake is invoked to
-probe the user's system for the compiling essentials, to generate a project for
-the user's preferred build system and to write the command needed to start the
-build to a file. This file is read and the command within it is run, which
-executes Quex on the generated source file and then compiles the result into a
-shared module. This process is therefore platform-agnostic as it doesn't rely
-on a specific C++ compiler or build system and uses only CMake and Quex which
-are multiplatform and are required to build the tokenizer itself.
+referenced by the user is then output to a temporary file. CMake
+\cite{web-cmake} is invoked to probe the user's system for the compiling
+essentials, to generate a project for the user's preferred build system and to
+write the command needed to start the build to a file. This file is read and
+the command within it is run, which executes Quex on the generated source file
+and then compiles the result into a shared module. This process is therefore
+platform-agnostic as it doesn't rely on a specific C++ compiler or build system
+and uses only CMake and Quex which are multiplatform and are required to build
+the tokenizer itself.
 
 This compiled shared module is then loaded using the libtool's dynamic loading
-library which is a wrapper for the platform-specific dynamic loading functions.
-The entire code generation and compilation process takes under 5 seconds on the
-development laptop. The tokenizer tracks the set of files used to generate the
+library \cite{web-libtool} which is a wrapper for the platform-specific dynamic
+loading functions. The tokenizer tracks the set of files used to generate the
 rough tokenizer along with their timestamps and only regenerates and recompiles
 it when changes have been made.
 
@@ -395,16 +425,17 @@ current implementation. Deciding on the pipeline model also let us use
 libraries which offered high-level pipeline implementations. This meant we did
 not have to implement the entire system from scratch using threads and
 synchronization primitives. For the performance payoff of multi-threading, see
-chapter~\ref{chap:eval}
+Chapter~\ref{chap:eval}
 
 \subsection{The Pipeline}
 \label{ssec:impl-parallel-pipeline}
 
-Threading Building Blocks, an open-sourced library developed by Intel, was used
-for implementing the pipeline. Compared to other mutliplatform parallelism
-solutions, TBB offers high-level algorithms and constructs like the pipeline.
-It also uses C++ classes and methods to expose its functionality instead of
-relying on pragma directives like the standardized OpenMP. 
+Threading Building Blocks \cite{web-tbb}, an open-sourced library developed by
+Intel, was used for implementing the pipeline. Compared to other mutliplatform
+parallelism solutions, TBB offers high-level algorithms and constructs like the
+pipeline. It also uses C++ classes and methods to expose its functionality
+instead of relying on pragma directives like the standardized OpenMP
+\cite{web-openmp}. 
 
 The pipeline is constructed by setting up an array of filter objects. Each of
 the filter objects must override the invocation operator and must identify
@@ -413,7 +444,7 @@ filter can be run simultaneously on multiple points of data, serial meaning
 that the filter processes the input one at a time). In the tokenizer, the
 \class{RoughTokenizer}, the \class{FeatureExtractor}, the \class{Classifier}
 and the \class{OutputFormatter} are all elements of this pipeline (you can see
-the pipeline as the middle row in figure~\ref{fig:all-parts} with
+the pipeline as the middle row in Figure~\ref{fig:all-parts} with
 \class{FeatureExtractor} being a parallel filter). The TBB library invokes the
 first filter, the \class{RoughTokenizer}, and passes its return value to the
 \class{FeatureExtractor} which also produces a value and so on...
@@ -447,11 +478,11 @@ mechanism would allow us to simply pass a pointer to this stream to the Quex
 lexer as if it were a file handle and we would not have to trouble ourselves
 with any string marshalling.
 
-A class which does just this was implemented by Alexander Nasonov and
-published on the Boost maling list in 2003. However, it didn't meet with much
-understanding on the list as people tended to associate the class' name,
-\class{pipe}, with OS-level pipes. The pipestreams have been resurrected for
-this project and they made writing the transfer of text between the
+A class which does just this was implemented by Alexander Nasonov and published
+on the Boost mailing list in 2003 \cite{web-pipes}. However, it didn't meet
+with much understanding on the list as people tended to associate the class'
+name, \class{pipe}, with OS-level pipes. The pipestreams have been resurrected
+for this project and they made writing the transfer of text between the
 \class{TextCleaner}, the \class{Encoder} and the parts of the TBB pipeline
 very simple.
 

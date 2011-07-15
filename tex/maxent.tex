@@ -21,33 +21,34 @@ data, meaning that the data's probability given our model $p$ is high.
 
 However, we do not want the maximum likelihood model because we
 are aware that the observed data does not cover all the possible situations.
-Instead, we want a model that shares a lot of properties with the observed
-data. We express these properties as binary functions on the space of events
-$E$ and we call these functions \newterm{features}\footnote{The term features
-is also commonly used in machine learning to denote a part of the context. When
-it will be important to differentiate these two meaning in other parts of the
-work, the term \newterm{maximum entropy features} will be used to refer to the
-features defined here.}. In most implementations, including ours, these binary
-features are restricted to the following form
+Instead, we want a model that shares only some important properties with the
+observed data. We express these properties as binary functions on the space of
+events $E$ and we call these functions \newterm{features}\footnote{The term
+features is also commonly used in machine learning to denote a part of the
+context. When it will be important to differentiate these two meaning in other
+parts of the work, the term \newterm{maximum entropy features} will be used to
+refer to the features defined here.}. In most implementations, including ours,
+these binary features are restricted to the following form
 
 \begin{equation}
 \label{eq:common-feature}
 f(a,b) =
 \begin{cases}
-  1 & \text{if } a=o \text{ and } p(b) \\
+  1 & \text{if } a=o \text{ and } \phi(b) \\
   0 & \text{else}
 \end{cases}
 \end{equation}
 
-where $o$ is an outcome and $p$ is a context predicate. We want the constructed
+where $o$ is an outcome and $\phi$ is a context predicate. We want the constructed
 model $p$ to share the expected values of these feature functions with the
 empirical model $\bar{p}$. What this means is that the probability of $f(a,b)$
 being 1 is the same in both models.
 
 Let us say we have chosen several such features we want retained in our model,
 now we need to select some model from the set of complying models. This is the
-point where the maximum entropy entropy principle comes into play. The basic
-idea of the maximum entropy principle was nicely hinted at by Laplace:
+point where the maximum entropy principle comes into play. The basic
+idea of the maximum entropy principle was nicely hinted at by Laplace in his
+``Principle of Insufficient Reason'' \cite{maxent-approach}:
 
 \begin{quote}
 When one has no information to distinguish between the probability of two
@@ -59,12 +60,13 @@ by the features but is otherwise unbiased, it is as close to uniform as
 possible without violating the features' requirements. A standard measure of
 the uniformity of a distribution is entropy
 
-\[
+\begin{equation}
+\label{eq:entropy}
 H(p) = -\sum_{x \in E} p(x) \log p(x)
-\]
+\end{equation}
 
 We would like to find a distribution which adheres to the features' constraints
-and maximizes the maximum entropy. It can be shown (see e.g.\ Ratnaparkhi) that
+and maximizes entropy. It can be shown \cite{maxent-approach,maxent-simple} that
 the such a distribution is of the following form
 
 \begin{equation}
@@ -75,70 +77,80 @@ p(x) = \pi \prod_{j=1}^k \alpha_j^{f_j(x)}
 where $f_j(x)$ for $j \in \{1,\dotsc,k\}$ are the features we want to retain
 and $0 < \alpha_j,\pi < \infty$. More interestingly, the maximum entropy model
 adhering to the features' constraints is equal to the maximum likelihood model
-having the shape in \ref{eq:exp-model} (we call them \newterm{exponential
+having the shape of \ref{eq:exp-model} (we call such models \newterm{exponential
 models}). 
 
 Given the set of features we want to retain in our model, we can now employ an
 unrestricted optimization algorithm to find the parameters of the exponential
 model which maximize the likelihood of the training data.
 
-Once we wrap our minds around the definition of an exponential model and the
-possible features from \ref{eq:common-feature}, we can see that when predicting
-an outcome given a context, each predicate which holds for the context votes
-for each outcome by multiplying its probability. The probability is multiplied
-by the parameter of the exponential model corresponding to the feature which
-is constructed from the outcome and predicate in question. The probability is
-either increased or decreased depending on how often was that predicate
-encountered with the same outcome in the training data.
+Once we wrap our minds around the definition of an exponential model and
+restrain ourselves to the features from \ref{eq:common-feature}, we can easily
+imagine what happens when predicting an outcome given a context (i.e.
+evaluating the probabilities of the context appearing with all the possible
+outcomes). For each feature $f_j$ of the shape \ref{eq:common-feature}, the
+probability of an outcome is multiplied by $\alpha_j$ if and only if the
+feature's predicate $\phi$ holds for the current context and the outcome which
+we are evaluating is equal to the feature's desired outcome $o$ (then the
+feature function's value is $1$). So, for each pair of a predicate $\phi$ which
+holds for the given context and an outcome $o$ which forms a feature $f_j$ with
+the predicate as in \ref{eq:common-feature}, the predicate votes either for or
+against the outcome $o$ depending on the value of $\alpha_j$. The values for
+$\alpha$, estimated from the training data, are higher if the context predicate
+usually implies that we will see the outcome in question and lower for the
+opposite case.
 
 In practice, the features (in the machine learning sense of the word) being
-passed to the maximum entropy classifier are the predicates which combine with
-the outcomes to form the maximum entropy features.
+passed to the maximum entropy classifier are the predicates which hold for the
+context in question. The classified outcome is the one voted the most by the
+above process.
 
 \section{Available Implementations}
 \label{sec:maxent-impl}
 
 There are several notable implementations of maximum entropy estimators
 available. The one we chose for our tokenizer was the Maximum Entropy Modeling
-Toolkit for Python and C++ written by Zhang Le. The toolkit offers a nice clean
-API with which we are able to feed training events to the estimator and then
-launch a training procedure which finds the optimal parameters. The resulting
-model can be easily saved to a file and loaded later. The API is complete with
-functions for evaluating the probabilities of $(context, outcome)$ pairs and
-derived convenience functions for predicting outcomes from contexts. The
-supported parameter estimation algorithms include GIS and L-BFGS. The L-BFGS
-implementation provided by Jorge Nocedal is written in Fortran with large scale
-datasets in mind. When the various algorithms for estimating the parameters of
-a maximum entropy model were evaluated, L-BFGS clearly outdid the GIS, IIS,
-gradient and conjugate gradient algorithms.
+Toolkit for Python and C++ written by Zhang Le \cite{maxent-toolkit}. The
+toolkit offers a nice clean API with which we are able to feed training events
+to the estimator and then launch a training procedure which finds the optimal
+parameters. The resulting model can be easily saved to a file and loaded later.
+The API is complete with functions for evaluating the probabilities of
+$(context, outcome)$ pairs and derived convenience functions for predicting
+outcomes from contexts. The supported parameter estimation algorithms include
+GIS and L-BFGS. The L-BFGS implementation provided by Jorge Nocedal is written
+in Fortran with large scale datasets in mind. When the various algorithms for
+estimating the parameters of a maximum entropy model were evaluated, L-BFGS
+clearly outperformed the GIS, IIS, gradient and conjugate gradient algorithms
+\cite{maxent-algorithms}.
 
-Other implementations were contemplated, however they would require more effort
+Other implementations were contemplated, however, they would require more effort
 to integrate seamlessly into our tokenizer. The main reason behind this is
 that the abovementioned toolkit is the only one supplying a C++ API. The other
 toolkits only have either command line interfaces or are written in different
 languages. Of these toolkits, only a few offer anything worth the effort.
 
 Our problem with the toolkits written in Python and Java (the most notable
-being NLTK and the Stanford Classifier) is that while predicting an outcome of
-a potential boundary, we rely on the disambiguation of the preceding
-boundaries. This means that if we were to use NLTK or the Stanford Classifier
-for prediction, we would have to switch from C++ to Java or Python to perform
-the disambiguation for every ambiguous boundary individually. This could be
-worked around by using the toolkits only for training and then writing our own
-implementation of the exponential model's evaluate functions.
+being NLTK \cite{web-nltk} and the Stanford Classifier \cite{web-stanford}) is
+that while predicting an outcome of a potential boundary, we rely on the
+disambiguation of the preceding boundaries. This means that if we were to use
+NLTK or the Stanford Classifier for prediction, we would have to switch from
+C++ to Java or Python to perform the disambiguation for every ambiguous
+boundary individually. This could be worked around by using the toolkits only
+for training and then writing our own implementation of the exponential model's
+evaluate functions.
 
 But even if we did integrate these alternative implementation, the Java
 implementations would have a hard time outperforming the Fortran L-BFGS
 implementation. The methods in SciPy might be more viable though.
 
 The only alternative solution which looked intriguing is the Toolkit for
-Advanced Discriminative Modeling (TADM) by Robert Malouf. The toolkit lacks an
-API and relies only on a command line interface. This would mean that during
-training the collected events would have to be stored in a file and TADM would
-have to be invoked using the \funcname{system} function. An implementation of
-an exponential model would then be needed including loading the model from the
-file, evaluating the probabilities of events and predicting the most probable
-outcome.
+Advanced Discriminative Modeling (TADM) by Robert Malouf \cite{web-tadm}. The
+toolkit lacks an API and relies only on a command line interface. This would
+mean that during training the collected events would have to be stored in a
+file and TADM would have to be invoked using the \funcname{system} function. An
+implementation of an exponential model would then be needed including loading
+the model from the file, evaluating the probabilities of events and predicting
+the most probable outcome.
 
 Howver, if too much time is spent estimating the model's parameters on a
 machine which might benefit from the PETSc and TAO optimizations used in TADM,

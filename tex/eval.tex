@@ -18,27 +18,28 @@ absence of any spaces between words forbids the use of any simple heuristic and
 linguistically empowered methods must be used.
 
 We took inspiration from the system for Chinese word segmentation presented in
-Section~\ref{survey-chinese} which is also based on maximum entropy models. The
-basic features used in that system were ported to our formalism. The biggest
-difference between the systems was the fact that the original Chinese tokenizer
-classified individual characters as being single words or the beginnings,
-middles or ends of a multi-character word. However, the classifier used in
-our system is binary and it decides for each character boundary whether it
-forms a token boundary or not.
+Section~\ref{survey-chinese} \cite{seg-chinese-maxent} which is also based on
+maximum entropy models. The basic features used in that system were ported to
+our formalism. The biggest difference between the systems was the fact that the
+original Chinese tokenizer classified individual characters as being
+single-character words or the beginning, middle or ending characters of a
+multi-character word. However, the classifier used in our system is binary and
+it decides for each character boundary whether it forms a token boundary or
+not.
 
 We were able to obtain the same data on which the original tokenizer was
 developed, which happen to be the training data for the Second International
-Chinese Word Segmentation Bakeoff. The bakeoff was a competition challenging
-computational linguists to develop word segmentation systems for Chinese using
-the supplied data for training. The provided data consists of 4 datasets
-provided by Academia Sinica, City University of Hong Kong, Peking University
-and Microsoft Research. Each of these datasets adopts slightly different
-tokenization standards and so we train and test our tokenizer on the datasets
-individually. Each dataset comes with a training part and a testing part. We
-strictly used only the training part when developing our tokenizer and used the
-testing part only at the end to evaluate our results. The only thing we knew
-about the testing data in advance was its size which helped us choose a
-reasonable size for our heldout data.
+Chinese Word Segmentation Bakeoff \cite{web-bakeoff}. The bakeoff was a
+competition challenging computational linguists to develop word segmentation
+systems for Chinese using the supplied data for training. The provided data
+consists of 4 datasets provided by Academia Sinica, City University of Hong
+Kong, Peking University and Microsoft Research. Each of these datasets adopts
+slightly different tokenization standards and so we train and test our
+tokenizer on the datasets individually. Each dataset comes with a training part
+and a testing part. We strictly used only the training part when developing our
+tokenizer and used the testing part only at the end to evaluate our results.
+The only thing we knew about the testing data in advance was its size which
+helped us choose a reasonable size for our heldout data.
 
 First off, we split our training data into a development part and a heldout
 part. We chose the size of the heldout data to be roughly as big as the testing
@@ -63,17 +64,18 @@ in Table~\ref{tbl:bakeoff-sizes}.
   \label{tbl:bakeoff-sizes}
 \end{table}
 
-We set the event cutoff to 2 as in [], so we retain a lot of the encountered
-bigrams but still keep the number of parameters manageable. We then
-experimented with training the tokenizer and testing it on the heldout data.
-Depending on how much we constrained training time, the tokenizer could either
-be undertrained or overfitted. The heldout data served as an independent
-indicator telling us how close we are to the ideal balance between a detailed
-and a general model. Experimentation led us to restrain the number of training
-iterations to the values seen in Table~\ref{tbl:bakeoff-iters}. We can see that
-the suitable number of iterations spent training is nearly a linear function of
-the dataset size. This stems from the fact that a larger dataset means more
-bigrams and unigrams and thus more parameters to estimate.
+We set the event cutoff to 2 as in \cite{seg-maxent-chinese}, so we retain a
+lot of the encountered bigrams but still keep the number of parameters
+manageable. We then experimented with training the tokenizer and testing it on
+the heldout data. Depending on how much we constrained training time, the
+tokenizer could either be undertrained or overfitted. The heldout data served
+as an independent indicator telling us how close we are to the ideal balance
+between a detailed and a general model. Experimentation led us to restrain the
+number of training iterations to the values seen in
+Table~\ref{tbl:bakeoff-iters}. We can see that the suitable number of
+iterations spent training is nearly a linear function of the dataset size. This
+stems from the fact that a larger dataset usually means more bigrams and
+unigrams and thus more parameters to estimate.
 
 \begin{table}
   \begin{center}
@@ -93,7 +95,7 @@ bigrams and unigrams and thus more parameters to estimate.
 \end{table}
 
 After we established the training parameters, we trained the system on the
-entier training data and checked its performance on the gold testing data. The
+entire training data and checked its performance on the gold testing data. The
 performance of the development system on the heldout data and of the final
 system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
 \ref{tbl:bakeoff-final}.
@@ -133,10 +135,11 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
 \end{table}
 
 While the resulting adapted system does not perform as well as the original
-word segmenter by Low, Ng and Guo, it achieves a median performance compared to
-the performance of the other bakeoff submissions. The result is quite pleasing,
-given that the all we needed was to write the feature definitions into a few
-files and toy with some training parameters.
+word segmenter by Low, Ng and Guo \cite{seg-chinese-maxent}, it achieves a
+median performance compared to the performance of the other bakeoff
+submissions. The result is quite pleasing, given that the all we needed was to
+write the feature definitions into a few files and toy with some training
+parameters.
 
 \subsection{Tokenization of Czech and English}
 \label{ssec:eval-acc-eng}
@@ -144,15 +147,15 @@ files and toy with some training parameters.
 For evaluating the accuracy of tokenizing Czech and English text, four
 different methods were implemented. The Absolute Baseline relies on no other
 piece of information than the current decision point and the whitespace
-following it to classifiy boundaries. It is there to show the minimum possible
+following it to classify boundaries. It is there to show the minimum possible
 line every tokenizer should pass. The Simple Tokenizer checks for capital
 letters before the period (initials) and after the period (start of a new
 sentence). It represents the often too simple approach to tokenization. The
-English-only Satz-like system uses only part of speech data about the
-surrounding tokens to predict a boundary. Finally, the Groomed Tokenizer is the
-tokenization scheme used in the original reference implementation, which has
-been supplied with lists of abbreviations and lots of useful regular
-expressions.
+English-only Satz-like \cite{sbd-satz} system uses only part of speech data
+about the surrounding tokens to predict a boundary. Finally, the Groomed
+Tokenizer is the tokenization scheme used in the original reference
+implementation, which has been supplied with lists of abbreviations and lots of
+useful regular expressions.
 
 All systems were tested both on a sample of data from CzEng and, in the case of
 the English tests, also on the Brown corpus. All datasets were divided into
@@ -272,10 +275,10 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
 \end{table}
 
 The Satz-like system which was originally developed on the Brown corpus and
-whose part of speech lexica were induced from the tagged training part of the
+whose part of speech lexicon was induced from the tagged training part of the
 Brown dataset shows a clear difference in segmentation performance between its
 native Brown corpus and the CzEng dataset. This could be perhaps remedied by
-improving upon the part of speech lexica. 
+improving upon the part of speech lexicon. 
 
 The Simple Tokenizer offered quite a lot of performance for a little work.
 However, when it comes to segmentation, the difference between the simple

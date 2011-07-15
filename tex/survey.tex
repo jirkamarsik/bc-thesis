@@ -14,13 +14,13 @@ boundary disambiguation.
 \section{RE}
 \label{sec:survey-re}
 
-The system referred to as RE in [] is an example of a purely
-\newterm{rule-based} system. It does not need any training data, but instead it
-relies on explicit linguistic knowledge such as lists of abbreviations and
-custom regular expressions. The RE system in particular works by scanning the
-input text for periods and then inspecting the tokens surrounding it. If the
-surrounding tokens do not match a combination of the user's regular
-expressions, the period is marked as a sentence boundary.
+The system \cite{sbd-re} referred to as RE in \cite{sbd-punkt} is an example of
+a purely \newterm{rule-based} system. It does not need any training data, but
+instead it relies on explicit linguistic knowledge such as lists of
+abbreviations and custom regular expressions. The RE system in particular works
+by scanning the input text for periods and then inspecting the tokens
+surrounding it. If the surrounding tokens do not match a combination of the
+user's regular expressions, the period is marked as a sentence boundary.
 
 Our tokenizer also allows the user to define regular expressions against which
 neighboring tokens will be checked (not only neighboring tokens, a token at any
@@ -32,23 +32,23 @@ user. Instead, our system relies on already tokenized data from which it learns
 how to combine the outcomes of these regular expression tests into a
 tokenization decision.
 
-\section{MxTerminator\cite{Ratnaparkhi-MxTerm}}
+\section{MxTerminator}
 \label{sec:survey-mxterm}
 
-Contrary to RE, MxTerminator is a \newterm{supervised machine-learning} system.
-This means that the tool has to be supplied with already tokenized data from
-which the classifier infers the logic behind tokenization. The classifier in
-this case is based on maximum entropy models, the same mathematical foundation
-on which our system is built.
+Contrary to RE, MxTerminator \cite{sbd-mxterm} is a \newterm{supervised
+machine-learning} system. This means that the tool has to be supplied with
+already tokenized data from which the classifier infers the logic behind
+tokenization. The classifier in this case is based on maximum entropy models,
+the same mathematical foundation on which our system is built.
 
 The MxTerminator scans the text for a list of potential sentence terminators
 and presents the classifier with features of the neighboring tokens. The
-features include the word containing the potential sentence terminator, the
-words preceding and following it, the presence of particular characters in the
-current word and whether the current word is a honorific or a corporate
-designator (e.g.\ Corp.). All of these are easily expressed using regular
-expressions and lists of tokens and so it should be quite easy to produce a
-system very similar to MxTerminator using a specific configuration.
+hard-coded features include the word containing the potential sentence
+terminator, the words preceding and following it, the presence of particular
+characters in the current word and whether the current word is a honorific or a
+corporate designator (e.g.\ Corp.). All of these are easily expressed using
+regular expressions and lists of tokens and so it should be quite easy to
+produce a system very similar to MxTerminator using a specific configuration.
 
 There is also a more general version of the MxTerminator which does not rely on
 precompiled lists of honorifics and other abbreviations. In this version, the
@@ -57,18 +57,18 @@ period which does not serve as a sentence terminator. The features passed to
 the maximum entropy classifier then consist only of the trigram of words
 containing the potential sentence terminator and values describing whether the
 individual words belong to the abbreviations induced from training data in the
-previous step. With our tokenizer it is also possible to scan the training data
-and extract a list of induced abbreviations. These can then be stored in a
-token list and the tokenizer can be configured to check whether tokens are in
-that list and pass the result to the classifier.
+previous step. With our tokenizer, the user is free to scan the data ahead and
+store the induced abbreviations in a file. The tokenizer can then be configured
+to use the file as a definition for the induced abbreviation feature.
 
 \section{Riley}
 \label{sec:survey-riley}
 
-Riley uses a method of classification different from the MxTerminator. Instead
-of using a maximum entropy classifier, he builds a regression tree. The
-following features are used to disambiguate the period (let $a$ be the word
-containing the period in question and $b$ the following word):
+Riley \cite{sbd-riley} uses a method of classification different from the
+MxTerminator. Instead of using a maximum entropy classifier, he builds a
+regression tree. The following features are used to disambiguate the period
+(let $a$ be the word containing the period in question and $b$ the following
+word):
 
 \begin{itemize}
   \item Probability of $a$ occuring at the end of a sentence
@@ -92,31 +92,31 @@ maximum entropy classifier during training, it estimates a parameter for each
 type of token encountered and each possible outcome (no boundary, token
 boundary, sentence boundary). What this parameter does, basically, is that it
 describes and retains in the model the probability of encountering a specific
-token together with a specific outcome. The equivalent of a probability of a
-certain token occuring near the sentence boundary would therefore be the
-maximum entropy model's parameter corresponding to the event of that token
+type together with a specific outcome. The equivalent of a probability of a
+certain type occuring near the sentence boundary would therefore be the
+maximum entropy model's parameter corresponding to the event of that type
 appearing together with the sentence boundary outcome.
 
-As for the length features, our tokenizer uses a more general form of a maximum
-entropy feature which allows for real feature values instead of only binary
-(the only such feature in use, however, is the built-in length of a token).
-The remaining parameters can be described by binary features defined as regular
-expressions supplied by the user.
+As for the length features, the maximum entropy toolkit we employed uses a more
+general form of a maximum entropy feature which allows for real feature values
+instead of only binary values (the only such feature supported by our tokenizer
+is the length of a token). The remaining parameters can be described by binary
+features defined as regular expressions supplied by the user.
 
 \section{Satz}
 \label{sec:survey-satz}
 
-The Satz system is another supervised machine-learning system for sentence
-boundary disambiguation. It is very unique in that it does not rely on the
-superficial characteristics of the shape of the surrounding tokens. Instead, it
-passes to the underlying classifier the probability distribution of parts of
-speech for every token within the context of the potential sentence boundary.
-It is therefore necessary to supply a lexicon giving the part of speech
-distribution. If a word is not part of any lexicon, a series of heuristics try
-to guess a safe probability distribution given the word's suffix, case,
-internal punctuation etc... Thanks to the generalization provided by the part
-of speech categories, the system required relatively small amounts of training
-data to acheive solid performance.
+The Satz system \cite{sbd-satz} is another supervised machine-learning system
+for sentence boundary disambiguation. It is very unique in that it does not
+rely on the superficial characteristics of the shape of the surrounding
+tokens. Instead, it passes to the underlying classifier the probability
+distribution of parts of speech for every token within the context of the
+potential sentence boundary. It is therefore necessary to supply a lexicon
+giving the part of speech distribution. If a word is not part of any lexicon,
+a series of heuristics try to guess a safe probability distribution given the
+word's suffix, case, internal punctuation etc... Thanks to the generalization
+provided by the part of speech categories, the system required relatively
+small amounts of training data to acheive solid performance. 
 
 In our system, the user is limited to defining binary features and so passing
 the probability distributions to the classifier would be out of the question.
@@ -130,29 +130,29 @@ lexicons. The only problem would be the heuristics employed with out of
 vocabulary words. While all of them can be easily expressed as regular
 expressions in our system, there is yet no mechanism to make the tokenizer
 treat a part of speech found in a lexicon and a part of speech guessed by a
-heuristic as the same feature.
+heuristic as the same feature which inhibits the generalization.
 
 \section{Punkt}
 \label{sec:survey-punkt}
 
-The Punkt system is an example of an \newterm{unsupervised machine-learning}
-system. This means that Punkt does not need manually tokenized data for
-training, it learns from raw untokenized text. The data Punkt actually uses for
-training is the text to be tokenized and so besides the obvious advantage of
-not having to manually annotated data, the Punkt system does not have to be
-aware of different text domains and genres.
+The Punkt system \cite{sbd-punkt} is an example of an \newterm{unsupervised
+machine-learning} system. This means that Punkt does not need manually
+tokenized data for training, it learns from raw untokenized text. The data
+Punkt actually uses for training is the text to be tokenized and so besides the
+obvious advantage of not having to manually annotate data, the Punkt system
+does not have to be afraid of different text domains and genres.
 
 The Punkt system processes the input in multiple stages. In the first stage, it
 tries to determine which period-terminated words are abbreviations. A
 likelihood ratio is assigned to every such token type in the text describing
-the strength of the collocational tie between the token type and its
+the strength of the collocational tie between the type and its
 terminating period. A collocation between a type and a following period is
 taken as evidence that the type is an abbreviation type. This collocational
 score is further penalized by the length of the type and multiplied by the
 number of token-internal periods. Finally, a type's abbreviation likelihood is
 also exponentially penalized for each instance not followed by a period (so
 that common verbs in head-final languages are not picked up as abbreviations).
-All types who score higher than a set threshold are considered abbreviations.
+All types that score higher than a set threshold are considered abbreviations.
 
 After the abbreviations have been determined, every period not following an
 abbreviation, an initial or a number is marked as a nonambiguous sentence
@@ -168,13 +168,13 @@ and takes into account that many words are written with upper-case first
 letters even mid-sentence (such as proper nouns and German nouns). The second
 stage also uses the collocational tie between the types surrounding the period
 and whether the following type is a frequent sentence starter as evidence
-againts, resp.\ for, a sentence boundary.
+against, resp.\ for, a sentence boundary.
 
 Punkt also demonstrates its language independence by giving remarkable results
 on 11 different languages, all without the need to provide annotated data or
 perform lengthy parameter tweaking. Emulating Punkt's behaviour using our
 tokenizer would be nearly impossible, as it would necessarily lose its
-independence of available annotated data and its ability to train from the
+independence on available annotated data and its ability to train from the
 input before tokenizing it. On the other hand, our system is able to perform
 nontrivial tokenization tasks (such as Chinese word segmentation) on top of the
 sentence boundary disambiguation. It is due to the fact that the Punkt system
@@ -187,11 +187,11 @@ binary features expressed with regular expressions or lexicons.
 \label{survey-chinese}
 
 Several attempts at Chinese word segmentation were made using a maximum entropy
-classifier. The one developed by Jin Kiat Low, Hwee Tou Ng and Wenyuan Guo
-ranked amongst the highest in the Second International Chinese Word
-Segmentation Bakeoff. It classifies each character as a single-character word
-or as a first, intermediate or last character of a multi-character word. The
-basic set of features passed to the classifier is:
+classifier. The one developed by Jin Kiat Low, Hwee Tou Ng and Wenyuan Guo in
+2005 \cite{seg-chinese-maxent} ranked amongst the highest in the Second
+International Chinese Word Segmentation Bakeoff. It classifies each character
+as a single-character word or as a first, intermediate or last character of a
+multi-character word. The basic set of features passed to the classifier is:
 
 \begin{enumerate}
   \item $C_n (n = -2,-1,0,1,2)$
@@ -219,5 +219,5 @@ However, this improvement to the Chinese word segmenter is not that crucial. A
 bigger issue might be the fact that the Chinese word segmenter trains a
 classifier to predict the role of a character in a single or multi character
 word, whereas our classifier predicts whether potential token boundaries are
-real token boundaries (this means that during training there are quite
-different maximum entropy features).
+real token boundaries (this means that during training the set of features for
+maximum entropy is quite different).
