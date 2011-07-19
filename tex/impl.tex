@@ -385,6 +385,14 @@ rough tokens. This demand is met by adding another variable to the state of
 the lexer (whether we are about to read an entity) which results in the 16
 modes seen in the current implementation.
 
+TODO: > K sekci 3.3.3: Stalo by za to zminit se o slozitosti, protoze je
+kvadraticka
+> v maximalni delce namatchovaneho suffixu, ne? Cili doopravdicka horni mez
+> pro uplne pitoma pravidla je O(n\^2), ale v realu to bude jen
+> n*mala\_konstanta.
+
+Přesně tak to je, někde to do sekce 3.3.3 přidám.
+
 \subsection{Technical Implementation}
 \label{ssec:impl-roughtok-technical}
 
@@ -406,6 +414,19 @@ library \cite{web-libtool} which is a wrapper for the platform-specific dynamic
 loading functions. The tokenizer tracks the set of files used to generate the
 rough tokenizer along with their timestamps and only regenerates and recompiles
 it when changes have been made.
+
+\section{TODO: Classifier}
+
+TODO:Na tom místě by pak stály dva rozhodovací body, což je pro tokenizér
+standardní situace. Někam do kapitoly o implementaci bych asi ještě připsal
+něco o tom, jak jsou rysy posbírány z okolí kontextu a spolu s rozhodovacími
+body a jejich příp. rozřešeními jsou poslány klasifikátoru. V této implementaci
+nejsou rozhodovací body tvořené vlastními tokeny, ale jsou to vlastnosti tokenů
+(n-tý token má vlastnost \%\maysplit{} pokud mezi n-tý a n+1-ním je rozhodovací
+bod \maysplit{}). Tím pádem pak tokenizér dezambiguuje všechny rozhodovací body
+na dané pozici (vrací jeden ze tří výsledků: NOBOUNDARY, TOKENBOUNDARY nebo
+SENTENCEBOUNDARY, podle něj se pak z \maysplit{} může stát DOSPLIT apod.).
+
 
 \section{Parallelism}
 \label{sec:impl-parallel}
