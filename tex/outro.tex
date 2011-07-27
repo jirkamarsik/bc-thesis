@@ -3,14 +3,14 @@
 
 We have presented a data-driven system for tokenizing and segmenting linguistic
 data. We have demonstrated the system's versatility by adapting methods based
-on different techniques such as morphological analysis, regular expressions and
-exception lists. We have demonstrated the system's versatility in being able to
-act both as a sentence boundary disambiguator for languages such as English and
-Czech and as a word segmenter for languages which cannot rely on whitespace
-such as Chinese. We have also pointed to the fact that the program relies only
-on multiplatform programs and libraries. While it has not been tested on
-Windows or MacOS yet, care was taken at every step to ensure it would be a
-smooth transition (ICU can be used instead of libiconv for character code
+on different techniques such as morphological dictionaries, regular expressions
+and exception lists. The system proved its universal applicability in being
+able to act both as a sentence boundary disambiguator for languages such as
+English and Czech and as a word segmenter for languages which cannot rely on
+whitespace such as Chinese. We have also pointed to the fact that the program
+relies only on multiplatform programs and libraries. While it has not been
+tested on Windows or MacOS yet, care was taken at every step to ensure it would
+be a smooth transition (ICU can be used instead of libiconv for character code
 conversion, CMake is used for building, OS-specific matters are accessed via
 Boost...).
 

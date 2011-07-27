@@ -15,9 +15,11 @@ The data flow between the various subsystems can be seen in
 Figure~\ref{fig:all-parts}.
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{img/all-parts.eps}
-  \caption{Data flow in the entire system}
-  \label{fig:all-parts}
+  \begin{center}
+    \includegraphics[width=\textwidth]{img/all-parts.eps}
+    \caption{Data flow in the entire system}
+    \label{fig:all-parts}
+  \end{center}
 \end{figure}
 
 \subsection{TextCleaner}
@@ -140,10 +142,12 @@ have been processed and the training examples collected, the maximum entropy
 model is computed and stored in a file for later use.
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{img/train-parts.eps}
-  \caption{Data flow of the system in the training and evaluation
-           configurations}
-  \label{fig:train-parts}
+  \begin{center}
+    \includegraphics[width=\textwidth]{img/train-parts.eps}
+    \caption{Data flow of the system in the training and evaluation
+             configurations}
+    \label{fig:train-parts}
+  \end{center}
 \end{figure}
 
 There is no output processing in the training mode as the only output produced,
@@ -169,10 +173,12 @@ encoded with the \class{Encoder}. See the setup of the system in this mode on
 Figure~\ref{fig:tokenize-parts}.
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{img/tokenize-parts.eps}
-  \caption{Data flow of the system in the tokenization and preparation
-           configurations}
-  \label{fig:tokenize-parts}
+  \begin{center}
+    \includegraphics[width=\textwidth]{img/tokenize-parts.eps}
+    \caption{Data flow of the system in the tokenization and preparation
+             configurations}
+    \label{fig:tokenize-parts}
+  \end{center}
 \end{figure}
 
 \subsection{Evaluation}
@@ -242,8 +248,8 @@ that position is a \maybreaksentence{}. See Figure \ref{fig:decision-points} for
   \caption{An example sentence marked with demonstratory decision points. The
            definition of the decision point placement is described below the
            sentence. The sitting wedge triangle represents a \maysplit{}, the
-           upside triangle marks a \mayjoin{}s and a circle marks the
-           \maybreaksentence{} positions. The whitespace and the decision
+           upside triangle marks a \mayjoin{} and a circle marks a
+           \maybreaksentence{} position. The whitespace and the decision
            points divide the text into rough tokens.}
   \label{fig:decision-points}
 \end{figure}
@@ -336,17 +342,19 @@ subsection~\ref{ssec:impl-roughtok-solution}.
 
 \begin{figure}
   \includegraphics[width=0.618033988\textwidth]{img/quexexample.eps}
-  \caption{An example of real-world implemented rough tokenization. The
-  generated Quex lexer is at the signified position in the input. Given its
-  position, the lexer takes into consideration only rules 1 and 3, as these are
-  the only rules whose preconditions have been met. Rule 1 can match the
-  input at the current position and so a \maysplit{} is announced and the
-  word read so far ("2") is reported as a rough token. The lexer now
-  automatically advances by the length of the matched string, but we manually
-  step back to the original position in hope of finding more decision points
-  at the current position and the positions within the matched string. When no
-  further decision points are to be found at the current location (as is the
-  case here), we move one character ahead.}
+  \caption{An example of real-world implemented rough tokenization for the
+           decision points defined in Figure \ref{fig:decision-points}. The
+           generated Quex lexer is at the signified position in the input.
+           Given its position, the lexer takes into consideration only rules
+           1 and 3, as these are the only rules whose preconditions have been
+           met. Rule 1 can match the input at the current position and so a
+           \maysplit{} is announced and the word read so far (``2'') is
+           reported as a rough token. The lexer now automatically advances by
+           the length of the matched string, but we manually step back to the
+           original position in hope of finding more decision points at the
+           current position and the positions within the matched string. When
+           no further decision points are to be found at the current location
+           (as is the case here), we move one character ahead.}
   \label{fig:quex-example}
 \end{figure}
 

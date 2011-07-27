@@ -60,7 +60,8 @@ in Table~\ref{tbl:bakeoff-sizes}.
       \hline
     \end{tabular}
   \end{center}
-  \caption[Bakeoff dataset sizes]{The sizes of the individual parts of the bakeoff datasets in bytes.}
+  \caption[Bakeoff dataset sizes]
+    {The sizes of the individual parts of the bakeoff datasets in bytes.}
   \label{tbl:bakeoff-sizes}
 \end{table}
 
@@ -89,8 +90,9 @@ unigrams and thus more parameters to estimate.
       \hline
     \end{tabular}
   \end{center}
-  \caption[Recommended iterations for Chinese segmentation]{A suitable number of iterations for training on a given dataset in
-           the bakeoff data.}
+  \caption[Recommended iterations for Chinese segmentation]
+    {A suitable number of iterations for training on a given dataset in the
+     bakeoff data.}
   \label{tbl:bakeoff-iters}
 \end{table}
 
@@ -112,8 +114,9 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
       \hline
     \end{tabular}
   \end{center}
-  \caption[Development performance of Chinese segmenter]{The performance of the system trained on the development data when
-           tokenizing the heldout data.}
+  \caption[Development performance of Chinese segmenter]
+    {The performance of the system trained on the development data when
+     tokenizing the heldout data.}
   \label{tbl:bakeoff-devel}
 \end{table}
 
@@ -129,8 +132,9 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
       \hline
     \end{tabular}
   \end{center}
-  \caption[Final performance of Chinese segmenter]{The performance of the system trained on the entire training data
-           when tokenizing the gold testing data.}
+  \caption[Final performance of Chinese segmenter]
+    {The performance of the system trained on the entire training data when
+     tokenizing the gold testing data.}
   \label{tbl:bakeoff-final}
 \end{table}
 
@@ -180,8 +184,9 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Segmentation performance on Czech]{The sentence boundary disambiguiation performance of the various
-           methods for tokenizing Czech on the CzEng sample.}
+  \caption[Segmentation performance on Czech]
+    {The sentence boundary disambiguiation performance of the various methods
+     for tokenizing Czech on the CzEng sample.}
   \label{tbl:czeng-czseg}
 \end{table}
 
@@ -197,8 +202,9 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Tokenization performance on Czech]{The token boundary disambiguiation performance of the various
-           methods for tokenizing Czech on the CzEng sample.}
+  \caption[Tokenization performance on Czech]
+    {The token boundary disambiguiation performance of the various methods for
+     tokenizing Czech on the CzEng sample.}
   \label{tbl:czeng-cztok}
 \end{table}
 
@@ -215,8 +221,9 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Segmentation performance on English CzEng]{The sentence boundary disambiguiation performance of the various
-           methods for tokenizing English on the CzEng sample.}
+  \caption[Segmentation performance on English CzEng]
+    {The sentence boundary disambiguiation performance of the various methods
+     for tokenizing English on the CzEng sample.}
   \label{tbl:czeng-enseg}
 \end{table}
 
@@ -233,8 +240,9 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Tokenization performance on English CzEng]{The token boundary disambiguiation performance of the various
-           methods for tokenizing English on the CzEng sample.}
+  \caption[Tokenization performance on English CzEng]
+    {The token boundary disambiguiation performance of the various methods for
+     tokenizing English on the CzEng sample.}
   \label{tbl:czeng-entok}
 \end{table}
 
@@ -251,8 +259,9 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Segmentation performance on Brown]{The sentence boundary disambiguiation performance of the various
-           methods for tokenizing English on the Brown corpus.}
+  \caption[Segmentation performance on Brown]
+    {The sentence boundary disambiguiation performance of the various methods
+     for tokenizing English on the Brown corpus.}
   \label{tbl:brown-seg}
 \end{table}
 
@@ -269,16 +278,26 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
     \end{tabular}
   \end{center}
-  \caption[Tokenization performance on Brown]{The token boundary disambiguiation performance of the various
-           methods for tokenizing English on the Brown corpus.}
+  \caption[Tokenization performance on Brown]
+    {The token boundary disambiguiation performance of the various methods for
+     tokenizing English on the Brown corpus.}
   \label{tbl:brown-tok}
 \end{table}
 
-The Satz-like system which was originally developed on the Brown corpus and
-whose part of speech lexicon was induced from the tagged training part of the
-Brown dataset shows a clear difference in segmentation performance between its
-native Brown corpus and the CzEng dataset. This could be perhaps remedied by
-improving upon the part of speech lexicon. 
+While the data from the CzEng dataset proves to be more difficult for all of
+the participating tokenizers, the Satz-like system's segmentation performance
+suffers the most. This was not unexpected as the Satz-like tokenizer relies on
+a lexicon of part of speech tags extracted from parts of the Brown corpus. When
+the tokenizer was evaluated on the Brown corpus, the lexicon was induced from
+the training and heldout datasets. This gave the tokenizer's lexicon a 99.41\%
+coverage on the training dataset and a 99.44\% coverage on the heldout dataset
+(the coverage is not 100\% as some of the words containing dashes or
+apostrophes were broken into separate rough tokens); the coverage on the
+testing dataset was 95.75\%. On the other hand, when the tokenizer was
+evaluated on the CzEng dataset, the coverage on the training, heldout and
+testing datasets was 95.80\%, 95.95\% and 95.66\% respectively. This gives the
+Satz-like tokenizer an advantage on the Brown corpus, where the training data
+is used to its full potential.
 
 The Simple Tokenizer offered quite a lot of performance for a little work.
 However, when it comes to segmentation, the difference between the simple
@@ -290,7 +309,7 @@ versa.
 
 The variations of the methods' performance can be also attributed to the great
 difference between the two corpora. The difference can be seen by examining the
-precision and recall of the Absolute Baseline. In the CzEng data, a majority of
+precision and recall of the Absolute Baseline. In the CzEng data, the majority of
 the potential sentence boundary characters actually are sentence boundaries
 whereas in the Brown corpus, 88.27\% of the potential sentence boundaries are
 not sentence boundaries. The cause of this difference is most prominently the
@@ -300,3 +319,12 @@ of the Brown corpus.
 
 \section{The Speed of the System}
 \label{sec:eval-spd}
+
+\begin{figure}
+  \begin{center}
+    \input{img/work-units.tex}
+    \caption{The effect of maximum simultaneous work units on the performance of
+             the tokenizer.}
+    \label{fig:plot-work-units}
+  \end{center}
+\end{figure}

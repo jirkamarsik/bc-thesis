@@ -10,17 +10,21 @@ thesis.pdf: thesis.ps
 thesis.ps: thesis.dvi
 	dvips -o $@ -D600 -t a4 $<
 
+img/work-units.eps: work-units.gnuplot img/plot-data
+	gnuplot work-units.gnuplot
+
 # LaTeX je potreba spustit dvakrat, aby spravne spocital odkazy
 thesis.dvi: thesis.tex tex/frontmatter.tex tex/intro.tex tex/survey.tex\
             tex/maxent.tex tex/impl.tex tex/userdoc.tex tex/eval.tex\
             tex/outro.tex tex/appendix.tex img/all-parts.eps\
             img/train-parts.eps img/tokenize-parts.eps tex/readme.tex\
             sbd.bib maxent.bib seg.bib web.bib img/decisionpoints.eps\
-            img/quexexample.eps
+            img/quexexample.eps img/work-units.eps img/work-units.tex
 	latex $<
 	bibtex thesis
 	latex $<
 	latex $<
 
 clean:
-	rm -f *.log *.dvi *.aux *.toc *.lof *.out tex/*.aux thesis.ps 
+	rm -f *.log *.dvi *.aux *.toc *.lof *.out tex/*.aux thesis.ps
+	rm -f img/work-units.eps img/work-units.tex
