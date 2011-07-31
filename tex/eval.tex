@@ -1,7 +1,11 @@
 \chapter{Evaluation}
 \label{chap:eval}
 
-
+In this chapter, we demonstrate the effectiveness of the tokenizer with several
+tokenization schemes and on several datasets. In the first section, we study
+the accuracy of the tokenizer set up in wildly different manners. In the
+second section, we follow up with an analysis of the speed at which it
+processes data.
 
 \section{The Accuracy of the System}
 \label{sec:eval-acc}
@@ -320,11 +324,199 @@ of the Brown corpus.
 \section{The Speed of the System}
 \label{sec:eval-spd}
 
+\subsection{Parallel Processing}
+\label{ssec:eval-spd-parallel}
+
+One of the most important aspects of the tokenizer which drove the design was
+parallel processing. In Chapter \ref{chap:impl}, we have seen how it encouraged
+us to divide the tokenizer's duties to several autonomous subsystems. This
+design enabled us to perform all the tasks in the pipeline in parallel using
+the \class{pipeline} class from the Threading Building Blocks library
+\cite{web-tbb}. To measure the impact this design choice made on performance,
+we ran the tokenizer on the entire Brown corpus while restricting the maximum
+number of pipeline stages allowed to run at the same time. The results are
+plotted in Figure \ref{fig:plot-work-units}. The Baseline and Groomed
+tokenizers speed up by 17\%--19\%, while the Simple and Satz-like tokenizers
+gain a speedup of 31\%.
+
 \begin{figure}
   \begin{center}
     \input{img/work-units.tex}
     \caption{The effect of maximum simultaneous work units on the performance of
-             the tokenizer.}
+             the tokenizer. The plotted spent time is a median of 10 trials.}
     \label{fig:plot-work-units}
   \end{center}
 \end{figure}
+
+To investigate the reason why the different tokenization schemes gain a
+different speedup and where we should optimize further to improve the
+processing time, we measure the workload of the different pipeline stages. We
+restrict the maximum number of simultaneous work units in the pipeline to 1, to
+ensure that only one can use the CPU at a time. In each of the stages we
+measured the total time spent processing the stream of data. The averaged
+results can be seen in Table \ref{tbl:bottlenecks}.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{ | l | r | r | r | r | r | }
+      \hline
+      & Baseline & Simple & Satz-like & Groomed \\ \hline
+      RoughTokenizer & 3.056 & 3.056 & 3.086 & 3.185 \\ \hline
+      FeatureExtractor & 0.276 & 0.671 & 2.492 & 5.128 \\ \hline
+      Classifier & 1.113 & 2.188 & 5.118 & 14.217 \\ \hline
+      OutputFormatter & 0.722 & 0.701 & 0.713 & 0.712 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Time spent in individual pipeline elements]
+    {Time (in seconds) spent in the various pipeline stages when tokenizing the
+    Brown corpus. In order to measure these values, the pipeline has been set
+    up to run only one stage at a time. The tabled time is an average of 10
+    trials.}
+  \label{tbl:bottlenecks}
+\end{table}
+
+From the data, we can see that the workload is more balanced in the Simple and
+Satz-like tokenizers, while in the Baseline and Groomed tokenizers, the
+RoughTokenizer, resp. the Classifier, spend almost twice the time the other
+stages do. This means that when using the Baseline or Groomed tokenizer, one
+thread will be working in the RoughTokenizer, resp. the Classifier, leaving the
+other threads very little work to do, which leads to only a small speedup from
+the original scenario with one thread.
+
+We can also see that the complexity of rough tokenization and output processing
+is the same with all the tokenization schemes, which was to be expected as
+there are next to no differences in these stages between the contesting
+tokenizers. The FeatureExtractor's workload scales with the number of regular
+expression properties and list properties as expected (the data also shows that
+the multiple list properties used for the part of speech lexicon in the
+Satz-like tokenizer are faster to check than the individual regular expressions
+used in the Groomed tokenizer).
+
+The most important fact we can glean from the results, however, is that in the
+more complex tokenizers, the Classifier is the bottleneck. The Classifier is
+the subsystem responsible for checking the context surrounding each decision
+point, producing a list of strings describing the features of the rough tokens
+in the context and consulting the maximum entropy model for a disambiguation.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{ | l | c | c | c | c | c | }
+      \hline
+      & Baseline & Simple & Satz-like & Groomed \\ \hline
+      Width of context & 1 & 2 & 7 & 17 \\ \hline
+      Number of user-defined properties & 0 & 1 & 37 & 32 \\ \hline
+      Number of possible features per decision & 6 & 13 & 311 & 673 \\ \hline
+      Average number of features per decision & 1.53 & 3.98 & 21.04 & 75.38 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Compuational complexity of the Classifier stage]
+    {The factors which define the computational complexity of the Classifier
+    stage. The average number of features per decision was measured on the
+    Brown corpus.}
+  \label{tbl:classifier-load-factors}
+\end{table}
+
+The distinguishing factors which define the computational complexity of the
+Classifier are listed in Table \ref{tbl:classifier-load-factors}. The
+Classifier iterates over the rough tokens in the context. Each rough token is
+checked for the mandatory properties (whitespace between tokens, presence of
+decision points) and strings representing the features are created. The rough
+tokens at specific offsets are also checked for the user-defined properties and
+strings describing these features are generated as well. This vector of
+features is then deciphered by the maximum entropy toolkit. Each feature name
+is mapped to a factor and the factors are added up for each individual outcome.
+The outcome with the highest probability is then selected.
+
+The amount of work needed to handle the built-in mandatory probabilities is
+linear with respect to the width of the context.
+
+The rest of the time is spent checking for the user-defined properties and
+generating feature strings (a string containing the offset, name and value of a
+feature). Assuming the names of user-defined properties are bound by some
+constant, the worst case time spent doing this is linear to the product of the
+context's width and the number of user-defined properties. However, at some of
+the offsets in the context, some of the properties might not be requested by
+the user or might simply not hold for the rough token in question. We let the
+tokenizers log the decision points and the features describing them and
+measured how much feature strings per decision are actually generated and
+processed by the maximum entropy library (the values are listed in Table
+\ref{classifier-load-factors}). This factor is most indicative of the
+workload of the Classifier.
+
+As the Classifier has been identified as a bottleneck of the pipeline, any
+attempts at optimizing the performance of the tokenizer should be performed
+there. The amount of time spent in the maximum entropy library is 15\%--23\% of
+the entire time spent in the Classifier. Improving the string manipulation and
+feature representation thus seem as sensible places to look at. In the case of
+the Groomed tokenizer, more speed could be gained by culling the number of
+features or narrowing the context.
+
+\subsection{Initialization Costs}
+\label{ssec:eval-spd-init}
+
+A necessary part of processing data with the tokenizer is the execution and
+initialization of the tokenizer itself. We were interested how long the
+initialization takes in comparison to the processing of input. We measured the
+time spent in both these stages and listed our measurements in Table
+\ref{tbl:timeline}.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{ | l | r | r | r | r | r | }
+      \hline
+      & Baseline & Simple & Satz-like & Groomed \\ \hline
+      Initialization & 0.002 & 0.027 & 0.303 & 0.110 \\ \hline
+      Processing & 4.473 & 4.856 & 8.117 & 19.591 \\ \hline
+      Total & 4.475 & 4.883 & 8.420 & 19.701 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Time spent in individual initialization steps]
+    {Time (in seconds) spent tokenizing the Brown corpus using the 4
+    tokenization schemes presented. Initialization is the time spent before the
+    pipeline is run. The tabled time is an average of 10 trials.}
+  \label{tbl:timeline}
+\end{table}
+
+It can be seen that when processing large quantities of data, the
+initialization costs are negligible. However, it is quite probable that the
+tokenizer will be used to process smaller files. For example, the entire Brown
+corpus has 6MB of data, but is distributed as a set of files about 11KB small.
+To express the cost of initialization in more useful terms, we found the volume
+of data that the tokenizer can process within the amount of time spent to
+initialize it (Table \ref{tbl:init-sizes}). The data shows that when using the
+Simple or the Groomed tokenizer, it would take four times as long to process
+the Brown corpus if we were to initialize the tokenizer before processing each
+file. When using the Satz-like tokenizer or any other tokenization scheme based
+on large lexica, the initialization costs are even bigger.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{ | l | c | c | c | c | c | }
+      \hline
+      & Baseline & Simple & Satz-like & Groomed \\ \hline
+      Size of data & 530 & 36500 & 269000 & 35500 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Time spent initializing expressed as time spent processing data]
+    {Volumes of data (in bytes) which take the same time to process using a
+    given tokenization scheme as it takes to initialize the tokenization
+    scheme.}
+  \label{tbl:init-sizes}
+\end{table}
+
+The expected cost in initialization time is mitigated by the ability to run
+the tokenizer on batches of files. The tokenizer can look for files to be
+processed in lists of file paths stored in files or passed through the standard
+input. The resultr are written to files whose path is found by applying a
+user-specified regular expression replacement string on the original file's
+path.
+
+All the tokenization schemes presented in this chapter were trained and
+tested using this way of execution. If large volumes of small files are to be
+processed using the tokenizer, these batch facilities are essential as they
+make the daunting cost of initialization marginal (as in Table
+\ref{tbl:timeline}).
