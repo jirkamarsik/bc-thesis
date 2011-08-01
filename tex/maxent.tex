@@ -15,7 +15,7 @@ linguistics often clashes with the one used in probability theory. What is in
 probability theory usually known as an outcome is here referred to as an
 \newterm{event}. These events are pairs of \newterm{contexts} and
 \newterm{outcomes}, where the context is the data we have available when we
-want a prediction and the outcome is what we want to predict.} $a$ occuring
+want a prediction and the outcome is what we want to predict.} $a$ occurring
 with context $b$. We want this model to be very close to the observed training
 data, meaning that the data's probability given our model $p$ is high.
 
@@ -125,7 +125,7 @@ clearly outperformed the GIS, IIS, gradient and conjugate gradient algorithms
 
 Other implementations were contemplated, however, they would require more effort
 to integrate seamlessly into our tokenizer. The main reason behind this is
-that the abovementioned toolkit is the only one supplying a C++ API. The other
+that the above-mentioned toolkit is the only one supplying a C++ API. The other
 toolkits only have either command line interfaces or are written in different
 languages. Of these toolkits, only a few offer anything worth the effort.
 
@@ -152,6 +152,6 @@ implementation of an exponential model would then be needed including loading
 the model from the file, evaluating the probabilities of events and predicting
 the most probable outcome.
 
-Howver, if too much time is spent estimating the model's parameters on a
+However, if too much time is spent estimating the model's parameters on a
 machine which might benefit from the PETSc and TAO optimizations used in TADM,
 it might be worthwhile to change the tokenizer to use TADM.

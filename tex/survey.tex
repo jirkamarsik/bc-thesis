@@ -71,8 +71,8 @@ regression tree. The following features are used to disambiguate the period
 word):
 
 \begin{itemize}
-  \item Probability of $a$ occuring at the end of a sentence
-  \item Probability of $b$ occuring at the beginning of a sentence
+  \item Probability of $a$ occurring at the end of a sentence
+  \item Probability of $b$ occurring at the beginning of a sentence
   \item Length of $a$
   \item Length of $b$
   \item Case of $a$
@@ -82,7 +82,7 @@ word):
 \end{itemize}
 
 A training dataset the size of approximately 25 million words was used to
-estimate the probabilities of individual words occuring near sentence
+estimate the probabilities of individual words occurring near sentence
 boundaries. Thanks to such detailed information, the system was found to
 perform notably well.
 
@@ -93,7 +93,7 @@ type of token encountered and each possible outcome (no boundary, token
 boundary, sentence boundary). What this parameter does, basically, is that it
 describes and retains in the model the probability of encountering a specific
 type together with a specific outcome. The equivalent of a probability of a
-certain type occuring near the sentence boundary would therefore be the
+certain type occurring near the sentence boundary would therefore be the
 maximum entropy model's parameter corresponding to the event of that type
 appearing together with the sentence boundary outcome.
 
@@ -116,7 +116,7 @@ giving the part of speech distribution. If a word is not part of any lexicon,
 a series of heuristics try to guess a safe probability distribution given the
 word's suffix, case, internal punctuation etc... Thanks to the generalization
 provided by the part of speech categories, the system required relatively
-small amounts of training data to acheive solid performance. 
+small amounts of training data to achieve solid performance. 
 
 In our system, the user is limited to defining binary features and so passing
 the probability distributions to the classifier would be out of the question.
@@ -155,14 +155,14 @@ that common verbs in head-final languages are not picked up as abbreviations).
 All types that score higher than a set threshold are considered abbreviations.
 
 After the abbreviations have been determined, every period not following an
-abbreviation, an initial or a number is marked as a nonambiguous sentence
+abbreviation, an initial or a number is marked as a unambiguous sentence
 boundary. Now that some sentence boundaries have already been disambiguated,
 the system studies the input again to infer e.g.\ frequent sentence starters,
 which are types which form collocations with preceding sentence boundaries. The
 rest of the periods are disambiguated in the second stage which examines the
 specific tokens and their contexts. Disambiguation may come from the
 orthographic heuristic which examines the case of the following token with
-respect to how often its type occured lower-case and upper-case both at the
+respect to how often its type occurred lower-case and upper-case both at the
 start of a sentence and mid-sentence. The orthographic heuristic is very robust
 and takes into account that many words are written with upper-case first
 letters even mid-sentence (such as proper nouns and German nouns). The second

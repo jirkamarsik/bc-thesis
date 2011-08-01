@@ -13,7 +13,7 @@ processes data.
 \subsection{Chinese Word Segmentation}
 \label{ssec:eval-acc-chinese}
 
-Tokenizing latin-script languages is not very hard. We can usually get by well
+Tokenizing Latin-script languages is not very hard. We can usually get by well
 enough by splitting the text at whitespaces and at boundaries between different
 classes of symbols. Sometimes, we might want to be more specific and try to
 tokenize English contractions as separate words. However, these problems are
@@ -24,7 +24,7 @@ linguistically empowered methods must be used.
 We took inspiration from the system for Chinese word segmentation presented in
 Section~\ref{survey-chinese} \cite{seg-chinese-maxent} which is also based on
 maximum entropy models. The basic features used in that system were ported to
-our formalism. The biggest difference between the systems was the fact that the
+our formalism. The biggest difference between the systems is the fact that the
 original Chinese tokenizer classified individual characters as being
 single-character words or the beginning, middle or ending characters of a
 multi-character word. However, the classifier used in our system is binary and
@@ -58,7 +58,7 @@ in Table~\ref{tbl:bakeoff-sizes}.
       & \multicolumn{2}{ | c | }{Training data} & Testing data \\ \hline
       & Development data & Heldout data & Testing data \\ \hline
       Academia Sinica & 39686533 & 1057344 & 942571 \\ \hline
-      City University & 8283540 & 266129 & 240767 \\ \hline
+      City University & 8283422 & 266247 & 240767 \\ \hline
       Peking University & 7008808 & 719430 & 718331 \\ \hline
       Microsoft Research & 16100177 & 791333 & 766786 \\
       \hline
@@ -69,34 +69,38 @@ in Table~\ref{tbl:bakeoff-sizes}.
   \label{tbl:bakeoff-sizes}
 \end{table}
 
-We set the event cutoff to 2 as in \cite{seg-maxent-chinese}, so we retain a
-lot of the encountered bigrams but still keep the number of parameters
-manageable. We then experimented with training the tokenizer and testing it on
-the heldout data. Depending on how much we constrained training time, the
-tokenizer could either be undertrained or overfitted. The heldout data served
-as an independent indicator telling us how close we are to the ideal balance
-between a detailed and a general model. Experimentation led us to restrain the
-number of training iterations to the values seen in
-Table~\ref{tbl:bakeoff-iters}. We can see that the suitable number of
-iterations spent training is nearly a linear function of the dataset size. This
-stems from the fact that a larger dataset usually means more bigrams and
-unigrams and thus more parameters to estimate.
+Initially, we set the event cutoff of the maximum entropy trainer to 2 as in
+\cite{seg-chinese-maxent}. However, we found out we get a sizable improvement
+in the accuracy of the trained tokenizer if we do not cutoff events (i.e. set
+the event cutoff to 1). We then experimented with training the tokenizer and
+testing it on the heldout data. Depending on how much we constrained training
+time, the tokenizer could either be under-trained or over-fitted. The heldout
+data served as an independent indicator telling us how close we are to the
+ideal balance between a detailed and a general model. Experimentation led us to
+restrain the number of training iterations to the values seen in
+Table~\ref{tbl:bakeoff-iters} (the considerable size of the Academia Sinica
+combined with the absence of the event cutoff forced us to keep the number of
+training iterations below 450 lest the training program hit the CPU time
+limit and terminate). We can see that the number of iterations spent training
+to obtain the optimal model correlates with the size of the dataset (with the
+exception of the Academia Sinica dataset, of course), because a larger dataset
+usually means more bigrams and unigrams and thus more parameters to estimate.
 
 \begin{table}
   \begin{center}
     \begin{tabular}{ | l | r | }
       \hline
       & Number of iterations \\ \hline
-      Academia Sinica & 1000 \\ \hline
-      City University & 175 \\ \hline
-      Peking University & 150 \\ \hline
-      Microsoft Research & 400 \\
+      Academia Sinica & 420 \\ \hline
+      City University & 873 \\ \hline
+      Peking University & 708 \\ \hline
+      Microsoft Research & 1053 \\
       \hline
     \end{tabular}
   \end{center}
-  \caption[Recommended iterations for Chinese segmentation]
-    {A suitable number of iterations for training on a given dataset in the
-     bakeoff data.}
+  \caption[Number of training iterations for Chinese segmentation]
+    {The number of iterations spent training the maximum entropy model on the
+    individual datasets.}
   \label{tbl:bakeoff-iters}
 \end{table}
 
@@ -111,10 +115,10 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
     \begin{tabular}{ | l | r | r | r | r | }
       \hline
       & Accuracy & Precision & Recall & F-measure \\ \hline
-      Academia Sinica & 95.55\% & 96.38\% & 95.78\% & 96.08\% \\ \hline
-      City University & 91.58\% & 94.28\% & 91.67\% & 92.95\% \\ \hline
-      Peking University & 92.70\% & 94.20\% & 93.70\% & 93.95\% \\ \hline
-      Microsoft Research & 93.19\% & 95.71\% & 92.79\% & 94.22\% \\
+      Academia Sinica & 97.56\% & 97.89\% & 97.82\% & 97.86\% \\ \hline
+      City University & 97.70\% & 98.05\% & 98.11\% & 98.08\% \\ \hline
+      Peking University & 97.69\% & 98.29\% & 97.89\% & 98.09\% \\ \hline
+      Microsoft Research & 97.67\% & 98.08\% & 98.02\% & 98.05\% \\
       \hline
     \end{tabular}
   \end{center}
@@ -129,10 +133,10 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
     \begin{tabular}{ | l | r | r | r | r | }
       \hline
       & Accuracy & Precision & Recall & F-measure \\ \hline
-      Academia Sinica & 93.82\% & 94.63\% & 94.92\% & 94.77\% \\ \hline
-      City University & 91.75\% & 94.38\% & 91.62\% & 92.98\% \\ \hline
-      Peking University & 91.94\% & 94.94\% & 91.43\% & 93.15\% \\ \hline
-      Microsoft Research & 94.34\% & 96.19\% & 93.79\% & 94.98\% \\
+      Academia Sinica & 96.33\% & 96.13\% & 97.73\% & 96.92\% \\ \hline
+      City University & 96.87\% & 97.42\% & 97.32\% & 97.37\% \\ \hline
+      Peking University & 96.74\% & 97.85\% & 96.68\% & 97.26\% \\ \hline
+      Microsoft Research & 97.95\% & 98.33\% & 98.06\% & 98.20\% \\
       \hline
     \end{tabular}
   \end{center}
@@ -142,12 +146,34 @@ system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
   \label{tbl:bakeoff-final}
 \end{table}
 
-While the resulting adapted system does not perform as well as the original
-word segmenter by Low, Ng and Guo \cite{seg-chinese-maxent}, it achieves a
-median performance compared to the performance of the other bakeoff
-submissions. The result is quite pleasing, given that the all we needed was to
-write the feature definitions into a few files and toy with some training
-parameters.
+
+We were encouraged to see such performance and out of curiosity proceeded to
+score our tokenizer using the same script which scored the contestants in the
+bakeoff (Table~\ref{tbl:bakeoff-score}). While our tokenizer does not perform
+as well as the original word segmenter by Low, Ng and Guo
+\cite{seg-chinese-maxent}, it achieves a median performance compared to the
+performance of the other bakeoff submissions. The result is quite pleasing,
+given that the all we needed to do was to write the feature definitions into a
+few files and toy with some training parameters.
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{ | l | r | r | r | r | }
+      \hline
+      & True Words Recall & Test Words Precision & F-measure \\ \hline
+      Academia Sinica & 0.933 & 0.919 & 0.926 \\ \hline
+      City University & 0.934 & 0.934 & 0.934 \\ \hline
+      Peking University & 0.923 & 0.933 & 0.928 \\ \hline
+      Microsoft Research & 0.951 & 0.952 & 0.951 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Chinese Word Segmentation scores]
+    {The scores assigned to our tokenizer by the official scoring script of the
+    Second International Chinese Word Segmentation Bakeoff.}
+  \label{tbl:bakeoff-score}
+\end{table}
+
 
 \subsection{Tokenization of Czech and English}
 \label{ssec:eval-acc-eng}
@@ -156,10 +182,10 @@ For evaluating the accuracy of tokenizing Czech and English text, four
 different methods were implemented. The Absolute Baseline relies on no other
 piece of information than the current decision point and the whitespace
 following it to classify boundaries. It is there to show the minimum possible
-line every tokenizer should pass. The Simple Tokenizer checks for capital
-letters before the period (initials) and after the period (start of a new
-sentence). It represents the often too simple approach to tokenization. The
-English-only Satz-like \cite{sbd-satz} system uses only part of speech data
+line every tokenizer should pass. The Simple Tokenizer checks the potential
+sentence terminator and checks whether the following word starts with an
+upper-case letter. It represents the often too simple approach to tokenization.
+The English-only Satz-like \cite{sbd-satz} system uses only part of speech data
 about the surrounding tokens to predict a boundary. Finally, the Groomed
 Tokenizer is the tokenization scheme used in the original reference
 implementation, which has been supplied with lists of abbreviations and lots of
@@ -182,14 +208,14 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       CzEng - Czech & \multicolumn{4}{ | c | }{Segmentation} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 78.08\% & 72.03\% & 98.87\% & 83.34\% \\ \hline
-      Simple Tokenizer & 91.23\% & 90.27\% & 94.35\% & 92.27\% \\ \hline
-      Groomed Tokenizer & 93.50\% & 91.74\% & 96.97\% & 94.29\% \\
+      Absolute Baseline & 80.08\% & 72.72\% & 99.06\% & 83.87\% \\ \hline
+      Simple Tokenizer & 93.67\% & 92.38\% & 95.79\% & 94.06\% \\ \hline
+      Groomed Tokenizer & 95.93\% & 95.26\% & 96.90\% & 96.07\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Segmentation performance on Czech]
-    {The sentence boundary disambiguiation performance of the various methods
+    {The sentence boundary disambiguation performance of the various methods
      for tokenizing Czech on the CzEng sample.}
   \label{tbl:czeng-czseg}
 \end{table}
@@ -200,14 +226,14 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       CzEng - Czech & \multicolumn{4}{ | c | }{Tokenization} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 98.92\% & 98.92\% & 100.00\% & 99.45\% \\ \hline
-      Simple Tokenizer & 99.17\% & 99.17\% & 100.00\% & 99.58\% \\ \hline
-      Groomed Tokenizer & 98.89\% & 98.89\% & 100.00\% & 99.44\% \\
+      Absolute Baseline & 99.29\% & 99.29\% & 100.00\% & 99.64\% \\ \hline
+      Simple Tokenizer & 99.26\% & 99.35\% & 99.92\% & 99.63\% \\ \hline
+      Groomed Tokenizer & 99.36\% & 99.39\% & 99.97\% & 99.68\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Tokenization performance on Czech]
-    {The token boundary disambiguiation performance of the various methods for
+    {The token boundary disambiguation performance of the various methods for
      tokenizing Czech on the CzEng sample.}
   \label{tbl:czeng-cztok}
 \end{table}
@@ -218,15 +244,15 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       CzEng - English & \multicolumn{4}{ | c | }{Segmentation} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 82.20\% & 74.14\% & 99.81\% & 85.08\% \\ \hline
-      Simple Tokenizer & 93.35\% & 90.41\% & 97.23\% & 93.70\% \\ \hline
-      Satz-like System & 92.88\% & 91.92\% & 94.29\% & 93.09\% \\ \hline
-      Groomed Tokenizer & 96.34\% & 94.21\% & 98.89\% & 96.49\% \\
+      Absolute Baseline & 81.27\% & 67.50\% & 99.91\% & 80.57\% \\ \hline
+      Simple Tokenizer & 95.21\% & 91.38\% & 96.81\% & 94.01\% \\ \hline
+      Satz-like System & 94.87\% & 92.42\% & 94.57\% & 93.48\% \\ \hline
+      Groomed Tokenizer & 97.08\% & 95.66\% & 96.90\% & 96.27\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Segmentation performance on English CzEng]
-    {The sentence boundary disambiguiation performance of the various methods
+    {The sentence boundary disambiguation performance of the various methods
      for tokenizing English on the CzEng sample.}
   \label{tbl:czeng-enseg}
 \end{table}
@@ -237,15 +263,15 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       CzEng - English & \multicolumn{4}{ | c | }{Tokenization} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 97.14\% & 97.14 & 100.00\% & 98.54\% \\ \hline
-      Simple Tokenizer & 99.18\% & 99.42\% & 99.73\% & 99.58\% \\ \hline
-      Satz-like System & 99.33\% & 99.32\% & 100.00\% & 99.65\% \\ \hline
-      Groomed Tokenizer & 99.03\% & 99.01\% & 100.00\% & 99.50\% \\
+      Absolute Baseline & 95.31\% & 95.31 & 100.00\% & 97.60\% \\ \hline
+      Simple Tokenizer & 95.27\% & 95.31\% & 99.95\% & 97.58\% \\ \hline
+      Satz-like System & 96.84\% & 96.79\% & 100.00\% & 98.37\% \\ \hline
+      Groomed Tokenizer & 95.99\% & 95.99\% & 99.98\% & 97.94\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Tokenization performance on English CzEng]
-    {The token boundary disambiguiation performance of the various methods for
+    {The token boundary disambiguation performance of the various methods for
      tokenizing English on the CzEng sample.}
   \label{tbl:czeng-entok}
 \end{table}
@@ -256,15 +282,15 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       Brown & \multicolumn{4}{ | c | }{Segmentation} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 74.95\% & N/A & 0.0\% & N/A \\ \hline
-      Simple Tokenizer & 99.33\% & 99.38\% & 98.03\% & 98.70\% \\ \hline
-      Satz-like System & 99.50\% & 99.49\% & 98.54\% & 99.01\% \\ \hline
-      Groomed Tokenizer & 99.49\% & 99.36\% & 98.59\% & 98.97\% \\
+      Absolute Baseline & 78.49\% & 62.83\% & 99.61\% & 77.06\% \\ \hline
+      Simple Tokenizer & 96.47\% & 93.26\% & 97.30\% & 95.24\% \\ \hline
+      Satz-like System & 99.31\% & 99.58\% & 98.52\% & 99.05\% \\ \hline
+      Groomed Tokenizer & 99.31\% & 99.30\% & 98.80\% & 99.05\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Segmentation performance on Brown]
-    {The sentence boundary disambiguiation performance of the various methods
+    {The sentence boundary disambiguation performance of the various methods
      for tokenizing English on the Brown corpus.}
   \label{tbl:brown-seg}
 \end{table}
@@ -275,21 +301,21 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
       \hline
       Brown & \multicolumn{4}{ | c | }{Tokenization} \\ \hline
       & Acc. & Prec. & Rec. & F-m. \\ \hline
-      Absolute Baseline & 88.27\% & 92.88 & 88.64\% & 90.71\% \\ \hline
-      Simple Tokenizer & 98.80\% & 98.55\% & 99.59\% & 99.07\% \\ \hline
-      Satz-like System & 98.97\% & 98.75\% & 99.67\% & 99.21\% \\ \hline
-      Groomed Tokenizer & 99.75\% & 99.70\% & 99.91\% & 99.80\% \\
+      Absolute Baseline & 82.71\% & 85.16\% & 88.74\% & 86.91\% \\ \hline
+      Simple Tokenizer & 93.63\% & 94.12\% & 96.16\% & 95.13\% \\ \hline
+      Satz-like System & 99.64\% & 99.62\% & 99.82\% & 99.72\% \\ \hline
+      Groomed Tokenizer & 99.73\% & 99.72\% & 99.86\% & 99.79\% \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Tokenization performance on Brown]
-    {The token boundary disambiguiation performance of the various methods for
+    {The token boundary disambiguation performance of the various methods for
      tokenizing English on the Brown corpus.}
   \label{tbl:brown-tok}
 \end{table}
 
-While the data from the CzEng dataset proves to be more difficult for all of
-the participating tokenizers, the Satz-like system's segmentation performance
+While segmenting text from the CzEng dataset proves to be more difficult for
+all but the Baseline tokenizer, the Satz-like system's segmentation performance
 suffers the most. This was not unexpected as the Satz-like tokenizer relies on
 a lexicon of part of speech tags extracted from parts of the Brown corpus. When
 the tokenizer was evaluated on the Brown corpus, the lexicon was induced from
@@ -300,26 +326,17 @@ apostrophes were broken into separate rough tokens); the coverage on the
 testing dataset was 95.75\%. On the other hand, when the tokenizer was
 evaluated on the CzEng dataset, the coverage on the training, heldout and
 testing datasets was 95.80\%, 95.95\% and 95.66\% respectively. This gives the
-Satz-like tokenizer an advantage on the Brown corpus, where the training data
-is used to its full potential.
+Satz-like tokenizer an advantage over the Brown corpus as the training data is
+used to its full potential.
 
-The Simple Tokenizer offered quite a lot of performance for a little work.
-However, when it comes to segmentation, the difference between the simple
-features used by the Simple Tokenizer and the rich features in the Groomed
-Tokenizer can show. The Simple Tokenizer also seems to have an affinity for
-tokenization. This can be made use of by using one tokenizer with specific
-features only for segmentation and then use another for tokenization or vice
-versa.
-
-The variations of the methods' performance can be also attributed to the great
-difference between the two corpora. The difference can be seen by examining the
-precision and recall of the Absolute Baseline. In the CzEng data, the majority of
-the potential sentence boundary characters actually are sentence boundaries
-whereas in the Brown corpus, 88.27\% of the potential sentence boundaries are
-not sentence boundaries. The cause of this difference is most prominently the
-fact that in the Brown corpus, a comma can sometimes end a sentence (such as in
-poems). This also explains why the tokenizers score so high on the segmentation
-of the Brown corpus.
+The Simple tokenizer demonstrates a pretty high recall on sentence boundary
+detection. This can be attributed to the fact that its decisions are governed
+only by the potential sentence boundary and the case of the following word.
+Since mostly every sentence will start with a capital letter, we can expect the
+Simple tokenizer to notice most of them. The Simple tokenizer can however be
+easily misled by multi-part abbreviations and initials in names (e.g.
+``U.S.A.'', ``M. Smith''). This explains why its precision is noticeably
+lower than its recall.
 
 \section{The Speed of the System}
 \label{sec:eval-spd}
@@ -328,7 +345,7 @@ of the Brown corpus.
 \label{ssec:eval-spd-parallel}
 
 One of the most important aspects of the tokenizer which drove the design was
-parallel processing. In Chapter \ref{chap:impl}, we have seen how it encouraged
+parallel processing. In Chapter~\ref{chap:impl}, we have seen how it encouraged
 us to divide the tokenizer's duties to several autonomous subsystems. This
 design enabled us to perform all the tasks in the pipeline in parallel using
 the \class{pipeline} class from the Threading Building Blocks library
@@ -354,7 +371,7 @@ processing time, we measure the workload of the different pipeline stages. We
 restrict the maximum number of simultaneous work units in the pipeline to 1, to
 ensure that only one can use the CPU at a time. In each of the stages we
 measured the total time spent processing the stream of data. The averaged
-results can be seen in Table \ref{tbl:bottlenecks}.
+results can be seen in Table~\ref{tbl:bottlenecks}.
 
 \begin{table}
   \begin{center}
@@ -411,7 +428,7 @@ in the context and consulting the maximum entropy model for a disambiguation.
       \hline
     \end{tabular}
   \end{center}
-  \caption[Compuational complexity of the Classifier stage]
+  \caption[Computational complexity of the Classifier stage]
     {The factors which define the computational complexity of the Classifier
     stage. The average number of features per decision was measured on the
     Brown corpus.}
@@ -419,7 +436,7 @@ in the context and consulting the maximum entropy model for a disambiguation.
 \end{table}
 
 The distinguishing factors which define the computational complexity of the
-Classifier are listed in Table \ref{tbl:classifier-load-factors}. The
+Classifier are listed in Table~\ref{tbl:classifier-load-factors}. The
 Classifier iterates over the rough tokens in the context. Each rough token is
 checked for the mandatory properties (whitespace between tokens, presence of
 decision points) and strings representing the features are created. The rough
@@ -486,11 +503,11 @@ tokenizer will be used to process smaller files. For example, the entire Brown
 corpus has 6MB of data, but is distributed as a set of files about 11KB small.
 To express the cost of initialization in more useful terms, we found the volume
 of data that the tokenizer can process within the amount of time spent to
-initialize it (Table \ref{tbl:init-sizes}). The data shows that when using the
+initialize it (Table~\ref{tbl:init-sizes}). The data shows that when using the
 Simple or the Groomed tokenizer, it would take four times as long to process
 the Brown corpus if we were to initialize the tokenizer before processing each
 file. When using the Satz-like tokenizer or any other tokenization scheme based
-on large lexica, the initialization costs are even bigger.
+on large lexicons, the initialization costs are even bigger.
 
 \begin{table}
   \begin{center}
@@ -511,7 +528,7 @@ on large lexica, the initialization costs are even bigger.
 The expected cost in initialization time is mitigated by the ability to run
 the tokenizer on batches of files. The tokenizer can look for files to be
 processed in lists of file paths stored in files or passed through the standard
-input. The resultr are written to files whose path is found by applying a
+input. The results are written to files whose path is found by applying a
 user-specified regular expression replacement string on the original file's
 path.
 

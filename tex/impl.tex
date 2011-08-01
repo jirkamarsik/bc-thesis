@@ -31,7 +31,7 @@ and optionally removing XML markup and expanding HTML entities and character
 references. These changes to the input stream (referred to as \newterm{cutouts}
 in the program) are conveyed to the \class{OutputFormatter} so that they can be
 undone in the output. This allows the tokenizer to process XML marked up
-content as if it was plaintext. The XML markup thus cannot be broken by and
+content as if it was plain text. The XML markup thus cannot be broken by and
 does not interfere with the tokenization process.
 
 \subsection{RoughTokenizer}
@@ -99,7 +99,7 @@ predicted by the model.
 \label{ssec:impl-overview-outputformatter}
 
 After all the token and sentence boundaries have been disambiguated by the
-Classifer, it is up to the \class{OutputFormatter} to convert the stream of
+Classifier, it is up to the \class{OutputFormatter} to convert the stream of
 rough tokens into plain text where token boundaries are represented by spaces
 and sentence boundaries by line breaks. It is also the duty of the
 \class{OutputFormatter} to undo the changes done by the \class{TextCleaner},
@@ -221,7 +221,7 @@ An advantage to using this mode might be that when the user does not demand the
 logging of contexts as in the evaluation mode, the time-costly
 \class{FeatureExtractor} and \class{Classifier} can be replaced with a
 \class{SimplePreparer}, which only removes the ambiguities in the
-abovementioned way.
+above-mentioned way.
 
 \section{Rough Tokenization}
 \label{sec:impl-roughtok}
@@ -245,7 +245,7 @@ that position is a \maybreaksentence{}. See Figure \ref{fig:decision-points} for
 
 \begin{figure}
   \includegraphics[width=0.618033988\textwidth]{img/decisionpoints.eps}
-  \caption{An example sentence marked with demonstratory decision points. The
+  \caption{An example sentence marked with exemplary decision points. The
            definition of the decision point placement is described below the
            sentence. The sitting wedge triangle represents a \maysplit{}, the
            upside triangle marks a \mayjoin{} and a circle marks a
@@ -259,7 +259,7 @@ that position is a \maybreaksentence{}. See Figure \ref{fig:decision-points} for
 \label{ssec:impl-roughtok-regex}
 
 The reference implementation of the trainable tokenizer written in Perl used a
-disjunction regular expression to match the prefix of the unprocessed input.
+disjunctive regular expression to match the prefix of the unprocessed input.
 Our original idea was to use PCRE \cite{web-pcre} or some other regular expression
 implementation \cite{web-boost,web-re2} to write a similar algorithm.
 
@@ -280,7 +280,7 @@ regular expression pair \example{a} - \example{b(ab)*}. Any attempt to search
 for the suffix \example{b(ab)*} would yield the \example{bab} substring due to
 the leftmost longest match convention (and never just the final \example{b},
 which means that position will not trigger a \maysplit). There are solutions to
-this problem such as modifying the user's regular expression, modifyng the
+this problem such as modifying the user's regular expression, modifying the
 regular expression matching function or searching for the suffix from every
 position in the text, but they are all either difficult or ineffective.
 
@@ -415,7 +415,7 @@ write the command needed to start the build to a file. This file is read and
 the command within it is run, which executes Quex on the generated source file
 and then compiles the result into a shared module. This process is therefore
 platform-agnostic as it doesn't rely on a specific C++ compiler or build system
-and uses only CMake and Quex which are multiplatform and are required to build
+and uses only CMake and Quex which are multi-platform and are required to build
 the tokenizer itself.
 
 This compiled shared module is then loaded using the libtool's dynamic loading
@@ -466,7 +466,7 @@ do not form the only features passed to the maximum entropy classifier:
   a large feature string. This way, a single parameter can be trained for each
   combination of the properties' values, which can be used e.g. to train the
   tokenizer on specific bigrams (that is the case of the Chinese word segmenter
-  evaluated in Chapter \ref{chap:eval}).
+  evaluated in Chapter~\ref{chap:eval}).
   \item Apart from the user-defined regular expression and list properties, the
   user may call on the predefined ``\%Word'' and ``\%length'' properties. The
   first ``meta-property'' generates a feature string containing the rough
@@ -482,14 +482,13 @@ do not form the only features passed to the maximum entropy classifier:
 A vector containing all these feature strings is passed to the maximum entropy
 classifier which deciphers the feature names and maps them into the individual
 trained parameters. It then evaluates the possible outcomes and returns the
-most probable one. The possible outcomes are \mynoboundary{},
-\mytokenboundary{} and \mysentenceboundary{}. The outcome describes the space
-between the current rough token in question (the token at offset 0) and its
-successor. Depending on the whitespace between the token in question and its
-successor, the decision points are disambiguated (e.g. a \maysplit{} becomes a
-\dosplit{} if it lies in a position where there did not use to be any
-whitespace and the tokenizer declared the position as a \mytokenboundary{} or
-\mysentenceboundary{}).
+most probable one. The possible outcomes are JOIN, SPLIT and \breaksentence{}.
+The outcome describes the space between the current rough token in question
+(the token at offset 0) and its successor. Depending on the whitespace between
+the token in question and its successor, the decision points are disambiguated
+(e.g. a \maysplit{} becomes a \dosplit{} if it lies in a position where there
+did not use to be any whitespace and the tokenizer classified the position as a
+SPLIT or \breaksentence{}).
 
 
 \section{Parallelism}
@@ -516,7 +515,7 @@ Subsection~\ref{ssec:eval-spd-parallel}
 \label{ssec:impl-parallel-pipeline}
 
 Threading Building Blocks \cite{web-tbb}, an open-sourced library developed by
-Intel, was used for implementing the pipeline. Compared to other mutliplatform
+Intel, was used for implementing the pipeline. Compared to other multi-platform
 parallelism solutions, TBB offers high-level algorithms and constructs like the
 pipeline. It also uses C++ classes and methods to expose its functionality
 instead of relying on pragma directives like the standardized OpenMP
@@ -543,7 +542,7 @@ units traversing the pipeline. Initially, the idea was to have them statically
 sized, but since the \class{Classifier} can consume more tokens than it
 produces and vice versa, the chunks are now dynamic (e.g.\ when processing the
 first chunk, the \class{Classifier} cannot annotate the final tokens as it has
-to wait for the next chunk which will inform it about the postcontext of those
+to wait for the next chunk which will inform it about the post-context of those
 final tokens).
 
 \subsection{The Input/Output Threads}
