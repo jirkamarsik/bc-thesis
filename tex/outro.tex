@@ -6,13 +6,13 @@ have demonstrated the system's versatility by combining methods based on
 different techniques such as morphological dictionaries, regular expressions
 and exception lists. The system proved its universal applicability in being
 able to act both as a sentence boundary disambiguator for languages such as
-English and Czech and as a word segmenter for languages without whitespace such
-as Chinese. We have also pointed to the fact that the program relies only on
-multiplatform programs and libraries. While it has not been tested on Windows
-or MacOS yet, care was taken at every step to ensure it would be a smooth
-transition (ICU can be used instead of libiconv for character code conversion,
-CMake is used for building, OS-specific matters are accessed via Boost
-only...).
+English and Czech and as a word segmenter for languages which do not use
+whitespace such as Chinese. We have also pointed to the fact that the program
+relies only on multiplatform programs and libraries. While it has not been
+tested on Windows or MacOS yet, care was taken at every step to ensure it would
+be a smooth transition (ICU can be used instead of libiconv for character code
+conversion, CMake is used for building, OS-specific matters are accessed via
+Boost only\ldots).
 
 We measured the accuracy, precision, recall and F-measure of the token and
 sentence boundary disambiguation. The tests were executed with several very

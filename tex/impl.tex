@@ -393,13 +393,14 @@ rough tokens. This demand is met by adding another variable to the state of
 the lexer (whether we are about to read an entity) which results in the 16
 modes seen in the current implementation.
 
-TODO: > K sekci 3.3.3: Stalo by za to zminit se o slozitosti, protoze je
-kvadraticka
-> v maximalni delce namatchovaneho suffixu, ne? Cili doopravdicka horni mez
-> pro uplne pitoma pravidla je O(n\^2), ale v realu to bude jen
-> n*mala\_konstanta.
-
-Přesně tak to je, někde to do sekce 3.3.3 přidám.
+The rough tokenizer thus scans for a regular expression match starting from
+every possible position within the text, which leads to the worst case time of
+$O(n^2)$, where $n$ is the length of the text. It is however reasonable to
+assume that the regular expression matching at any position will never have to
+process more than a few characters and can thus be regarded as a constant
+factor irrelevant of the data being processed. This gives us a linear time
+complexity, which is not unexpected given that we do a single pass over the
+text with only some small and limited local computation and very little state.
 
 \subsection{Technical Implementation}
 \label{ssec:impl-roughtok-technical}
@@ -423,17 +424,72 @@ loading functions. The tokenizer tracks the set of files used to generate the
 rough tokenizer along with their timestamps and only regenerates and recompiles
 it when changes have been made.
 
-\section{TODO: Classifier}
+\section{Classification}
 
-TODO:Na tom místě by pak stály dva rozhodovací body, což je pro tokenizér
-standardní situace. Někam do kapitoly o implementaci bych asi ještě připsal
-něco o tom, jak jsou rysy posbírány z okolí kontextu a spolu s rozhodovacími
-body a jejich příp. rozřešeními jsou poslány klasifikátoru. V této implementaci
-nejsou rozhodovací body tvořené vlastními tokeny, ale jsou to vlastnosti tokenů
-(n-tý token má vlastnost \%\maysplit{} pokud mezi n-tý a n+1-ním je rozhodovací
-bod \maysplit{}). Tím pádem pak tokenizér dezambiguuje všechny rozhodovací body
-na dané pozici (vrací jeden ze tří výsledků: NOBOUNDARY, TOKENBOUNDARY nebo
-SENTENCEBOUNDARY, podle něj se pak z \maysplit{} může stát DOSPLIT apod.).
+After the \class{RoughTokenizer} converts the stream of text into rough tokens
+annotated with \maysplit{}, \mayjoin{} and \maybreaksentence{} points, the
+\class{FeatureExtractor} goes next. For each rough token in the token stream,
+it matches the token against a series of regular expressions and word lists
+which are represented as one big binary search tree. It marks for each token
+which regular expressions it matched and in what word lists it was found. These
+user-defined regular expressions and word lists define what we call
+``properties'', binary predicates describing the aspects of rough tokens
+relevant to token and sentence boundary disambiguation.
+
+This stream of tokens marked with decision points and user-defined properties
+then enters the \class{Classifier}. While the \class{FeatureExtractor} was
+driven by the files defining the individual properties used in the tokenization
+scheme, the \class{Classifier} is driven by a single mandatory file named
+``features''. In this file, the user selects the features of rough tokens he
+deems important for the disambiguation. The format of the file has the user
+specify a range of token offsets followed by a list of relevant properties.
+The \class{Classifier} will then look at the rough tokens at the given offsets
+from the decision point in question and check for the status of the relevant
+properties evaluated by the \class{FeatureExtractor} (the offset and the
+property's name is concatenated into a string and this string is used to name
+the feature passed to the maximum entropy classifier). However, these properties
+do not form the only features passed to the maximum entropy classifier:
+\begin{itemize}
+  \item For every rough token within the \newterm{context} (the smallest
+  possible range of tokens containing all the tokens at the offsets mentioned
+  in the ``features'' file), a feature is passed describing whether the rough
+  token was followed by whitespace, by a line break or by a paragraph break.
+  \item For every rough token in the context, any decision points which were
+  found between the token and its successor are passed as features describing
+  the token.
+  \item For every rough token in the context preceding the token in question,
+  the disambiguation of all its decision points is passed as well, so the
+  classifier can see its immediate decisions from the past.
+  \item If several properties at several offsets combined together form
+  compelling evidence for disambiguation, the user can mark them as such in the
+  ``features'' file and all those properties' values will be concatenated into
+  a large feature string. This way, a single parameter can be trained for each
+  combination of the properties' values, which can be used e.g. to train the
+  tokenizer on specific bigrams (that is the case of the Chinese word segmenter
+  evaluated in Chapter \ref{chap:eval}).
+  \item Apart from the user-defined regular expression and list properties, the
+  user may call on the predefined ``\%Word'' and ``\%length'' properties. The
+  first ``meta-property'' generates a feature string containing the rough
+  token's text, enabling the tokenizer to train not only on the binary features
+  but on unigrams and subsequently bigrams and other n-grams. The ``\%length''
+  property is special in that it passes a non-binary value to the maximum
+  entropy classifier equal to the length of the rough token.
+  \item For positions within the context which lie past either end of the input
+  (at the beginning and in the end), an out-of-input feature is passed
+  describing the missing token.
+\end{itemize}
+
+A vector containing all these feature strings is passed to the maximum entropy
+classifier which deciphers the feature names and maps them into the individual
+trained parameters. It then evaluates the possible outcomes and returns the
+most probable one. The possible outcomes are \mynoboundary{},
+\mytokenboundary{} and \mysentenceboundary{}. The outcome describes the space
+between the current rough token in question (the token at offset 0) and its
+successor. Depending on the whitespace between the token in question and its
+successor, the decision points are disambiguated (e.g. a \maysplit{} becomes a
+\dosplit{} if it lies in a position where there did not use to be any
+whitespace and the tokenizer declared the position as a \mytokenboundary{} or
+\mysentenceboundary{}).
 
 
 \section{Parallelism}
@@ -454,7 +510,7 @@ current implementation. Deciding on the pipeline model also let us use
 libraries which offered high-level pipeline implementations. This meant we did
 not have to implement the entire system from scratch using threads and
 synchronization primitives. For the performance payoff of multi-threading, see
-Chapter~\ref{chap:eval}
+Subsection~\ref{ssec:eval-spd-parallel}
 
 \subsection{The Pipeline}
 \label{ssec:impl-parallel-pipeline}
