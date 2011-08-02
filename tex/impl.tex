@@ -25,7 +25,7 @@ Figure~\ref{fig:all-parts}.
 \subsection{TextCleaner}
 \label{ssec:impl-overview-textcleaner}
 
-Any input which is read by the tokenizer is first processed with the
+Any input which is read by the tokenizer is first processed by the
 \class{TextCleaner}. This unit is responsible for decoding the stream of text
 and optionally removing XML markup and expanding HTML entities and character
 references. These changes to the input stream (referred to as \newterm{cutouts}
@@ -43,14 +43,14 @@ so by splitting the text into what we call \newterm{rough tokens}. In the
 simplest case, rough tokens are the whitespace delimited words of the text (the
 term \newterm{word} will be used to mean a maximal subsequence of nonwhite
 characters). However, the user can write regular expressions to define certain
-points within and between these strings of nonwhite characters which may split
-them up into what end up being the rough tokens. These user-defined points are
-called \newterm{decision points} and they represent the ambiguous
+points within and between these strings of nonwhitespace characters which may
+split them up into what end up being the rough tokens. These user-defined
+points are called \newterm{decision points} and they represent the ambiguous
 token/sentence boundaries.
 
-There are three types of decision points. There is the \maysplit{} which occurs
+There are three types of decision points. There is the \maysplit{}, which occurs
 within words and signals a potential token boundary. Then there is the
-\maybreaksentence{} which occurs before and after certain characters and marks
+\maybreaksentence{}, which occurs before and after certain characters and marks
 a potential sentence boundary. \maysplit{} and \maybreaksentence{} are the
 decision points which split words into rough tokens. The third type of decision
 point is \mayjoin{} which occurs between words and turns the space between them
@@ -169,7 +169,7 @@ decision point given its context. This outcome is used to resolve the
 \maysplit{}, \mayjoin{} and \maybreaksentence{} ambiguities and the
 disambiguation is stored in the relevant rough token's metadata. These
 annotated tokens are then printed through the \class{OutputFormatter} and
-encoded with the \class{Encoder}. See the setup of the system in this mode on
+encoded with the \class{Encoder}. See the setup of the system of this mode on
 Figure~\ref{fig:tokenize-parts}.
 
 \begin{figure}
@@ -215,7 +215,7 @@ instead of querying the probabilistic model for an outcome, the
 \class{Classifier} simply confirms all potential boundaries (\maysplit{}
 becomes a token boundary and \maybreaksentence{} becomes a sentence boundary).
 This produces a file in which an annotator only has to remove spaces and line
-breaks where inappropriate to get the correct annotation.
+breaks, where inappropriate, to get the correct annotation.
 
 An advantage to using this mode might be that when the user does not demand the
 logging of contexts as in the evaluation mode, the time-costly
@@ -241,16 +241,16 @@ must start with a string of blank characters and then continue with the string
 matched by the regular expression. \maybreaksentence{} points, on the other
 hand, are defined simply by two sets of characters. If a position follows a
 character from the first set or precedes a character from the second set, then
-that position is a \maybreaksentence{}. See Figure \ref{fig:decision-points} for an example.
+that position is a \maybreaksentence{}. See Figure~\ref{fig:decision-points} for an example.
 
 \begin{figure}
   \includegraphics[width=0.618033988\textwidth]{img/decisionpoints.eps}
-  \caption{An example sentence marked with exemplary decision points. The
-           definition of the decision point placement is described below the
-           sentence. The sitting wedge triangle represents a \maysplit{}, the
-           upside triangle marks a \mayjoin{} and a circle marks a
-           \maybreaksentence{} position. The whitespace and the decision
-           points divide the text into rough tokens.}
+  \caption{An example sentence marked with decision points. The definition of
+           the decision point placement is described below the sentence. The
+           sitting wedge triangle represents a \maysplit{}, the upside triangle
+           marks a \mayjoin{} and a circle marks a \maybreaksentence{}
+           position. The whitespace and the decision points divide the text
+           into rough tokens.}
   \label{fig:decision-points}
 \end{figure}
 
@@ -296,13 +296,13 @@ tokenization were implemented using both Boost.Regex and PCRE. The average
 time spent on a 10 MB file with a credible set of splitting and joining rules
 (breaking English contractions apart, separating words from punctuation
 etc...) was over 10.8 seconds for Boost.Regex and over 4.9 seconds using
-PCRE. The test were performed on a development laptop with the Intel Core 2
+PCRE. The tests were performed on a development laptop with the Intel Core 2
 Duo T7500 processor.
 
 \subsection{Lexical Analyzer Generators}
 \label{ssec:impl-roughtok-lexergen}
 
-During the initial planning, there was another radically different proposal for
+During the initial planning, there was another interesting proposal for
 handling rough tokenization which motivated the early prototypes.
 
 The goal of rough tokenization is to scan large volumes of text and detect
@@ -324,10 +324,10 @@ program, but instead it generates low level C++ code which mimics the behaviour
 of the automaton.
 
 The naive way of rough tokenization presented in
-subsection~\ref{ssec:impl-roughtok-regex} was implemented in a prototype to
+Subsection~\ref{ssec:impl-roughtok-regex} was implemented in a prototype to
 evaluate the performance benefits stemming from the use of compiled lexers
 generated by Quex. When run with the same tokenization rules and on the same
-data as the rough tokenizers in subsection~\ref{ssec:impl-roughtok-regex}, the
+data as the rough tokenizers in Subsection~\ref{ssec:impl-roughtok-regex}, the
 Quex generated lexer finished on average in a little over 0.9 seconds. But the
 generated lexer was making the same mistakes as the first approaches using
 regular expressions. As we grew to know more of the functionality available to
@@ -335,7 +335,7 @@ us in Quex and the specifics of its operation, we were able to arrive at a
 lexer which detects every possible decision point and does so in about 1.9
 seconds on the same data set with which we tested the other methods. The
 details of this final method are presented in
-subsection~\ref{ssec:impl-roughtok-solution}.
+Subsection~\ref{ssec:impl-roughtok-solution}.
 
 \subsection{The Solution}
 \label{ssec:impl-roughtok-solution}
@@ -343,7 +343,7 @@ subsection~\ref{ssec:impl-roughtok-solution}.
 \begin{figure}
   \includegraphics[width=0.618033988\textwidth]{img/quexexample.eps}
   \caption{An example of real-world implemented rough tokenization for the
-           decision points defined in Figure \ref{fig:decision-points}. The
+           decision points defined in Figure~\ref{fig:decision-points}. The
            generated Quex lexer is at the signified position in the input.
            Given its position, the lexer takes into consideration only rules
            1 and 3, as these are the only rules whose preconditions have been
@@ -359,7 +359,7 @@ subsection~\ref{ssec:impl-roughtok-solution}.
 \end{figure}
 
 Many of the observations about the task at hand made in
-subsection~\ref{ssec:impl-roughtok-regex} still hold when designing a Quex
+Subsection~\ref{ssec:impl-roughtok-regex} still hold when designing a Quex
 generated lexer. The final implementation processes the input one character at
 a time. At each position in the text, rules for matching the suffixes of
 possible \maysplit{}s and \mayjoin{}s are in play. Each of these rules has a
@@ -446,20 +446,22 @@ specify a range of token offsets followed by a list of relevant properties.
 The \class{Classifier} will then look at the rough tokens at the given offsets
 from the decision point in question and check for the status of the relevant
 properties evaluated by the \class{FeatureExtractor} (the offset and the
-property's name is concatenated into a string and this string is used to name
-the feature passed to the maximum entropy classifier). However, these properties
-do not form the only features passed to the maximum entropy classifier:
+property's name are concatenated into a string and this string is used to name
+the feature passed to the maximum entropy classifier). However, these
+properties do not form the only features passed to the maximum entropy
+classifier:
 \begin{itemize}
   \item For every rough token within the \newterm{context} (the smallest
   possible range of tokens containing all the tokens at the offsets mentioned
   in the ``features'' file), a feature is passed describing whether the rough
-  token was followed by whitespace, by a line break or by a paragraph break.
+  token was followed by whitespace, by a line break or by a paragraph break
+  (multiple newlines).
   \item For every rough token in the context, any decision points which were
   found between the token and its successor are passed as features describing
   the token.
   \item For every rough token in the context preceding the token in question,
   the disambiguation of all its decision points is passed as well, so the
-  classifier can see its immediate decisions from the past.
+  classifier can see its decisions from the immediate past.
   \item If several properties at several offsets combined together form
   compelling evidence for disambiguation, the user can mark them as such in the
   ``features'' file and all those properties' values will be concatenated into
@@ -475,7 +477,7 @@ do not form the only features passed to the maximum entropy classifier:
   property is special in that it passes a non-binary value to the maximum
   entropy classifier equal to the length of the rough token.
   \item For positions within the context which lie past either end of the input
-  (at the beginning and in the end), an out-of-input feature is passed
+  (at the beginning or at the end), an out-of-input feature is passed
   describing the missing token.
 \end{itemize}
 
@@ -552,7 +554,7 @@ Initially, the plan was for the pipeline to encapsulate all of the parts of the
 system. However, it would have been cumbersome to implement the
 \class{RoughTokenizer} so that it is a function which receives a chunk of text,
 feeds it to the buffer of the generated lexer, tries to tokenize the incomplete
-chunk of text and then send the retrieved tokens along. The C++ Standard
+chunk of text and then sends the retrieved tokens along. The C++ Standard
 Library already offers a widely used and supported FIFO structure for
 transmitting continuous text, the \class{std::iostream}. In its
 \class{stringstream} incarnation, it allows one agent to write text to it using
@@ -562,13 +564,13 @@ mechanism would allow us to simply pass a pointer to this stream to the Quex
 lexer as if it were a file handle and we would not have to trouble ourselves
 with any string marshalling.
 
-A class which does just this was implemented by Alexander Nasonov and published
-on the Boost mailing list in 2003 \cite{web-pipes}. However, it didn't meet
-with much understanding on the list as people tended to associate the class'
-name, \class{pipe}, with OS-level pipes. The pipestreams have been resurrected
-for this project and they made writing the transfer of text between the
-\class{TextCleaner}, the \class{Encoder} and the parts of the TBB pipeline
-very simple.
+A class which does just this, the \class{pipestream}, was implemented by
+Alexander Nasonov and published on the Boost mailing list in 2003
+\cite{web-pipes}. However, it didn't meet with much understanding on the list
+as people tended to associate the class' name, \class{pipe}, with OS-level
+pipes. The pipestreams have been resurrected for this project and they made
+writing the transfer of text between the \class{TextCleaner}, the
+\class{Encoder} and the parts of the TBB pipeline very simple.
 
 The pipestreams were used to connect the \class{TextCleaner} and
 \class{Encoder} to the TBB pipeline. The \class{TextCleaner} and the

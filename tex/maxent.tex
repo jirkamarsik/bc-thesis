@@ -41,8 +41,8 @@ f(a,b) =
 
 where $o$ is an outcome and $\phi$ is a context predicate. We want the constructed
 model $p$ to share the expected values of these feature functions with the
-empirical model $\bar{p}$. What this means is that the probability of $f(a,b)$
-being 1 is the same in both models.
+empirical distribution $\bar{p}$. This means that we want the probability of
+$f(a,b)$ being 1 to be the same in both distributions.
 
 Let us say we have chosen several such features we want retained in our model,
 now we need to select some model from the set of complying models. This is the
@@ -67,18 +67,18 @@ H(p) = -\sum_{x \in E} p(x) \log p(x)
 
 We would like to find a distribution which adheres to the features' constraints
 and maximizes entropy. It can be shown \cite{maxent-approach,maxent-simple} that
-the such a distribution is of the following form
+such a distribution is of the following form
 
 \begin{equation}
 \label{eq:exp-model}
 p(x) = \pi \prod_{j=1}^k \alpha_j^{f_j(x)}
 \end{equation}
 
-where $f_j(x)$ for $j \in \{1,\dotsc,k\}$ are the features we want to retain
-and $0 < \alpha_j,\pi < \infty$. More interestingly, the maximum entropy model
+where $f_j$ for $j \in \{1,\dotsc,k\}$ are the features we want to retain and
+$0 < \alpha_j,\pi < \infty$. More interestingly, the maximum entropy model
 adhering to the features' constraints is equal to the maximum likelihood model
-having the shape of \ref{eq:exp-model} (we call such models \newterm{exponential
-models}). 
+having the shape of \ref{eq:exp-model} (we call such models
+\newterm{exponential models}). 
 
 Given the set of features we want to retain in our model, we can now employ an
 unrestricted optimization algorithm to find the parameters of the exponential
@@ -95,10 +95,10 @@ we are evaluating is equal to the feature's desired outcome $o$ (then the
 feature function's value is $1$). So, for each pair of a predicate $\phi$ which
 holds for the given context and an outcome $o$ which forms a feature $f_j$ with
 the predicate as in \ref{eq:common-feature}, the predicate votes either for or
-against the outcome $o$ depending on the value of $\alpha_j$. The values for
-$\alpha$, estimated from the training data, are higher if the context predicate
-usually implies that we will see the outcome in question and lower for the
-opposite case.
+against the outcome $o$ depending on the value of $\alpha_j$. The value of
+$\alpha_j$, estimated from the training data, is higher if the context
+predicate $\phi$ usually implies that we will see the outcome $o$ and lower in
+the opposite case.
 
 In practice, the features (in the machine learning sense of the word) being
 passed to the maximum entropy classifier are the predicates which hold for the
@@ -111,7 +111,7 @@ above process.
 There are several notable implementations of maximum entropy estimators
 available. The one we chose for our tokenizer was the Maximum Entropy Modeling
 Toolkit for Python and C++ written by Zhang Le \cite{maxent-toolkit}. The
-toolkit offers a nice clean API with which we are able to feed training events
+toolkit offers a nice, clean API with which we are able to feed training events
 to the estimator and then launch a training procedure which finds the optimal
 parameters. The resulting model can be easily saved to a file and loaded later.
 The API is complete with functions for evaluating the probabilities of
@@ -123,7 +123,7 @@ estimating the parameters of a maximum entropy model were evaluated, L-BFGS
 clearly outperformed the GIS, IIS, gradient and conjugate gradient algorithms
 \cite{maxent-algorithms}.
 
-Other implementations were contemplated, however, they would require more effort
+Other implementations were contemplated. However, they would require more effort
 to integrate seamlessly into our tokenizer. The main reason behind this is
 that the above-mentioned toolkit is the only one supplying a C++ API. The other
 toolkits only have either command line interfaces or are written in different

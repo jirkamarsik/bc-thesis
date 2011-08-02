@@ -3,7 +3,7 @@
 
 In this chapter, we demonstrate the effectiveness of the tokenizer with several
 tokenization schemes and on several datasets. In the first section, we study
-the accuracy of the tokenizer set up in wildly different manners. In the
+the accuracy of the tokenizer using different tokenization schemes. In the
 second section, we follow up with an analysis of the speed at which it
 processes data.
 
@@ -182,19 +182,23 @@ For evaluating the accuracy of tokenizing Czech and English text, four
 different methods were implemented. The Absolute Baseline relies on no other
 piece of information than the current decision point and the whitespace
 following it to classify boundaries. It is there to show the minimum possible
-line every tokenizer should pass. The Simple Tokenizer checks the potential
-sentence terminator and checks whether the following word starts with an
-upper-case letter. It represents the often too simple approach to tokenization.
+line every tokenizer should pass.
+
+The Simple Tokenizer checks the potential sentence terminator and checks
+whether the following word starts with an upper-case letter. It represents the
+often too simple approach to tokenization.
+
 The English-only Satz-like \cite{sbd-satz} system uses only part of speech data
-about the surrounding tokens to predict a boundary. Finally, the Groomed
-Tokenizer is the tokenization scheme used in the original reference
-implementation, which has been supplied with lists of abbreviations and lots of
-useful regular expressions.
+about the surrounding tokens to predict a boundary.
+
+Finally, the Groomed Tokenizer is the tokenization scheme used in the original
+reference implementation, which has been supplied with lists of abbreviations
+and lots of useful regular expressions.
 
 All systems were tested both on a sample of data from CzEng and, in the case of
 the English tests, also on the Brown corpus. All datasets were divided into
 equally large development, heldout and testing sets to be used as in
-Section~\label{ssec:eval-acc-chinese}. As for the part of speech data of the
+Section~\ref{ssec:eval-acc-chinese}. As for the part of speech data of the
 Satz-like system, lexicons for each part of speech were extracted from the
 training section of the Brown corpus for the Brown corpus exercise and from the
 entire Brown corpus for the CzEng exercise. The results of the trials can be
@@ -353,8 +357,8 @@ the \class{pipeline} class from the Threading Building Blocks library
 we ran the tokenizer on the entire Brown corpus while restricting the maximum
 number of pipeline stages allowed to run at the same time. The results are
 plotted in Figure \ref{fig:plot-work-units}. The Baseline and Groomed
-tokenizers speed up by 17\%--19\%, while the Simple and Satz-like tokenizers
-gain a speedup of 31\%.
+tokenizers speed up by 20\%--24\%, while the Simple and Satz-like tokenizers
+gain a speedup of 44\%.
 
 \begin{figure}
   \begin{center}
@@ -457,24 +461,24 @@ context's width and the number of user-defined properties. However, at some of
 the offsets in the context, some of the properties might not be requested by
 the user or might simply not hold for the rough token in question. We let the
 tokenizers log the decision points and the features describing them and
-measured how much feature strings per decision are actually generated and
+measured how many feature strings per decision are actually generated and
 processed by the maximum entropy library (the values are listed in Table
-\ref{classifier-load-factors}). This factor is most indicative of the
+\ref{tbl:classifier-load-factors}). This factor is most indicative of the
 workload of the Classifier.
 
 As the Classifier has been identified as a bottleneck of the pipeline, any
 attempts at optimizing the performance of the tokenizer should be performed
-there. The amount of time spent in the maximum entropy library is 15\%--23\% of
-the entire time spent in the Classifier. Improving the string manipulation and
-feature representation thus seem as sensible places to look at. In the case of
-the Groomed tokenizer, more speed could be gained by culling the number of
-features or narrowing the context.
+there. The amount of time spent in the maximum entropy library is only
+15\%--23\% of the entire time spent in the Classifier. Improving the string
+manipulation and feature representation thus seem to be sensible places to look
+at. In the case of the Groomed tokenizer, more speed could be gained by culling
+the number of features or narrowing the context.
 
 \subsection{Initialization Costs}
 \label{ssec:eval-spd-init}
 
 A necessary part of processing data with the tokenizer is the execution and
-initialization of the tokenizer itself. We were interested how long the
+initialization of the tokenizer itself. We were interested in how long the
 initialization takes in comparison to the processing of input. We measured the
 time spent in both these stages and listed our measurements in Table
 \ref{tbl:timeline}.
@@ -528,9 +532,9 @@ on large lexicons, the initialization costs are even bigger.
 The expected cost in initialization time is mitigated by the ability to run
 the tokenizer on batches of files. The tokenizer can look for files to be
 processed in lists of file paths stored in files or passed through the standard
-input. The results are written to files whose path is found by applying a
-user-specified regular expression replacement string on the original file's
-path.
+input. The results are written to files whose paths are found by applying a
+user-specified regular expression replacement string on the original files'
+paths.
 
 All the tokenization schemes presented in this chapter were trained and
 tested using this way of execution. If large volumes of small files are to be

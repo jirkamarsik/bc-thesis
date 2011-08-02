@@ -130,7 +130,7 @@ lexicons. The only problem would be the heuristics employed with out of
 vocabulary words. While all of them can be easily expressed as regular
 expressions in our system, there is yet no mechanism to make the tokenizer
 treat a part of speech found in a lexicon and a part of speech guessed by a
-heuristic as the same feature which inhibits the generalization.
+regular expression heuristic as the same feature which inhibits generalization.
 
 \section{Punkt}
 \label{sec:survey-punkt}
@@ -189,9 +189,10 @@ binary features expressed with regular expressions or lexicons.
 Several attempts at Chinese word segmentation were made using a maximum entropy
 classifier. The one developed by Jin Kiat Low, Hwee Tou Ng and Wenyuan Guo in
 2005 \cite{seg-chinese-maxent} ranked amongst the highest in the Second
-International Chinese Word Segmentation Bakeoff. It classifies each character
-as a single-character word or as a first, intermediate or last character of a
-multi-character word. The basic set of features passed to the classifier is:
+International Chinese Word Segmentation Bakeoff \cite{web-bakeoff}. It
+classifies each character as either a single-character word or as a first,
+intermediate or last character of a multi-character word. The basic set of
+features passed to the classifier is:
 
 \begin{enumerate}
   \item $C_n (n = -2,-1,0,1,2)$
