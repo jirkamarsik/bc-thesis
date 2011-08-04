@@ -27,6 +27,11 @@ Faculty of Mathematics and Physics
 
 \vspace{15mm}
 
+% Název práce v češtině!
+\begin{otherlanguage}{czech}
+{\LARGE\bfseries Rychlý a trénovatelný tokenizér \\ pro přirozené jazyky}
+\end{otherlanguage}
+\\
 % Název práce přesně podle zadání
 {\LARGE\bfseries Fast and Trainable Tokenizer \\ for Natural Languages}
 
@@ -126,13 +131,13 @@ V této práci představujeme systém pro dezambiguaci hranic mezi tokeny a vět
 Charakteristickým znakem programu je jeho značná konfigurovatelnost a
 všestrannost, tokenizér si dokáže poradit např. i s nepřerušovaným čínským
 textem. Tokenizér používá klasifikátory založené na modelech s maximální
-entropií a jedná se tudíž o systém strojového učení, kterému je nutné předložit
-již tokenizovaná data k trénování. Program je doplněn nástrojem pro hlášení
-úspěšnosti tokenizace, což pomáhá zejména při rychlém vývoji a ladění
-tokenizačního procesu. Systém byl vyvinut pouze za pomoci multiplatformních
-knihoven a při vývoji byl kladen důraz zejména na efektivitu a správnost. Po
-nezbytném přehledu jiných tokenizérů a krátkém úvodu do teorie modelů s
-maximální entropií se většina textu práce zabývá vlastní implementací
+entropií, a jedná se tudíž o systém strojového učení, kterému je nutné
+předložit již tokenizovaná ukázková data k trénování. Program je doplněn
+nástrojem pro hlášení úspěšnosti tokenizace, což pomáhá zejména při rychlém
+vývoji a ladění tokenizačního procesu. Systém byl vyvinut pouze za pomoci
+multiplatformních knihoven a při vývoji byl kladen důraz zejména na efektivitu
+a správnost. Po nezbytném přehledu jiných tokenizérů a krátkém úvodu do teorie
+modelů s maximální entropií se většina textu práce zabývá vlastní implementací
 tokenizéru a vyhodnocením jeho úspěšnosti.
 
 Klíčová slova:
@@ -167,14 +172,14 @@ RNDr. Ondřej Bojar Ph.D.
 Abstract:
 In this thesis, we present a data-driven system for disambiguating token and
 sentence boundaries. The implemented system is highly configurable and
-versatile to the point its tokenization abilities are able to satisfactorily
-segment unbroken Chinese text. The tokenizer relies on maximum entropy
-classifiers and requires tokenized and segmented text as training data. The
-program is accompanied by a tool for reporting the performance of the
-tokenization which helps to rapidly develop and tune the tokenization process. The
-system was built with multi-platform libraries only and with emphasis on speed
-and correctness. After a necessary survey of other tools for text tokenization
-and segmentation and a short introduction to maximum entropy modelling a large
+versatile to the point its tokenization abilities allow to segment unbroken
+Chinese text. The tokenizer relies on maximum entropy classifiers and requires
+a sample of tokenized and segmented text as training data. The program is
+accompanied by a tool for reporting the performance of the tokenization which
+helps to rapidly develop and tune the tokenization process. The system was
+built with multi-platform libraries only and with emphasis on speed and
+correctness. After a necessary survey of other tools for text tokenization and
+segmentation and a short introduction to maximum entropy modelling, a large
 part of the thesis focuses on the particular implementation we developed and
 its evaluation.
 % abstrakt v rozsahu 80-200 slov v angličtině; nejedná se však o překlad zadání

@@ -45,11 +45,11 @@ tokenizer and used the testing part only at the end to evaluate our results.
 The only thing we knew about the testing data in advance was its size which
 helped us choose a reasonable size for our heldout data.
 
-First off, we split our training data into a development part and a heldout
-part. We chose the size of the heldout data to be roughly as big as the testing
-data so we could trust our system's performance on it to be representative of
-our system's true accuracy. The sizes of the partitioned datasets can be seen
-in Table~\ref{tbl:bakeoff-sizes}.
+First, we split our training data into a development part and a heldout part.
+We chose the size of the heldout data to be roughly as big as the testing data
+so we could trust our system's performance on it to be representative of our
+system's true accuracy. The sizes of the partitioned datasets can be seen in
+Table~\ref{tbl:bakeoff-sizes}.
 
 \begin{table}
   \begin{center}
@@ -80,9 +80,9 @@ ideal balance between a detailed and a general model. Experimentation led us to
 restrain the number of training iterations to the values seen in
 Table~\ref{tbl:bakeoff-iters} (the considerable size of the Academia Sinica
 combined with the absence of the event cutoff forced us to keep the number of
-training iterations below 450 lest the training program hit the CPU time
-limit and terminate). We can see that the number of iterations spent training
-to obtain the optimal model correlates with the size of the dataset (with the
+training iterations below 450 lest the training program hit the CPU time limit
+and terminate). We can see that the number of iterations spent in training to
+obtain the optimal model correlates with the size of the dataset (with the
 exception of the Academia Sinica dataset, of course), because a larger dataset
 usually means more bigrams and unigrams and thus more parameters to estimate.
 
@@ -107,7 +107,7 @@ usually means more bigrams and unigrams and thus more parameters to estimate.
 After we established the training parameters, we trained the system on the
 entire training data and checked its performance on the gold testing data. The
 performance of the development system on the heldout data and of the final
-system on the testing data can be seen in Tables \ref{tbl:bakeoff-devel} and
+system on the testing data can be seen in Tables~\ref{tbl:bakeoff-devel} and
 \ref{tbl:bakeoff-final}.
 
 \begin{table}
@@ -154,7 +154,7 @@ as well as the original word segmenter by Low, Ng and Guo
 \cite{seg-chinese-maxent}, it achieves a median performance compared to the
 performance of the other bakeoff submissions. The result is quite pleasing,
 given that the all we needed to do was to write the feature definitions into a
-few files and toy with some training parameters.
+few files and tweak some training parameters.
 
 \begin{table}
   \begin{center}
@@ -202,7 +202,7 @@ Section~\ref{ssec:eval-acc-chinese}. As for the part of speech data of the
 Satz-like system, lexicons for each part of speech were extracted from the
 training section of the Brown corpus for the Brown corpus exercise and from the
 entire Brown corpus for the CzEng exercise. The results of the trials can be
-seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
+seen in Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
 \ref{tbl:czeng-enseg}, \ref{tbl:czeng-entok}, \ref{tbl:brown-seg} and
 \ref{tbl:brown-tok}.
 
@@ -318,20 +318,21 @@ seen on Tables~\ref{tbl:czeng-czseg}, \ref{tbl:czeng-cztok},
   \label{tbl:brown-tok}
 \end{table}
 
-While segmenting text from the CzEng dataset proves to be more difficult for
-all but the Baseline tokenizer, the Satz-like system's segmentation performance
-suffers the most. This was not unexpected as the Satz-like tokenizer relies on
-a lexicon of part of speech tags extracted from parts of the Brown corpus. When
-the tokenizer was evaluated on the Brown corpus, the lexicon was induced from
-the training and heldout datasets. This gave the tokenizer's lexicon a 99.41\%
-coverage on the training dataset and a 99.44\% coverage on the heldout dataset
-(the coverage is not 100\% as some of the words containing dashes or
-apostrophes were broken into separate rough tokens); the coverage on the
-testing dataset was 95.75\%. On the other hand, when the tokenizer was
-evaluated on the CzEng dataset, the coverage on the training, heldout and
-testing datasets was 95.80\%, 95.95\% and 95.66\% respectively. This gives the
-Satz-like tokenizer an advantage over the Brown corpus as the training data is
-used to its full potential.
+While text from the CzEng dataset proves to be more difficult to segment than
+text from the Brown dataset for all but the Baseline tokenizer, the Satz-like
+system's segmentation performance suffers the most. This was not unexpected as
+the Satz-like tokenizer relies on a lexicon of part of speech tags extracted
+from parts of the Brown corpus. When the tokenizer was evaluated on the Brown
+corpus, the lexicon was induced from the training and heldout datasets. This
+gave the tokenizer's lexicon a 99.41\% coverage on the training dataset and a
+99.44\% coverage on the heldout dataset (the coverage is not 100\% as some of
+the words containing dashes or apostrophes were broken into separate rough
+tokens); the coverage on the testing dataset was 95.75\%. On the other hand,
+when the tokenizer was evaluated on the CzEng dataset, the coverage on the
+training, heldout and testing datasets was 95.80\%, 95.95\% and 95.66\%
+respectively. Since the Satz-like tokenizer relies only on part of speech data,
+this decrease in the part of speech lexicon's coverage can be severely
+detrimental to the tokenizer's performance.
 
 The Simple tokenizer demonstrates a pretty high recall on sentence boundary
 detection. This can be attributed to the fact that its decisions are governed
@@ -342,8 +343,19 @@ easily misled by multi-part abbreviations and initials in names (e.g.
 ``U.S.A.'', ``M. Smith''). This explains why its precision is noticeably
 lower than its recall.
 
+The Groomed tokenizer delivers a good performance on all the examined datasets,
+which goes to show that time spent developing a tokenization scheme can indeed
+pay off.
+
 \section{The Speed of the System}
 \label{sec:eval-spd}
+
+The tokenizer processes roughly 15000--60000 decision points per second, which
+amounts to 60000--250000 words or 300000--1300000 bytes in the case of the
+Brown corpus. The performance varies greatly depending on the chosen
+tokenization scheme and so in this section, we will do the performance analysis
+for each of the four tokenization schemes presented in
+Section~\ref{sec:eval-acc}.
 
 \subsection{Parallel Processing}
 \label{ssec:eval-spd-parallel}
@@ -356,7 +368,7 @@ the \class{pipeline} class from the Threading Building Blocks library
 \cite{web-tbb}. To measure the impact this design choice made on performance,
 we ran the tokenizer on the entire Brown corpus while restricting the maximum
 number of pipeline stages allowed to run at the same time. The results are
-plotted in Figure \ref{fig:plot-work-units}. The Baseline and Groomed
+plotted in Figure~\ref{fig:plot-work-units}. The Baseline and Groomed
 tokenizers speed up by 20\%--24\%, while the Simple and Satz-like tokenizers
 gain a speedup of 44\%.
 
@@ -382,10 +394,10 @@ results can be seen in Table~\ref{tbl:bottlenecks}.
     \begin{tabular}{ | l | r | r | r | r | r | }
       \hline
       & Baseline & Simple & Satz-like & Groomed \\ \hline
-      RoughTokenizer & 3.056 & 3.056 & 3.086 & 3.185 \\ \hline
-      FeatureExtractor & 0.276 & 0.671 & 2.492 & 5.128 \\ \hline
-      Classifier & 1.113 & 2.188 & 5.118 & 14.217 \\ \hline
-      OutputFormatter & 0.722 & 0.701 & 0.713 & 0.712 \\
+      RoughTokenizer & 3.06 & 3.06 & 3.09 & 3.18 \\ \hline
+      FeatureExtractor & 0.28 & 0.67 & 2.49 & 5.13 \\ \hline
+      Classifier & 1.11 & 2.19 & 5.12 & 14.22 \\ \hline
+      OutputFormatter & 0.72 & 0.70 & 0.71 & 0.71 \\
       \hline
     \end{tabular}
   \end{center}
@@ -399,8 +411,8 @@ results can be seen in Table~\ref{tbl:bottlenecks}.
 
 From the data, we can see that the workload is more balanced in the Simple and
 Satz-like tokenizers, while in the Baseline and Groomed tokenizers, the
-RoughTokenizer, resp. the Classifier, spend almost twice the time the other
-stages do. This means that when using the Baseline or Groomed tokenizer, one
+RoughTokenizer, resp. the Classifier, spend more time than all of the other
+stages combined. This means that when using the Baseline or Groomed tokenizer, one
 thread will be working in the RoughTokenizer, resp. the Classifier, leaving the
 other threads very little work to do, which leads to only a small speedup from
 the original scenario with one thread.
@@ -474,6 +486,11 @@ manipulation and feature representation thus seem to be sensible places to look
 at. In the case of the Groomed tokenizer, more speed could be gained by culling
 the number of features or narrowing the context.
 
+The bottleneck issue might also be worked around by dividing the input and
+processing multiple segments at the same time. The Classifier would still be
+the bottleneck, but several instances of the pipeline (and therefore the
+Classifier) would run at the same time (e.g. on different paragraphs).
+
 \subsection{Initialization Costs}
 \label{ssec:eval-spd-init}
 
@@ -488,9 +505,9 @@ time spent in both these stages and listed our measurements in Table
     \begin{tabular}{ | l | r | r | r | r | r | }
       \hline
       & Baseline & Simple & Satz-like & Groomed \\ \hline
-      Initialization & 0.002 & 0.027 & 0.303 & 0.110 \\ \hline
-      Processing & 4.473 & 4.856 & 8.117 & 19.591 \\ \hline
-      Total & 4.475 & 4.883 & 8.420 & 19.701 \\
+      Initialization & 0.002 & 0.03 & 0.30 & 0.11 \\ \hline
+      Processing & 4.473 & 4.86 & 8.12 & 19.59 \\ \hline
+      Total & 4.475 & 4.88 & 8.42 & 19.70 \\
       \hline
     \end{tabular}
   \end{center}
@@ -504,14 +521,15 @@ time spent in both these stages and listed our measurements in Table
 It can be seen that when processing large quantities of data, the
 initialization costs are negligible. However, it is quite probable that the
 tokenizer will be used to process smaller files. For example, the entire Brown
-corpus has 6MB of data, but is distributed as a set of files about 11KB small.
-To express the cost of initialization in more useful terms, we found the volume
-of data that the tokenizer can process within the amount of time spent to
-initialize it (Table~\ref{tbl:init-sizes}). The data shows that when using the
-Simple or the Groomed tokenizer, it would take four times as long to process
-the Brown corpus if we were to initialize the tokenizer before processing each
-file. When using the Satz-like tokenizer or any other tokenization scheme based
-on large lexicons, the initialization costs are even bigger.
+corpus has 6MB of data, but it is distributed as a set of files about 11KB
+small. To express the cost of initialization in more useful terms, we found the
+volume of data that the tokenizer can process within the amount of time spent
+to initialize it (Table~\ref{tbl:init-sizes}). The data shows that when using
+the Simple or the Groomed tokenizer, it would take four times as long to
+process the Brown corpus if we were to initialize the tokenizer before
+processing each file. When using the Satz-like tokenizer or any other
+tokenization scheme based on large lexicons, the initialization costs are even
+bigger.
 
 \begin{table}
   \begin{center}
@@ -541,3 +559,11 @@ tested using this way of execution. If large volumes of small files are to be
 processed using the tokenizer, these batch facilities are essential as they
 make the daunting cost of initialization marginal (as in Table
 \ref{tbl:timeline}).
+
+The file lists interface also presents another opportunity for further
+parallelization. If the input is already spread into small files, the files in
+the file lists could be processed simultaneously by different instances of the
+pipeline. Something like this is also quite easy to implement on the user's
+side, where the user can divide the files to be processed into a number of file
+lists appropriate for the number of CPUs and amount of memory available to him
+and execute the tokenizer on each of the file lists simultaneously.
