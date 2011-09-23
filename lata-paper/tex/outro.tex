@@ -1,0 +1,29 @@
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+We have presented a data-driven system for tokenizing and segmenting text. We
+have demonstrated the system's versatility by combining methods based on
+different techniques such as morphological dictionaries, regular expressions
+and exception lists. The system proved its universal applicability in being
+able to act both as a sentence boundary disambiguator for languages such as
+English and Czech and as a word segmenter for languages which do not use
+whitespace such as Chinese. We have also pointed to the fact that the program
+relies only on multi-platform programs and libraries. While it has not been
+tested on Windows or MacOS yet, care was taken at every step to ensure it would
+be a smooth transition (ICU can be used instead of libiconv for character code
+conversion, CMake is used for building, OS-specific matters are accessed via
+Boost only\ldots).
+
+We measured the accuracy, precision, recall and F-measure of the token and
+sentence boundary disambiguation. The tests were executed with several very
+different tokenization schemes and on several datasets in multiple languages.
+We also measured and analyzed the tokenizer's speed and identified the
+bottleneck which should serve as an avenue for further optimization.
+
+The natural next step would be to invent and experiment with new ways and
+features for tokenizing and segmenting text. The system offers fast feedback on
+the accuracy of the user's tokenization schemes and is helpful in pointing out
+positions in the text which are yet to be covered by rules for inserting
+decision points. Another possible elaboration might be to change the maximum
+entropy training back-end to the Toolkit for Advanced Discriminative Modelling
+or some other alternative.

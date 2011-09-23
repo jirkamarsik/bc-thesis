@@ -1,0 +1,119 @@
+%%% Hlavní soubor. Zde se definují základní parametry a odkazuje se na ostatní
+%%% části. %%%
+
+%% Verze pro jednostranný tisk:
+% Okraje: levý 40mm, pravý 25mm, horní a dolní 25mm
+% (ale pozor, LaTeX si sám přidává 1in)
+\documentclass[12pt,a4paper]{report}
+\setlength\textwidth{145mm}
+\setlength\textheight{247mm}
+\setlength\oddsidemargin{15mm}
+\setlength\evensidemargin{15mm}
+\setlength\topmargin{0mm}
+\setlength\headsep{0mm}
+\setlength\headheight{0mm}
+% \openright zařídí, aby následující text začínal na pravé straně knihy
+\let\openright=\clearpage
+
+%% Použité kódování znaků: obvykle latin2, cp1250 nebo utf8:
+\usepackage[utf8]{inputenc}
+
+%% Ostatní balíčky
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{gnuplottex}
+
+%% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
+%% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
+%% POZOR, nezapomeňte vyplnit jméno práce a autora.
+\usepackage[ps2pdf,unicode]{hyperref}   % Musí být za všemi ostatními balíčky
+\hypersetup{pdftitle=Fast and Trainable Tokenizer for Natural Languages}
+\hypersetup{pdfauthor=Jiří Maršík}
+
+%%% Drobné úpravy stylu
+
+% Tato makra přesvědčují mírně ošklivým trikem LaTeX, aby hlavičky kapitol
+% sázel příčetněji a nevynechával nad nimi spoustu místa. Směle ignorujte.
+\makeatletter
+\def\@makechapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries \thechapter. #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\def\@makeschapterhead#1{
+  {\parindent \z@ \raggedright \normalfont
+   \Huge\bfseries #1
+   \par\nobreak
+   \vskip 20\p@
+}}
+\makeatother
+
+% Toto makro definuje kapitolu, která není očíslovaná, ale je uvedena v obsahu.
+\def\chapwithtoc#1{
+\chapter*{#1}
+\addcontentsline{toc}{chapter}{#1}
+}
+
+\usepackage{mystyle}
+
+\begin{document}
+
+% Trochu volnější nastavení dělení slov, než je default.
+\lefthyphenmin=2
+\righthyphenmin=2
+
+\input{tex/frontmatter}
+
+\openright
+\pagestyle{plain}
+\setcounter{page}{1}
+
+%%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných
+%%% souborech
+\include{tex/intro}
+\include{tex/survey}
+\include{tex/impl}
+\include{tex/eval}
+\include{tex/outro}
+
+%%% Seznam použité literatury
+
+% Here I \nocite all the original sources.
+\nocite{web-cmake}
+\nocite{web-libtool}
+\nocite{web-tbb}
+\nocite{web-latex}
+\nocite{web-openmp}
+\nocite{web-pcre}
+\nocite{web-re2}
+\nocite{maxent-approach}
+\nocite{web-nltk}
+\nocite{maxent-original}
+\nocite{web-boost}
+\nocite{web-bakeoff}
+\nocite{sbd-re}
+\nocite{sbd-punkt}
+\nocite{maxent-original-paper}
+\nocite{maxent-toolkit}
+\nocite{seg-chinese-maxent}
+\nocite{maxent-algorithms}
+\nocite{web-tadm}
+\nocite{web-pipes}
+\nocite{sbd-satz}
+\nocite{web-stanford}
+\nocite{maxent-simple}
+\nocite{sbd-mxterm}
+\nocite{sbd-riley}
+\nocite{web-quex}
+
+\bibliographystyle{iso690}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{sbd,maxent,seg,web}
+
+\openright
+\end{document}
