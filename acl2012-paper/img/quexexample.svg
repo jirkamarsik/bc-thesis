@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="792pt"
+   height="612pt"
+   id="svg2985"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="decisionpoints.svg">
+  <defs
+     id="defs2987" />
+  <sodipodi:namedview
+     inkscape:document-units="in"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.87189542"
+     inkscape:cx="496.42921"
+     inkscape:cy="351.49302"
+     inkscape:current-layer="layer1"
+     id="namedview2989"
+     showgrid="false"
+     inkscape:window-width="1600"
+     inkscape:window-height="850"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata2991">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:-2.14999996px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier 10 Pitch;-inkscape-font-specification:Courier 10 Pitch;font-stretch:normal;font-variant:normal"
+       x="18.350822"
+       y="84.872551"
+       id="text2994"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan2996"
+         x="18.350822"
+         y="84.872551">The 10 000$ upgrade to 2.0 wasn't worth it.</tspan></text>
+    <path
+       sodipodi:type="star"
+       style="fill:#000000"
+       id="path3002-0"
+       sodipodi:sides="3"
+       sodipodi:cx="161.71664"
+       sodipodi:cy="144.51274"
+       sodipodi:r1="16.097881"
+       sodipodi:r2="8.0489407"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179939"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 161.71664,160.61062 -6.97058,-12.07341 -6.97059,-12.07341 13.94117,0 13.94118,0 -6.97059,12.07341 z"
+       inkscape:transform-center-y="-2.3040767"
+       transform="matrix(0.57251771,0,0,-0.57251771,453.35139,182.52894)" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="287.2471"
+       y="676.05817"
+       id="text3133"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3135"
+         x="287.2471"
+         y="676.05817" /></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 545.93703,103.22339 0,55.05247"
+       id="path3387"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="37.556778"
+       y="336.44678"
+       id="text3389"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="37.556778"
+         y="336.44678"
+         id="tspan3393">1. match \. for MAY_SPLIT,</tspan><tspan
+         sodipodi:role="line"
+         x="37.556778"
+         y="386.44678"
+         id="tspan3397">    if preceded by [a-zA-Z0-9]</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="34.62709"
+       y="454.11353"
+       id="text3389-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="34.62709"
+         y="454.11353"
+         id="tspan3397-4">2. match n't for MAY_SPLIT, if preceded by was</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="37.556778"
+       y="530.89355"
+       id="text3389-0-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="37.556778"
+         y="530.89355"
+         id="tspan3397-4-8">3. match [:space:]*[0-9] for MAY_JOIN,</tspan><tspan
+         sodipodi:role="line"
+         x="37.556778"
+         y="580.89355"
+         id="tspan3446">    if preceded by [0-9]</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="37.556778"
+       y="646.11694"
+       id="text3448"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3450"
+         x="37.556778"
+         y="646.11694">4. match anything for MAY_BREAK_SENTENCE,</tspan><tspan
+         sodipodi:role="line"
+         x="37.556778"
+         y="696.11694"
+         id="tspan3452">    if preceded by the &quot;.&quot; character</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="240.85455"
+       y="191.53674"
+       id="text3454"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3456"
+         x="240.85455"
+         y="191.53674">current position</tspan></text>
+    <path
+       sodipodi:type="star"
+       style="fill:#000000"
+       id="path3002-0-1"
+       sodipodi:sides="3"
+       sodipodi:cx="161.71664"
+       sodipodi:cy="144.51274"
+       sodipodi:r1="16.097881"
+       sodipodi:r2="8.0489407"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179939"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 161.71664,160.61062 -6.97058,-12.07341 -6.97059,-12.07341 13.94117,0 13.94118,0 -6.97059,12.07341 z"
+       inkscape:transform-center-y="-2.3040767"
+       transform="matrix(0.57251771,0,0,-0.57251771,473.99606,182.86774)" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 566.58171,104.37031 0,36.70165 43.58321,0"
+       id="path3483"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="619.66266"
+       y="137.63118"
+       id="text3485"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3487"
+         x="619.66266"
+         y="137.63118">position after</tspan><tspan
+         sodipodi:role="line"
+         x="619.66266"
+         y="187.63118"
+         id="tspan3489">matching &quot;.&quot;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="12.056973"
+       y="269.14844"
+       id="text3491"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3493"
+         x="12.056973"
+         y="269.14844">Quex rules:</tspan></text>
+  </g>
+</svg>

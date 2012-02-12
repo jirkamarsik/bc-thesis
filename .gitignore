@@ -11,4 +11,6 @@
 *.blg
 thesis.ps
 thesis.pdf
+*/paper.ps
+*/paper.pdf
 *.bak

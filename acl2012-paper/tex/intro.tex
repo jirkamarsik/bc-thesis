@@ -1,0 +1,85 @@
+\section{Introduction}
+
+The goal of this thesis was to provide a fast implementation of a system for
+disambiguating token and sentence boundaries and to evaluate the
+implementation both in terms of its accuracy and its speed.
+
+Token and sentence boundary disambiguation may seem trivial at first, and it
+usually is, but in some occasions it might turn out to be quite complex.
+Consider the following cases:
+
+\begin{exe}
+  \ex{\label{ex:long-context-a}
+      On Friday, the 22\textsuperscript{nd}, at around 2 a.m.\ Dr.~T.~Adams
+      finished the preliminary examination.}
+  \ex{\label{ex:long-context-b}
+      The field tests were to begin on Friday, the 22\textsuperscript{nd}, at
+      around 2 a.m. Dr.~T.~Adams finished the preliminary examination the night
+      before.}
+  \ex{"314 159.26\$, about half of the yearly budget, was spent on office
+      redecoration!", protested the disgruntled employee of Vanity, S.p.A\@.}
+\end{exe}
+
+Even as I was typesetting these examples in \LaTeX{}, I had to explicitly mark
+some of the periods in the above examples as not being sentence boundaries, as
+\LaTeX{} likes to insert slightly larger spaces after sentence terminators (so
+called French spacing). The heuristic used by \LaTeX{} is very simple: if a
+word-final potential sentence terminator (a period, a question mark or an
+exclamation mark) follows a capital letter, then it is most likely a part of
+an abbreviation (or an initial) and so it does not mark the end of a
+sentence\footnote{A more intuitive approach might be to check the case of the
+following, not the preceding, word.} \cite{web-latex}.
+
+Such a simple system runs into problems in the examples given above, as we
+can see that abbreviations do not necessarily end with capital letters and on
+top of that, a period may serve both as part of an abbreviation and as a
+sentence terminator. Examples \ref{ex:long-context-a} and
+\ref{ex:long-context-b} also show us that the context needed to disambiguate
+the sentence boundary may be quite far from the boundary in question.
+
+While getting the size of a space correctly down to the last millimeter is
+certainly a noble goal, there are also some important uses for a more reliable
+segmenter and tokenizer. When text is being processed and parsed by automatic
+tools, a common first step is to divide the text into tokens and sentences. A
+lot of the tools that then work with these tokens assume they are correct and
+try to analyze them further. As a lot of these tools are getting more and more
+accurate, it is important we step up the quality of the tokenization process,
+so that the system's quality is not determined by something as basic as
+tokenization and segmentation of input. 
+
+In the last 20 years, the problem started getting some recognition and several
+systems were demonstrated. This thesis does not aim to create a new system for
+tokenization. This work is based on an already existing tokenizer implemented
+by Ondřej Bojar during the construction of the UMC 0.1 Czech-Russian-English
+Multilingual Corpus \cite{maxent-original-paper,maxent-original}.
+
+A key feature of the original tokenizer is its strict segregation of
+language-dependent knowledge into configurable files. The new implementation
+expands on this idea and assumes next to nothing about the language being
+processed except that the sentence and token boundaries are disambiguated by a
+limited context window described by binary predicates expressed as regular
+expressions. The tokenizer thus offers a great deal of customizability and a
+lot of effort has been put into ensuring that the tokenizer will behave as
+expected and that the behaviour is easy to understand without diverging too
+much from the original.
+
+Performance, being the motivation behind the current implementation, was also
+important. Both the original and the new tokenizer rely on a C++ toolkit which
+handles the mechanics of machine learning \cite{maxent-toolkit}. However, the
+original implementation, being written in Perl, had to access the functionality
+through a command-line interface passing data through files. The new
+implementation will have the benefits of using the C++ API directly. Where the
+old implementation used regular expressions to partition the input and detect
+potential token and sentence boundaries, the new implementation uses a lexical
+analyzer generator \cite{web-quex} to generate fast C++ code, compile it and
+load it at runtime. The new implementation also benefits from the multiple CPUs
+found on modern computers and uses a high-level parallelism library
+\cite{web-tbb} to perform the various time-consuming tasks of tokenization in
+parallel.
+
+In Chapter~\ref{chap:survey}, we will look at other systems which tried to
+tackle the problem and compare them to our tokenizer. In
+Chapter~\ref{chap:maxent}, a brief overview of the maximum entropy method of
+machine learning will be given. Chapter~\ref{chap:impl} will familiarize us
+with the implementation of the tokenizer. Finally, in Chapter~\ref{chap:eval},
+we evaluate the speed and accuracy of the tokenizer on several datasets.
