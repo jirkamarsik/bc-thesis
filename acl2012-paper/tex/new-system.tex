@@ -109,7 +109,11 @@ in the context surrounding the potential tokenization operation and
 the presence of whitespace and potential tokenization operations in
 the context area. The user is free to select the size of the context
 area and which features from which words in the context area are to be
-passed to the classifier.
+passed to the classifier. Features can even be clustered together into
+conjunct features which provide a value for every combination of the
+constituent features (this lets the trainer estimate a different
+parameter for different combinations of the features' values, which is
+useful to model the joint influence of some features).
 
 The maximum entropy module then classifies the instance as either a
 SENTENCE\_BOUNDARY, a TOKEN\_BOUNDARY or simply NO\_BOUNDARY. The
