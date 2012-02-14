@@ -26,5 +26,5 @@ paper.dvi: paper.tex tex/new-intro.tex tex/new-previous-work.tex	\
 	latex $<
 
 clean:
-	rm -f *.log *.dvi *.aux *.toc *.lof *.out tex/*.aux paper.ps
+	rm -f *.log *.dvi *.aux *.toc *.lof *.out *.bbl *.blg tex/*.aux paper.ps
 	rm -f img/work-units.eps img/work-units.tex
