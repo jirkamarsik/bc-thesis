@@ -37,26 +37,26 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-In this thesis, we present a data-driven system for disambiguating
-token and sentence boundaries. The implemented system is highly
-configurable and versatile to the point its tokenization abilities
-allow to segment unbroken Chinese text. The tokenizer relies on
-maximum entropy classifiers and requires a sample of tokenized and
-segmented text as training data. The program is accompanied by a tool
-for reporting the performance of the tokenization which helps to
-rapidly develop and tune the tokenization process. The system was
-built with multi-platform libraries only and with emphasis on speed
-and correctness. After a necessary survey of other tools for text
+We present a data-driven system for disambiguating token and sentence
+boundaries. The implemented system is highly configurable and
+versatile to the point its tokenization abilities allow to segment
+unbroken Chinese text. The tokenizer relies on maximum entropy
+classifiers and requires a sample of tokenized and segmented text as
+training data. The program is accompanied by a tool for reporting the
+performance of the tokenization which helps to rapidly develop and
+tune the tokenization process. The system was built with
+multi-platform libraries only and with emphasis on speed and
+correctness. After a necessary survey of other tools for text
 tokenization and segmentation and a short introduction to maximum
 entropy modelling, a large part of the thesis focuses on the
 particular implementation we developed and its evaluation.
 \end{abstract}
 
-\input{tex/intro}
-\input{tex/survey}
-\input{tex/impl}
-\input{tex/eval}
-\input{tex/outro}
+\input{tex/new-intro}
+\input{tex/new-previous-work}
+\input{tex/new-system}
+\input{tex/new-eval}
+\input{tex/new-outro}
 
 \bibliographystyle{acl2012}
 \bibliography{sbd,maxent,seg,web}
