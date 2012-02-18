@@ -1,4 +1,47 @@
 \section{Evaluation}
 \label{sec:eval}
 
-Placeholder.\cite{sbd-punkt}
+We evaluated our implementation of TrTok compared to other prominent
+implementations and approaches to sentence detection. The included
+competitors range from the simple rule-based RE system through the
+maximum entropy powered approaches of the MxTerminator and of Apache
+OpenNLP's SentenceDetector all the way to the unsupervised Punkt
+system and the hand-crafted PTBTokenizer and sentence splitter used in
+Stanford CoreNLP.
+
+
+
+Placeholder!\cite{sbd-punkt}
+
+\begin{table*}
+  \begin{center}
+    \begin{tabular}{ | l | c | c | c | c | c | }
+      \hline
+      & Accuracy $\downarrow$ & Error Rate & Precision
+      & Recall & F_1 Measure \\ \hline
+      TrTok::Groomed & \textbf{98.87\%} & \textbf{1.12\%} & \textbf{99.13\%}
+                     & 99.57\% & \textbf{99.35\%} \\ \hline
+      Punkt & 98.63\% & 1.36\% & 98.81\%
+            & 97.35\% & 98.08\% \\ \hline
+      Stanford CoreNLP & 98.46\% & 1.53\% & 98.76\%
+                       & 99.48\% & 99.12\% \\ \hline
+      MxTerminator & 98.10\% & 1.89\% & 98.30\%
+                   & 96.68\% & 97.48\% \\ \hline
+      Apache OpenNLP & 97.97\% & 2.02\% & 98.20\%
+                     & 96.30\% & 97.24\% \\ \hline
+      Apache OpenNLP (pre-trained) & 97.47\% & 2.52\% & 98.62\%
+                                   & 89.97\% & 94.09\% \\ \hline
+      RE & 97.11\% & 2.88\% & 98.66\%
+         & 87.33\% & 92.65\% \\ \hline
+      TrTok::Satzlike & 96.50\% & 3.49\% & 97.90\%
+                      & 98.07\% & 97.99\% \\ \hline
+      TrTok::Baseline & 91.84\% & 8.15\% & 91.67\%
+                      & 99.66\% & 95.50\% \\ \hline
+      Absolute Baseline & 86.89\% & 13.11\% & 86.89\%
+                        & \textbf{100.00\%} & 92.99\% \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption[Performance of sentence detectors on the Brown corpus]
+    {The performance of the various sentence detectors on the Brown corpus.}
+  \label{tbl:grand-melee}
+\end{table*}
