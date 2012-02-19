@@ -10,15 +10,65 @@ system and the hand-crafted PTBTokenizer and sentence splitter used in
 Stanford CoreNLP. The results are presented in
 Table~\ref{tbl:grand-melee}.
 
+\begin{table*}
+  \begin{center}
+    \begin{tabular}{ | l | c | c | c | c | c | }
+      \hline
+      & Accuracy $\downarrow$ & Error Rate & Precision
+      & Recall & F_1 Measure \\ \hline
+      TrTok::Groomed & \textbf{98.85\%} & \textbf{1.14\%} & \textbf{99.11\%}
+                     & 99.57\% & \textbf{99.34\%} \\ \hline
+      TrTok::MxTerm-like & 98.76\% & 1.23\% & 98.70\%
+                         & 99.88\% & 99.29\% \\ \hline
+      TrTok::Easy & 98.69\% & 1.30\% & 98.61\%
+                  & 99.90\% & 99.25\% \\ \hline
+      Punkt & 98.64\% & 1.35\% & 98.81\%
+            & 99.63\% & 99.22\% \\ \hline
+      Stanford CoreNLP & 98.53\% & 1.46\% & 98.75\%
+                       & 99.57\% & 99.16\% \\ \hline
+      MxTerminator & 98.27\% & 1.72\% & 98.30\%
+                   & 99.73\% & 99.01\% \\ \hline
+      Apache OpenNLP & 98.20\% & 1.79\% & 98.19\%
+                     & 99.76\% & 98.97\% \\ \hline
+      Apache OpenNLP (pre-trained) & 97.70\% & 2.29\% & 98.61\%
+                                   & 98.74\% & 98.68\% \\ \hline
+      RE & 97.25\% & 2.74\% & 98.52\%
+         & 98.31\% & 98.41\% \\ \hline
+      TrTox::Satz-like & 96.50\% & 3.49\% & 97.90\%
+                       & 98.07\% & 97.99\% \\ \hline
+      TrTok::Baseline & 91.84\% & 8.15\% & 91.67\%
+                      & 99.66\% & 95.50\% \\ \hline
+      Absolute Baseline & 86.89\% & 13.10\% & 86.89\%
+                        & \textbf{100.00\%} & 92.98\% \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption[Performance of sentence detectors on the Brown corpus]
+    {The performance of the various sentence detectors on the Brown corpus.}
+  \label{tbl:grand-melee}
+\end{table*}
+
 \subsection{Dataset}
 
 The experiments were conducted on the Brown corpus as is supplied
 through NLTK. A representative (covering each category of text
 proportionately) 20\% of the corpus was used as the testing data. This
 number was chosen so that the testing data would be sure to contain at
-least 1000 instances of a non-sentence-terminating full stop, the
-resulting test set contains 1481 such full stops. The rest of the data
-was made available for training to the supervised learning methods.
+least 1000 instances of a non-sentence-terminating full stop; the
+resulting test set ended up containing 1481 such full stops. The rest
+of the data was made available for training to the supervised learning
+methods.
+
+\subsection{Performance Measurement}
+
+The performance of the evaluated systems was measured by their success
+in classifying instances of the full stop character. The text contains
+other sentence terminators such as the question mark and the
+exclamation mark, but they almost never figure as anything else but
+sentence terminators in the text. Other occasional sentence delimiters
+such as dashes, semicolons, colons and line breaks (e.g. in headlines)
+were ignored as well, since the other systems usually do not have a
+solution for them. This way the comparison is fair. Furthermore, the
+full stop is the most common and ambiguous of the sentence delimiters.
 
 \subsection{Sentence Detection Methods}
 
@@ -26,36 +76,42 @@ Absolute Baseline is simply the approach which marks every full stop as
 a sentence terminator.
 
 Trtok::Baseline is the simplest tokenizer which can be written in
-TrTok. The fact that this performs noticeably better than the Absolute
-Baseline is due to the fact that even if we do not specify any
-contextual features explicitly, TrTok still passes the built-in
-feature 0:\%WHITESPACE to the classifier, which tells it whether the
+TrTok. The reason that this performs noticeably better than the
+Absolute Baseline is that even if we do not specify any contextual
+features explicitly, TrTok still passes the built-in feature
+\texttt{0:\%WHITESPACE} to the classifier, which tells it whether the
 full stop in question is followed by any whitespace or not. The
 classifier has then learned that periods not followed by whitespace
-usually do not mean the end of a sentence and uses this to perform
+usually do not mean the end of a sentence and uses that to perform
 better than the Absolute Baseline.
 
 TrTok::Satz-like is a straightforward attempt at translating the Satz
-system to TrTok. The part-of-speech-tagged training data was used to
-construct lexicons for each different part of speech tag (NLTK's
-method of simplifying tags was used to reduce the number of different
-tags to help fight data sparsity). The classifier was then given all
-the retrieved part of speech tags for the 3 rough tokens preceding and
-succeeding a full stop. In contrast to Satz, our version uses a
-different system of tags, a different machine learning algorithm and
-most importantly our version does not try to guess the part of speech
-tags for words which are not found in the lexicon.
+system to TrTok. The POS-tagged training data was used to construct
+lexicons for each different part of speech tag (NLTK's method of
+simplifying tags was used to reduce the number of different tags to
+help fight data sparsity). The classifier was then given all the
+retrieved part of speech tags for the 3 rough tokens preceding and
+succeeding a full stop.
+
+In contrast to Satz, our version uses a different system of tags, a
+different machine learning algorithm and most importantly our version
+does not try to guess the part of speech tags for words which are not
+found in the lexicon. All of these decisions are for the worse (except
+maybe for the choice of machine learning algorithm and hypothesis
+representation) and so TrTok::Satz-like does not perform as well as
+the original Satz system would. Sadly, the implementation of Satz is
+no longer available.
 
 The RE system, MxTerminator and Punkt were described in
 Section~\ref{sec:previous-work}. The implementation of RE used for our
-experiments was the one provided at
-\texttt{http://www.ppgia.pucpr.br/∼silla/softwares/yasd.zip}, the
-implementation of MxTerminator was obtained from
-\texttt{ftp://ftp.cis.upenn.edu/pub/adwait/jmx/jmx.tar.gz} and the
-implementation of Punkt is the one from NLTK. As for training, Punkt
-received the entire Brown corpus (training data and testing data)
-without any annotations while MxTerm was trained using the training
-data.
+experiments was the one provided
+here\footnote{\texttt{http://www.ppgia.pucpr.br/∼silla/softwares/yasd.zip}},
+the implementation of MxTerminator was obtained from
+here\footnote{\texttt{ftp://ftp.cis.upenn.edu/pub/adwait/jmx/jmx.tar.gz}}
+and the implementation of Punkt is the one from NLTK. As for training,
+Punkt received the entire Brown corpus (training data and testing
+data) without any annotations while MxTerm was trained using the
+training data.
 
 Apache OpenNLP contains a sentence detector based around a maximum
 entropy classifier. The implementation is nearly identical to the
@@ -63,10 +119,11 @@ specification of MxTerminator with only minor deviations (such as
 signalling whitespace around the full stop as features).
 
 We performed experiments both with the ready-to-use sentence detection
-model for English distributed via OpenNLP's website and with a model
-which was trained on our training data. The parameters for optimally
-training the model were estimated using 10-fold cross-validation on
-the training data.
+model for English distributed via OpenNLP's
+website\footnote{http://opennlp.sourceforge.net/models-1.5/en-sent.bin}
+and with a model which was trained on our training data. The
+parameters for optimally training the model were estimated using
+10-fold cross-validation on the training data.
 
 The Stanford CoreNLP sentence splitter works by applying its tokenizer
 to the input text which will make the distinction between a full stop
@@ -74,17 +131,23 @@ as part of an abbreviation or an ordinal number as opposed to being a
 sentence terminator. Thus the task of sentence splitting is trivial
 after the tokenization has been correctly performed.
 
-The tokenization itself is implemented using a lexical analyzer
-generator, JFlex (not unlike how TrTok uses Quex to implement the
-RoughTokenizer). The tokenizer itself is a deterministic program
-guided by a collection of heuristics.
+The tokenization is implemented using a lexical analyzer generator,
+JFlex (not unlike how TrTok uses Quex to implement the
+RoughTokenizer), it is a deterministic program guided by a collection
+of heuristics.
 
 TrTok::MxTerm-like is a translation of the MxTerminator method to
 TrTok. Whereas MxTerm inspects the prefix and suffix of the
 full-stop-containing word and the words preceding and succeeding it,
 TrTok::MxTerm-like splits the period into its own rough token and
-examines the two rough tokens on either side of it. Also,
-TrTok::MxTerm-like does
+examines the two rough tokens on either side of it.
+
+TrTox::MxTerm-like also nicely demonstrates the ease with which new
+tokenization schemes can be defined. The entire setup consisted of
+creating a directory, collecting the abbreviations in a single file
+and writing 5 lines of configuration, 2 or 3 of which could be easily
+obsoleted by adopting saner defaults in TrTok and 1 of which is purely
+for convenience.
 
 The reason why MxTerminator does not achieve the same performance
 could be that the maximum entropy trainer used in MxTerminator limits
@@ -93,8 +156,19 @@ converges very slowly compared to L-BFGS. Another reason might be the
 fact that both MxTerminator and OpenNLP use cut off infrequent
 features. Also, both OpenNLP and MxTerminator try to induce
 abbreviations from training data whereas TrTok::MxTerm-like has a
-collection of abbreviations which was obtained by taking the union of
-all the different abbreviation lists used in TrTok::Groomed.
+prepared collection of abbreviations which was obtained by taking the
+union of all the different abbreviation lists used in TrTok::Groomed.
+
+The high performance of TrTok::MxTerm-like led us to try and see what
+happens when we simplify the tokenization scheme further, which led to
+TrTok::Easy which works the same way as TrTok::MxTerm-like, but it
+does not use any abbreviation lists, merely the token types
+surrounding the full stop. Therefore, TrTok::Easy does not rely on any
+external linguistic knowledge and should therefore be fairly language
+universal, given that we have enough training data. The performance of
+TrTok::Easy also points out that the difference in performance between
+TrTok and MxTerminator/OpenNLP could not be explained by the different
+abbreviation lists.
 
 Finally, TrTok::Groomed is a relatively large hand-made tokenization
 scheme. It includes 7 distinct lists of abbreviations (prefix and
@@ -105,41 +179,30 @@ etc\ldots. These features are extracted from all rough tokens within
 the 8 tokens from the full stop and for the 2 closest tokens on either
 side of the full stop, the token's type itself is passed as a feature.
 
-Don't forget to mention how the performance measurement were taken!
+Interestingly, there is not much difference in the performance of
+TrTok::Groomed, TrTok::MxTerm-like and TrTok::Easy. This tells us that
+besides the token types in the close vicinity of the full stop, other
+features are not that important. This highlights another useful use
+for TrTok as a tool for the fast analysis of the importance of
+different contextual features for performing the task of sentence
+detection.
+
+\section{Chinese Word Segmentation}
+
+Since TrTok is basically a general program for splitting text into
+sequences (sentences) which are in turn composed of other sequences
+(tokens) based on user-defined contextual features, TrTok can be used
+more than just for sentence detection. The task of splitting text into
+tokens is a fairly trivial task in many Western languages, but it
+poses a real challenge in languages which do not separate their words
+explicitly by spaces, such as Chinese.
+
+We ported the key features of one of the top contestants (which also
+happened to employ a maximum entropy classifier) in the 2005 Second
+International Chinese Word Segmentation Bakeoff happened to use
+maximum entropy models, into TrTok and evaluated its performance using
+the bakeoff evaluation scripts. The resulting segmenter achieved a
+median performance with respect to the other contestants of the
+Bakeoff.
 
 Placeholder!\cite{sbd-punkt}
-
-\begin{table*}
-  \begin{center}
-    \begin{tabular}{ | l | c | c | c | c | c | }
-      \hline
-      & Accuracy $\downarrow$ & Error Rate & Precision
-      & Recall & F_1 Measure \\ \hline
-      TrTok::Groomed & \textbf{98.87\%} & \textbf{1.12\%} & \textbf{99.13\%}
-                     & 99.57\% & \textbf{99.35\%} \\ \hline
-      TrTok::MxTerm-like & 98.76\% & 1.24\% & 98.70\%
-                         & 99.89\% & 99.29\% \\ \hline
-      Punkt & 98.63\% & 1.36\% & 98.81\%
-            & 97.35\% & 98.08\% \\ \hline
-      Stanford CoreNLP & 98.46\% & 1.53\% & 98.76\%
-                       & 99.48\% & 99.12\% \\ \hline
-      MxTerminator & 98.10\% & 1.89\% & 98.30\%
-                   & 96.68\% & 97.48\% \\ \hline
-      Apache OpenNLP & 97.97\% & 2.02\% & 98.20\%
-                     & 96.30\% & 97.24\% \\ \hline
-      Apache OpenNLP (pre-trained) & 97.47\% & 2.52\% & 98.62\%
-                                   & 89.97\% & 94.09\% \\ \hline
-      RE & 97.11\% & 2.88\% & 98.66\%
-         & 87.33\% & 92.65\% \\ \hline
-      TrTok::Satz-like & 96.50\% & 3.49\% & 97.90\%
-                      & 98.07\% & 97.99\% \\ \hline
-      TrTok::Baseline & 91.84\% & 8.15\% & 91.67\%
-                      & 99.66\% & 95.50\% \\ \hline
-      Absolute Baseline & 86.89\% & 13.11\% & 86.89\%
-                        & \textbf{100.00\%} & 92.99\% \\ \hline
-    \end{tabular}
-  \end{center}
-  \caption[Performance of sentence detectors on the Brown corpus]
-    {The performance of the various sentence detectors on the Brown corpus.}
-  \label{tbl:grand-melee}
-\end{table*}
