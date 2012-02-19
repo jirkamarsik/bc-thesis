@@ -2,19 +2,24 @@
 \label{sec:introduction}
 
 Tokenization and segmentation are parts of almost every natural
-language processing system. Segmentation of natural language text into
-sentences (commonly referred to as sentence boundary detection) has
-been tackled using a variety of techniques. The most common approaches
-include writing heuristics and constructing abbreviation lists
-(Stanford NLP, RE, Grefenstette) and using machine learning algorithms
-to predict the role of a potential sentence terminator (OpenNLP,
-MxTerminator, Satz). There have also recently been some very
-successful systems using unsupervised methods (Punkt, Mikheev).
+language processing system, since most of the higher-level language
+processing applications assume we are dealing with words and
+sentences, not with streams of bytes representing characters.
 
-Tokenization of text is a problem which stops being trivial when we
-start considering whitespace-free languages such as Chinese or
-Japanese. In those languages, tokenization, also referred to as word
-segmentation, receives a lot of attention.
+
+Segmentation (also referred to as sentence detection or sentence
+boundary disambiguation) has been tackled using a variety of
+techniques. The most common approaches include writing heuristics and
+constructing abbreviation lists (the Stanford Tokenizer, the RE
+system) or using machine learning algorithms to predict the role of a
+potential sentence terminator (Satz, MxTerminator, Apache OpenNLP).
+There have also recently been some very successful systems using
+unsupervised methods (Punkt).
+
+Tokenization is a problem which stops being trivial when we start
+considering whitespace-free languages such as Chinese or Japanese. In
+these languages, tokenization (also referred to as word segmentation)
+receives a lot of attention \cite{seg-bakeoff}.
 
 TrTok aims to be a practical tool for tokenizing and segmenting text
 written in any language. To achieve such a goal, TrTok relies on the
@@ -23,13 +28,13 @@ providing the necessary training data.
 
 TrTok's novelty comes in its openness and formalization of the
 tokenization process. The process is divided into several discrete
-stages most of which are heavily customizable. The user is able to say
-where in the text should TrTok consider breaking up or joining tokens
-or sentences, how should TrTok represent the context of these decision
-points to the underlying classifier, how should the classifier be
-trained, how should existing whitespace be treated, etc\ldots. TrTok
-was also built to be a practical tool, which means it can
-transparently process text interspersed with XML markup and HTML
+stages, most of which are heavily customizable. The user is able to
+say where in the text should TrTok consider breaking up or joining
+tokens or sentences, how should TrTok represent the context of these
+decision points to the underlying classifier, how should the
+classifier be trained, how should existing whitespace be treated,
+etc\ldots TrTok was also built to be a practical tool, which means it
+can transparently process text interspersed with XML markup and HTML
 entities and was designed to run fast.
 
 The major inconveniences of TrTok are that due to its customizability

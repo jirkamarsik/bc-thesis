@@ -18,9 +18,9 @@ the correct position in the output.
 
 The RoughTokenizer stage partitions the stream of characters from the
 TextCleaner into small, discrete chunks of non-blank characters,
-called rough tokens. The partitioning can be made more granular by
-user-defined rules which specify positions at which the desired
-tokenization might differ from the whitespace-induced one.
+called \newterm{rough tokens}. The partitioning can be made more
+granular by user-defined rules which specify positions at which the
+desired tokenization might differ from the whitespace-induced one.
 
 A location in the text may be marked as a \maysplit{} meaning that the
 characters in the text preceding and following it may be parts of
@@ -36,10 +36,7 @@ spaces entered in long numbers for readability (e.g.
 
 Finally, a location in the text may be marked as a \maybreaksentence{}
 if the characters preceding it and the characters following it might
-belong to different sentences. These locations traditionally occur
-after possible sentence terminators, but can include some
-domain-specific contexts as well (e.g. line breaks (possibly preceded
-by commas) when segmenting poetry).
+belong to different sentences.
 
 The placement of the \maysplit{}, \mayjoin{} and \maybreaksentence{}
 events further informs the rough tokenization which cuts the rough
@@ -53,16 +50,17 @@ As for how the locations of these possible tokenization operations are
 determined, each type of event is associated with a set of rules. A
 rule consists of a pair of regular expressions, $l$ and $r$. An event
 is fired off at a location if a suffix of the text preceding it
-matches $l$ and a prefix of the text succeeding matches $r$. All of
-the events are handled in this uniform manner with the exception that
-the \mayjoin{} patterns also implicitly match the whitespace span
-separating the rough tokens.
+matches $l$ and a prefix of the text succeeding it matches $r$. All of
+the events are handled in this uniform manner with the exception of
+the \mayjoin{} patterns which also implicitly match the whitespace
+span separating the rough tokens.
 
 The most challenging aspect of developing TrTok was to make sure that
 the system would be able to correctly identify all of the above events
-given any input regular expressions and to do so fast. TrTok solves
-this problem by using the lexical analyzer generator Quex (a fast and
-more Unicode-friendly variation of the classic tools lex and flex).
+given any valid rules and any input text and to do so fast. TrTok
+solves this problem by using the lexical analyzer generator Quex (a
+fast and more Unicode-friendly variation of the classic tools lex and
+flex).
 
 On launch, TrTok checks if the files defining the rules for rough
 tokenization have changed since last time and if so, constructs a Quex
@@ -79,8 +77,8 @@ code and uses it to process the input it gets from the TextCleaner.
 The stream of rough tokens interleaved with potential tokenization
 operations output by the RoughTokenizer is processed using the
 FeatureExtractor. The FeatureExtractor simply annotates each rough
-token with a bit vector signifying which of the user-defined features
-hold for the rough token in question.
+token with a bit vector signifying which of the user-defined feature
+predicates hold for the rough token in question.
 
 The features can be defined in two ways: either using a regular
 expression or a list of rough tokens. If a feature is defined using a
@@ -115,10 +113,10 @@ constituent features (this lets the trainer estimate a different
 parameter for different combinations of the features' values, which is
 useful to model the joint influence of some features).
 
-The maximum entropy module then classifies the instance as either a
-SENTENCE\_BOUNDARY, a TOKEN\_BOUNDARY or simply NO\_BOUNDARY. The
-Classifier uses this outcome to disambiguate the potential
-tokenization operations.
+The maximum entropy module then classifies the position as either a
+sentence boundary, a token boundary or as no boundary (a position
+within a token). This outcome thus disambiguates all the potential
+tokenization operations found at that position.
 
 \subsection{OutputFormatter}
 
@@ -161,18 +159,4 @@ train the model.
 Besides these two core modes, TrTok also includes a mode for
 tokenizing data and then comparing the results with manually annotated
 data and outputting the difference so that its performance can be
-evaluated. Finally, TrTok can also ``tokenize'' a file without a
-classifier, choosing a sentence or token boundary wherever possible to
-prepare data more suitable for manual annotation.
-
-\subsection{Tokenization Schemes}
-
-The configuration of the system (the behavior of the pipeline stages
-all the way from the TextCleaner to the OutputFormatter) is called a
-\newterm{tokenization scheme}. TrTok is built with support for a
-hierarchical organization of tokenization schemes where tokenization
-schemes lower in the hierarchy share the configuration files of those
-higher in the hierarchy unless they provide their own version. This
-cuts down duplication in the configuration of the tool for different
-languages or contexts and makes it possible to tweak an existing
-scheme without modifying it by creating a subscheme.
+evaluated in detail.
