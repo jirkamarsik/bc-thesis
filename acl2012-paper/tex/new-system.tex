@@ -4,23 +4,13 @@
 TrTok is implemented by a parallel execution of several configurable
 pipeline steps.
 
-\subsection{TextCleaner}
-
-The first pipeline element, the TextCleaner, reads in and decodes the
-input. Additionally, it can strip XML markup from the input and expand
-HTML entities to their character counterparts. If the TextCleaner does
-so, it can be also configured to relay these changes to the final
-pipeline element, the OutputFormatter, which can effectively undo
-these changes by reinserting the XML markup and the HTML entities in
-the correct position in the output.
-
 \subsection{RoughTokenizer}
 
-The RoughTokenizer stage partitions the stream of characters from the
-TextCleaner into small, discrete chunks of non-blank characters,
-called \newterm{rough tokens}. The partitioning can be made more
-granular by user-defined rules which specify positions at which the
-desired tokenization might differ from the whitespace-induced one.
+The RoughTokenizer partitions the stream of input characters into
+small, discrete chunks of non-blank characters called \newterm{rough
+tokens}. The partitioning can be made more granular by user-defined
+rules which specify positions at which the desired tokenization might
+differ from the whitespace-induced one.
 
 A location in the text may be marked as a \maysplit{} meaning that the
 characters in the text preceding and following it may be parts of
@@ -38,18 +28,13 @@ Finally, a location in the text may be marked as a \maybreaksentence{}
 if the characters preceding it and the characters following it might
 belong to different sentences.
 
-More robust settings might also place a \maybreaksentence{} after the
-apostrophe/single quote, while another might be more daring and not
-place a \maybreaksentence{} after the point in ``2.0'', because it is
-followed by a non-blank character.
-
 \begin{figure}
   \begin{center}
     \includegraphics[width=\textwidth / 2]{img/decisionpoints.eps}
     \caption{In this example, $\blacktriangle$ stands for \maysplit{},
       $\blacktriangledown$ for \mayjoin{} and $\bullet$ for
-      \maybreaksentence{}, given reasonable settings for tokenizing
-      English.}
+      \maybreaksentence{}. This is how the rough tokenization might
+      turn out given some reasonable settings for tokenizing English.}
     \label{fig:decision-points}
   \end{center}
 \end{figure}
@@ -69,11 +54,11 @@ break will occur is up to the Classifier.
 The locations of these possible tokenization operations are determined
 by user-defined rules which each consist of a pair of regular
 expressions. The respective tokenization operation is signalled if the
-characters leading up to and following a position match one of these
-rules.
+characters leading up to and following a position match the regular
+expressions in one of these rules.
 
 If we look back at Figure~\ref{fig:decision-points}, we might imagine
-more robust settings placing a \maybreaksentence{} also after the
+more robust settings also placing a \maybreaksentence{} after the
 apostrophe/single quote, while others might be more daring and not
 place a \maybreaksentence{} after the point in ``2.0'', because it is
 followed by a non-blank character.
@@ -91,7 +76,7 @@ a bit vector signifying which of the user-defined feature predicates
 hold for the rough token in question.
 
 The features can be defined in two ways: either using a regular
-expression or a list of rough tokens. If a feature is defined using a
+expression or a list of rough tokens. For a feature defined using a
 regular expression, a rough token is said to have that feature iff the
 regular expression matches the entire rough token. In the case of a
 feature defined using a list of rough tokens, a rough token is said to
@@ -112,21 +97,23 @@ joins two words into one token and whether a \maybreaksentence{} truly
 ends a sentence. It does so by consulting a maximum entropy classifier
 for every location containing these potential tokenization operations.
 
-The features passed to the classifier consist of the features of words
-in the context surrounding the potential tokenization operation and
-the presence of whitespace and potential tokenization operations in
-the context area. The user is free to select the size of the context
-area and which features from which words in the context area are to be
-passed to the classifier. Features can be clustered together into
-conjunct features which provide a value for every combination of the
-constituent features (this lets the trainer estimate a different
-parameter for different combinations of the features' values, which is
-useful to model the joint influence of some features).
+The features passed to the classifier consist of the features of rough
+tokens in the context surrounding the potential tokenization operation
+and the presence of whitespace and potential tokenization operations
+in the context area. The user is free to select the size of the
+context area and which features from which rough tokens in the context
+area should be passed to the classifier.
 
-The maximum entropy module then classifies the position as either a
-sentence boundary, a token boundary or as no boundary (a position
-within a token). This outcome thus disambiguates all the potential
-tokenization operations found at that position.
+Features can also be clustered together into conjunct features which
+provide a value for every combination of the constituent features'
+values (this lets the trainer estimate a different parameter for
+different combinations of the features' values, which is useful to
+model the joint influence of some features).
+
+The classifier then marks each such interesting location as either a
+sentence boundary, token boundary or no boundary (the location is
+inside a token). Using this classification, any potential tokenization
+operations are finally disambiguated.
 
 \subsection{OutputFormatter}
 
@@ -137,10 +124,3 @@ depending on whether there originally was any whitespace between them
 and on the tokenization operations which are to be carried out in the
 space between them. Individual tokens end up being separated by a
 single space character and sentences are separated by line breaks.
-
-On top of that, the OutputFormatter can also reinsert any XML markup
-which was originally present in the text and encode characters which
-originally were HTML entities back into the same HTML entities. Both
-of these normalization transformations are supplied so that
-idiosyncrasies of the coding and any XML metadata do not interfere
-with the feature extraction or token boundary classification.
