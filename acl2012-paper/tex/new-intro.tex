@@ -6,7 +6,6 @@ language processing system, since most of the higher-level language
 processing applications assume we are dealing with words and
 sentences, not with streams of bytes representing characters.
 
-
 Segmentation (also referred to as sentence detection or sentence
 boundary disambiguation) has been tackled using a variety of
 techniques. The most common approaches include writing heuristics and
@@ -21,10 +20,11 @@ considering whitespace-free languages such as Chinese or Japanese. In
 these languages, tokenization (also referred to as word segmentation)
 receives a lot of attention \cite{seg-bakeoff}.
 
-TrTok aims to be a practical tool for tokenizing and segmenting text
-written in any language. To achieve such a goal, TrTok relies on the
-user determining the specifics of training and tokenization and
-providing the necessary training data.
+TrTok is a continuation of the tokenizer first presented in (*redacted
+for review purposes*). It aims to be a practical tool for tokenizing
+and segmenting text written in any language. To achieve such a goal,
+TrTok relies on the user determining the specifics of training and
+tokenization and providing the necessary training data.
 
 TrTok's novelty comes in its openness and formalization of the
 tokenization process. The process is divided into several discrete

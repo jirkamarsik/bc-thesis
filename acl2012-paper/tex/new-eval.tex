@@ -115,6 +115,11 @@ Punkt received the entire Brown corpus (training data and testing
 data) without any annotations while MxTerm was trained using the
 training data.
 
+Punkt achieves remarkable performance and stands as the strongest
+competitor to TrTok. They are both accurate language-independent tools
+but TrTok's big shortcoming is its need for a corpus of manually
+tokenized data.
+
 \textbf{Apache OpenNLP} contains a sentence detector based around a
 maximum entropy classifier. The implementation is nearly identical to
 the specification of MxTerminator with only minor deviations (such as
@@ -137,6 +142,12 @@ The tokenization is implemented using a lexical analyzer generator,
 JFlex (not unlike how TrTok uses Quex to implement the
 RoughTokenizer). It is a deterministic program guided by a collection
 of heuristics.
+
+The Stanford Tokenizer's performance is surprisingly good, considering
+it has not had the chance to train itself on the target corpus.
+However, the Stanford Tokenizer is written explicitly for English and
+it is likely that its performance would not carry over to other
+languages without significant work.
 
 \textbf{TrTok::MxTerm-like} is a translation of the MxTerminator
 method to TrTok. Whereas MxTerminator inspects the prefix and suffix
@@ -163,11 +174,11 @@ happens when we simplify the tokenization recipe even further, which
 led to \textbf{TrTok::Easy} which works the same way as
 TrTok::MxTerm-like, but it does not use any abbreviation lists, merely
 the token types surrounding the full stop. Therefore, TrTok::Easy does
-not rely on any external linguistic knowledge and should be fairly
-language universal, given that we have enough training data. The
-performance of TrTok::Easy also points out that the difference in
-performance between TrTok and MxTerminator/OpenNLP cannot be explained
-by the different abbreviation lists.
+not rely on any external linguistic knowledge and is fairly language
+universal, given that we have enough training data. The performance of
+TrTok::Easy also points out that the difference in performance between
+TrTok and MxTerminator/OpenNLP cannot be explained by the different
+abbreviation lists.
 
 Finally, \textbf{TrTok::Groomed} is a relatively large hand-made
 tokenization setup. It includes 7 distinct lists of abbreviations
