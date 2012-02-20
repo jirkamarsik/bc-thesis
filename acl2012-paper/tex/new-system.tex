@@ -38,10 +38,30 @@ Finally, a location in the text may be marked as a \maybreaksentence{}
 if the characters preceding it and the characters following it might
 belong to different sentences.
 
-The placement of the \maysplit{}, \mayjoin{} and \maybreaksentence{}
-events further informs the rough tokenization which cuts the rough
-tokens so that no rough token contains an event within its boundaries.
-Note that the presence of a \may{} event only signifies the
+More robust settings might also place a \maybreaksentence{} after the
+apostrophe/single quote, while another might be more daring and not
+place a \maybreaksentence{} after the point in ``2.0'', because it is
+followed by a non-blank character.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=\textwidth / 2]{img/decisionpoints.eps}
+    \caption{In this example, $\blacktriangle$ stands for \maysplit{},
+      $\blacktriangledown$ for \mayjoin{} and $\bullet$ for
+      \maybreaksentence{}, given reasonable settings for tokenizing
+      English.}
+    \label{fig:decision-points}
+  \end{center}
+\end{figure}
+
+See Figure~\ref{fig:decision-points} for an example of how these
+potential tokenization operations can look like in one sentence. A
+rough token is defined as a maximal sequence uninterrupted by
+whitespace or a possible tokenization operation (the symbols
+underneath the sentence in Figure~\ref{fig:decision-points}). For
+example, in the sentence from Figure~\ref{fig:decision-points},
+``was'', ``n'', the apostrophe and ``t'' are all individual rough
+tokens. Note that the presence of a \may{} event only signifies the
 possibility of a tokenization operation (splitting or joining of
 tokens or sentences). Whether a token split, token join or sentence
 break will occur is up to the Classifier.
@@ -51,6 +71,12 @@ by user-defined rules which each consist of a pair of regular
 expressions. The respective tokenization operation is signalled if the
 characters leading up to and following a position match one of these
 rules.
+
+If we look back at Figure~\ref{fig:decision-points}, we might imagine
+more robust settings placing a \maybreaksentence{} also after the
+apostrophe/single quote, while others might be more daring and not
+place a \maybreaksentence{} after the point in ``2.0'', because it is
+followed by a non-blank character.
 
 TrTok collects these rules and generates a Quex program implementing a
 fast FSM, which gets compiled and loaded in (Quex is a fast and more
