@@ -156,7 +156,7 @@ succeeding it, TrTok::MxTerm-like splits the period into its own rough
 token and examines two rough tokens from both sides of it.
 
 TrTox::MxTerm-like also nicely demonstrates the ease with which new
-tokenization recipes can be defined in TrTok. The entire setup
+tokenization setups can be defined in TrTok. The entire setup
 consisted of creating a directory, collecting the abbreviations in a
 single file and writing 5 lines of configuration, 2 or 3 of which
 could be easily obsoleted by adopting saner defaults in TrTok and 1 of
@@ -170,7 +170,7 @@ Another reason might be the fact that both MxTerminator and OpenNLP
 cut off infrequent features.
 
 The high performance of TrTok::MxTerm-like led us to try and see what
-happens when we simplify the tokenization recipe even further, which
+happens when we simplify the tokenization setup even further, which
 led to \textbf{TrTok::Easy} which works the same way as
 TrTok::MxTerm-like, but it does not use any abbreviation lists, merely
 the token types surrounding the full stop. Therefore, TrTok::Easy does
@@ -184,16 +184,16 @@ Finally, \textbf{TrTok::Groomed} is a relatively large hand-made
 tokenization setup ported from a previous version of the tokenizer. It
 considers 24 different potential sentence terminators, it includes 7
 distinct lists of abbreviations (prefix and suffix titles, abbreviated
-names of months\ldots) totalling 303 types, features for detecting the
-case of tokens, for noticing numbers which happen to be in the range
-of the days of the month or years, etc\ldots These features are
-contributed by rough tokens within 8 tokens from the full stop. The 2
-closest tokens on either side of the full stop also contribute their
-token type as a feature.
+names of months\ldots) totalling 303 types and it implements features
+for detecting the case of tokens, for noticing numbers which happen to
+be in the range of years or the days of the month, etc\ldots These
+features are contributed by rough tokens within 8 tokens from the full
+stop. The 2 closest tokens on either side of the full stop also
+contribute their token type as a feature.
 
 Due to the large number of potential tokenization operations (and thus
 rough tokens) and the host of user-defined features, TrTok::Groomed's
-speed lags significantly behind the other TrTok recipes.
+speed lags significantly behind the other TrTok setups.
 
 Interestingly, there is not much difference in the performance of
 TrTok::Groomed, TrTok::MxTerm-like and TrTok::Easy. This tells us that
