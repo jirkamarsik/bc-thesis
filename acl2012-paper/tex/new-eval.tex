@@ -6,35 +6,36 @@ prominent implementations and approaches to sentence detection. The
 results are presented in Table~\ref{tbl:grand-melee}.
 
 \begin{table*}
+  \small
   \begin{center}
     \begin{tabular}{ | l | c | c | c | c | c | r | }
       \hline
       & Accuracy $\downarrow$ & Error Rate & Precision
       & Recall & F_1 Measure & Time \\ \hline
-      TrTok::Groomed & \textbf{98.85\%} & \textbf{1.14\%} & \textbf{99.11\%}
+      TrTok::Groomed & \textbf{98.86\%} & \textbf{1.14\%} & \textbf{99.12\%}
                      & 99.57\% & \textbf{99.34\%} & 5.10s \\ \hline
-      TrTok::MxTerm-like & 98.76\% & 1.23\% & 98.70\%
-                         & 99.88\% & 99.29\% & 1.10s \\ \hline
-      TrTok::Easy & 98.69\% & 1.30\% & 98.61\%
-                  & 99.90\% & 99.25\% & 1.08s \\ \hline
-      Punkt & 98.64\% & 1.35\% & 98.81\%
+      Stanford CoreNLP & 98.83\% & 1.17\% & 98.78\%
+                       & 99.89\% & 99.33\% & 5.02s \\ \hline
+      TrTok::MxTerm-like & 98.76\% & 1.24\% & 98.70\%
+                         & 99.89\% & 99.29\% & 1.10s \\ \hline
+      TrTok::Easy & 98.70\% & 1.30\% & 98.61\%
+                  & 99.91\% & 99.26\% & 1.08s \\ \hline
+      Punkt & 98.65\% & 1.35\% & 98.82\%
             & 99.63\% & 99.22\% & 3.13s \\ \hline
-      Stanford CoreNLP & 98.53\% & 1.46\% & 98.75\%
-                       & 99.57\% & 99.16\% & 7.93s \\ \hline
-      MxTerminator & 98.27\% & 1.72\% & 98.30\%
-                   & 99.73\% & 99.01\% & 1.37s \\ \hline
-      Apache OpenNLP & 98.20\% & 1.79\% & 98.19\%
-                     & 99.76\% & 98.97\% & 1.13s \\ \hline
-      Apache OpenNLP (pre-trained) & 97.70\% & 2.29\% & 98.61\%
-                                   & 98.74\% & 98.68\% & 1.17s \\ \hline
-      RE & 97.25\% & 2.74\% & 98.52\%
-         & 98.31\% & 98.41\% & 16.93s \\ \hline
-      TrTok::Satz-like & 96.50\% & 3.49\% & 97.90\%
-                       & 98.07\% & 97.99\% & 1.59s \\ \hline
-      TrTok::Baseline & 91.84\% & 8.15\% & 91.67\%
+      MxTerminator & 98.27\% & 1.73\% & 98.30\%
+                   & 99.74\% & 99.01\% & 1.37s \\ \hline
+      Apache OpenNLP & 98.20\% & 1.80\% & 98.20\%
+                     & 99.77\% & 98.97\% & 1.13s \\ \hline
+      Apache OpenNLP (pre-trained) & 97.71\% & 2.29\% & 98.62\%
+                                   & 98.75\% & 98.68\% & 1.17s \\ \hline
+      RE & 97.26\% & 2.74\% & 98.52\%
+         & 98.32\% & 98.42\% & 16.93s \\ \hline
+      TrTok::Satz-like & 96.50\% & 3.50\% & 97.91\%
+                       & 98.08\% & 97.99\% & 1.59s \\ \hline
+      TrTok::Baseline & 91.84\% & 8.16\% & 91.67\%
                       & 99.66\% & 95.50\% & 0.85s \\ \hline
-      Absolute Baseline & 86.89\% & 13.10\% & 86.89\%
-                        & \textbf{100.00\%} & 92.98\% & \textbf{0.02s} \\ \hline
+      Absolute Baseline & 86.89\% & 13.11\% & 86.89\%
+                        & \textbf{100.00\%} & 92.99\% & \textbf{0.02s} \\ \hline
     \end{tabular}
   \end{center}
   \caption[Performance of sentence detectors on the Brown corpus] {The
@@ -73,8 +74,8 @@ bring the implementation speed of the systems into context as well.
 
 \subsection{Sentence Detection Methods}
 
-\textbf{Absolute Baseline} is simply marks every full stop as a
-sentence terminator.
+\textbf{Absolute Baseline} simply marks every full stop as a sentence
+terminator.
 
 \textbf{Trtok::Baseline} is the simplest tokenizer which can be
 written in TrTok. The reason that this performs noticeably better than
@@ -115,9 +116,9 @@ data) without any annotations while MxTerm was trained using the
 training data.
 
 Punkt achieves remarkable performance and stands as the strongest
-competitor to TrTok. They are both accurate language-independent tools
-but TrTok's big shortcoming is its need for a corpus of manually
-tokenized data.
+competitor to TrTok in the field of multilingual sentence detection.
+They are both accurate language-independent tools but TrTok's big
+shortcoming is its need for a corpus of manually tokenized data.
 
 \textbf{Apache OpenNLP} contains a sentence detector based around a
 maximum entropy classifier. The implementation is nearly identical to
@@ -142,11 +143,11 @@ JFlex (not unlike how TrTok uses Quex to implement the
 RoughTokenizer). It is a deterministic program guided by a collection
 of heuristics.
 
-The Stanford Tokenizer's performance is surprisingly good, considering
-it has not had the chance to train itself on the target corpus.
-However, the Stanford Tokenizer is written explicitly for English and
-it is likely that its performance would not carry over to other
-languages without significant work.
+The Stanford Tokenizer's performance is excellent, especially
+considering it has not had the chance to train itself on the target
+corpus. However, the Stanford Tokenizer is written explicitly for
+English and it is likely that its performance would not carry over to
+other languages without significant work.
 
 \textbf{TrTok::MxTerm-like} is a translation of the MxTerminator
 method to TrTok. Whereas MxTerminator inspects the prefix and suffix
@@ -180,15 +181,15 @@ TrTok and MxTerminator/OpenNLP cannot be explained by the different
 abbreviation lists.
 
 Finally, \textbf{TrTok::Groomed} is a relatively large hand-made
-tokenization setup. It includes 7 distinct lists of abbreviations
-(prefix and suffix titles, abbreviated names of months\ldots)
-totalling 303 types, 24 potential sentence terminators, possible
-splits between characters from different classes, features for
-detecting the case of tokens, for noticing numbers which happen to be
-in the range of the days of the month or years, etc\ldots These
-features are extracted from all rough tokens within 8 tokens from the
-full stop and for the 2 closest tokens on either side of the full
-stop, the token's type itself is passed as a feature.
+tokenization setup ported from a previous version of the tokenizer. It
+considers 24 different potential sentence terminators, it includes 7
+distinct lists of abbreviations (prefix and suffix titles, abbreviated
+names of months\ldots) totalling 303 types, features for detecting the
+case of tokens, for noticing numbers which happen to be in the range
+of the days of the month or years, etc\ldots These features are
+contributed by rough tokens within 8 tokens from the full stop. The 2
+closest tokens on either side of the full stop also contribute their
+token type as a feature.
 
 Due to the large number of potential tokenization operations (and thus
 rough tokens) and the host of user-defined features, TrTok::Groomed's
