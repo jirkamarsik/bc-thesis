@@ -1,0 +1,27 @@
+%% Sample file $Id: PBML_review.tex 130 2010-07-01 15:19:30Z bejcek $
+% 
+% This is a sample file for the PBML book review.
+% See PBML_article.tex for detailed information about XeLaTeX etc.
+
+\documentclass{pbml}
+% The review should not require any package.
+\begin{document}
+
+
+% The book title, book author, publisher and reviewer
+% ===================================================
+% Due to journal organization the review information  must be specified
+% AFTER \begin{document}. Give the information as:
+
+\PBMLreview{title={Pig, Pepper, Baby}, published={Duchess, June 1234},
+            author=Alice, reviewed=White Rabbit}
+
+% The braces are mandatory only if the value contains a comma as in the first
+% (title) and second (published) attribute but they never make any harm, you
+% can safely put all values into braces.
+
+% The body of the review
+% ======================
+% The reviews usually have no sectioning but you can use sections, tables and
+% figures similarly as in an article.
+\end{document}

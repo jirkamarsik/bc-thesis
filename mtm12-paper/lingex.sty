@@ -1,0 +1,84 @@
+%%% A package for numbered linguistic examples
+% AUTHOR: Eduard Bejcek <bejcek@ufal.mff.cuni.cz>
+
+\usepackage{ifthen}	% Pouze kvuli prikazu \exsent
+					%		(spolecny pro \enumarab i \enumalph)
+
+%% Countery pro arabska cisla, abecedni cisla a fake counter kvuli referencim
+\newcounter{lastarab}\setcounter{lastarab}{0}
+\newcounter{lastalph}\setcounter{lastalph}{0}
+\newcounter{refcount}\setcounter{refcount}{0}% cislo samotne se vlastne neuzije
+%% \the<counter> vypise napr. 4, nebo napr. 4c
+\renewcommand\thelastarab{\arabic{lastarab}}
+\renewcommand\thelastalph{\arabic{lastarab}\alph{lastalph}}
+
+%%%%%%%%%%%%%% PRVNI STYL : samostatne prikazy %%%%%%%%%%%%%%
+
+%% trivlist pro arabske cislovani
+\newcommand{\enumarab}[1]{
+	\begin{trivlist}
+		\refstepcounter{lastarab}
+		\item[\hspace{\parindent}\hspace{0.2em}(\thelastarab)] #1
+	\end{trivlist}
+	\setcounter{lastalph}{0}
+}
+%% trivlist pro abecedni cislovani
+\newcommand{\enumalph}[1]{
+	\begin{trivlist}
+		\refstepcounter{lastalph}
+		\item[\hspace{\parindent}\hspace{0.2em}(\thelastalph)] #1
+	\end{trivlist}
+}
+%% spolecny trivlist s prepinacim parametrem pro obe cislovani
+\newcommand{\exsent}[2][0]{
+	\ifthenelse{\equal{#1}{0}}
+		{\enumarab{#2}}
+		{\enumalph{#2}}
+}
+%% trivlist s cislem odvozenym pomoci odkazu a prvniho parametru
+\newcommand{\refexsent}[3][a]{
+	\begin{trivlist}
+		\renewcommand\therefcount{\ref{#2}#1}
+        \refstepcounter{refcount}
+		\item[\hspace{\parindent}\hspace{0.2em}(\therefcount)] #3
+	\end{trivlist}
+}
+
+
+%%%%%%%%%%%%%% DRUHY STYL : vlastni prostredi %%%%%%%%%%%%%%
+
+%% test, zda uz prostredi \exe neni definovano (napr. v gb4e.sty)
+\typeout{Test: defined{\\exe}?}
+\ifx\exe\@pokusnaprazdnota
+	\typeout{ -> EMPTY}
+\else
+	% pokud ano, zrusit
+	\typeout{ -> NOT EMPTY}
+	\let\exe\relax
+	\let\endexe\relax
+	\typeout{ --> exe and endexe removed}
+\fi
+
+%% definice prostredi exe -- prikladovy itemize
+\newenvironment{exe}
+	{\begin{list}
+		{(\thelastarab)\hfill}
+		{%\setlength{\labelwidth}{3em}
+		 %\setlength{\leftmargin}{3.5em}
+		 %\setlength{\labelsep}{.5em}
+		 \setlength{\leftmargin}{0.2em}\addtolength{\leftmargin}{\parindent}
+		 \setlength{\labelwidth}{0em}
+		 \setlength{\labelsep}{0.5em}
+		 \setlength{\partopsep}{1.5ex}
+		}
+	}
+	{\end{list}}
+\let\ex\relax	% zruseni prikazu \ex z gb4e.sty
+
+%% prikazy pro ciselne, abecedni a odkazovaci pouziti
+\newcommand{\ex} {\refstepcounter{lastarab}\item  \setcounter{lastalph}{0} }
+\newcommand{\exa}{\refstepcounter{lastalph}\item[(\thelastalph)\hfill]}
+\newcommand{\exref}[2][a]{
+					\renewcommand\therefcount{\ref{#2}#1}
+					\refstepcounter{refcount}\item[(\therefcount)\hfill]}
+

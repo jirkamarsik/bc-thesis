@@ -1,0 +1,28 @@
+%% Sample file $Id: PBML_note.tex 130 2010-07-01 15:19:30Z bejcek $
+
+% This is a sample file for the PBML note.
+% See PBML_article.tex for detailed information about XeLaTeX etc.
+
+\documentclass{pbml}
+% The note should not require any package.
+\begin{document}
+
+
+% Note title and author
+% =====================
+% Due to journal organization the note title and author must be specified
+% AFTER \begin{document}. Give the information as:
+
+\PBMLnote{title={Pig, Pepper, Baby}, author=Alice}
+
+% The braces are mandatory only if the value contains a comma as in the first
+% attribute (title) but they never make any harm, you can safely put all
+% values into braces.
+
+
+% The body of the note
+% ====================
+% The notes usually have no sectioning but you can use sections, tables and
+% figures similarly as in an article.
+
+\end{document}
