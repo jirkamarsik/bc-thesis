@@ -1011,7 +1011,7 @@ xetex]{hyperref}
 
   % Fonts
   \ifpbml@fonts % Don't warn about non-available fonts if \documentclass[nofonts]{pbml} is used
-    \setmainfont[Mapping=tex-text]{TeX Gyre Pagella}
+    \setmainfont[Mapping=tex-text]{TeXGyrePagella}
     \setsansfont[Mapping=tex-text,Scale=MatchLowercase]{DejaVu Sans}
     \setmonofont[Scale=MatchLowercase]{DejaVu Sans Mono}
   \fi
