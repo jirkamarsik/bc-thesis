@@ -1,0 +1,127 @@
+\section{Description of the System}
+\label{sec:system}
+
+TrTok is implemented by a parallel execution of several configurable
+pipeline steps.
+
+\subsection{RoughTokenizer}
+
+The RoughTokenizer partitions the stream of input characters into
+small, discrete chunks of non-blank characters called \newterm{rough
+tokens}. The partitioning can be made more granular by user-defined
+rules which specify positions at which the desired tokenization might
+differ from the whitespace-induced one.
+
+A location in the text may be marked as a \maysplit{} meaning that the
+characters in the text preceding and following it may be parts of
+different tokens even though they are not separated by whitespace
+(e.g. we might wish to put a \maysplit{} between \example{``was''} and
+\example{``n't''} in \example{``wasn't''}).
+
+A location within a span of white characters might be labeled as a
+\mayjoin{} signalling that the characters preceding and following the
+whitespace area might be parts of the same token, as in the case of
+spaces entered in long numbers for readability (e.g.
+\example{``12~345''}).
+
+Finally, a location in the text may be marked as a \maybreaksentence{}
+if the characters preceding it and the characters following it might
+belong to different sentences.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=\textwidth / 2]{img/decisionpoints.eps}
+    \caption{In this example, $\blacktriangle$ stands for \maysplit{},
+      $\blacktriangledown$ for \mayjoin{} and $\bullet$ for
+      \maybreaksentence{}. This is how the rough tokenization might
+      turn out given some reasonable settings for tokenizing English.}
+    \label{fig:decision-points}
+  \end{center}
+\end{figure}
+
+See Figure~\ref{fig:decision-points} for an example of how these
+potential tokenization operations can look like in one sentence. A
+rough token is defined as a maximal sequence uninterrupted by
+whitespace or a possible tokenization operation (the symbols
+underneath the sentence in Figure~\ref{fig:decision-points}). For
+example, in the sentence from Figure~\ref{fig:decision-points},
+``was'', ``n'', the apostrophe and ``t'' are all individual rough
+tokens. Note that the presence of a \may{} event only signifies the
+possibility of a tokenization operation (splitting or joining of
+tokens or sentences). Whether a token split, token join or sentence
+break will occur is up to the Classifier.
+
+The locations of these possible tokenization operations are determined
+by user-defined rules which each consist of a pair of regular
+expressions. The respective tokenization operation is signalled if the
+characters leading up to and following a position match the regular
+expressions in one of these rules.
+
+If we look back at Figure~\ref{fig:decision-points}, we might imagine
+more robust settings also placing a \maybreaksentence{} after the
+apostrophe/single quote, while others might be more daring and not
+place a \maybreaksentence{} after the point in ``2.0'', because it is
+followed by a non-blank character.
+
+TrTok collects these rules and generates a Quex program implementing a
+fast FSM, which gets compiled and loaded in
+(Quex\footnote{http://quex.sourceforge.net} is a fast and more
+Unicode-friendly variation on the classic tools lex and flex for C++).
+
+\subsection{FeatureExtractor}
+
+The stream of rough tokens interleaved with potential tokenization
+operations output by the RoughTokenizer is processed using the
+FeatureExtractor. The FeatureExtractor annotates each rough token with
+a bit vector signifying which of the user-defined feature predicates
+hold for the rough token in question.
+
+The features can be defined in two ways: either using a regular
+expression or a list of rough tokens. For a feature defined using a
+regular expression, a rough token is said to have that feature if and
+only if the regular expression matches the entire rough token. In the
+case of a feature defined using a list of rough tokens, a rough token
+is said to have the feature if and only if it is on the list.
+
+This way it is easy to specify features which try to analyze the shape
+of rough tokens using regular expressions or to simply give a list of
+all interesting tokens (e.g. words of a certain part of speech or
+exceptions such as abbreviations).
+
+\subsection{Classifier}
+
+The Classifier is the other ``hard worker'' of the system (besides the
+RoughTokenizer). Its job is to disambiguate the potential tokenization
+operations identified by the RoughTokenizer, i.e. it decides whether a
+\maysplit{} truly splits a word into two tokens, whether a \mayjoin{}
+joins two words into one token and whether a \maybreaksentence{} truly
+ends a sentence. It does so by consulting a maximum entropy classifier
+for every location containing these potential tokenization operations.
+
+The features passed to the classifier consist of the features of rough
+tokens in the context surrounding the potential tokenization operation
+and the presence of whitespace and potential tokenization operations
+in the context area. The user is free to select the size of the
+context area and which features from which rough tokens in the context
+area should be passed to the classifier.
+
+Features can also be clustered together into conjunct features which
+provide a value for every combination of the constituent features'
+values (this lets the trainer estimate a different parameter for
+different combinations of the features' values, which is useful to
+model the joint influence of some features).
+
+The classifier then marks each location with a potential tokenization
+operation as either a sentence boundary, token boundary or no boundary
+(the location is inside a token). Using this classification, any
+potential tokenization operations are finally disambiguated.
+
+\subsection{OutputFormatter}
+
+The OutputFormatter is the point at which the stream of rough tokens
+is turned back into a character stream. This means that all the rough
+tokens are concatenated and whitespace is inserted between them
+depending on whether there originally was any whitespace between them
+and on the tokenization operations which are to be carried out in the
+space between them. Individual tokens end up being separated by a
+single space character and sentences are separated by line breaks.

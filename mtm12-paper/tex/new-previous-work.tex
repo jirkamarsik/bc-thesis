@@ -1,0 +1,45 @@
+\section{Previous Work}
+\label{sec:previous-work}
+
+Established methods of sentence boundary disambiguation can be
+organized into three distinct groups: hand-crafted systems, supervised
+learning systems and unsupervised learning systems.
+
+The \textbf{RE} system \cite{sbd-re} is an example of a rule-based
+system. The program scans a document, looking for full stops. When one
+is found, the word preceding it is compared to a list of regular
+expression exceptions (mostly abbreviations) and unless the word is
+found to match one of them, it is assumed to end the sentence. Besides
+this core, the system also implements a small heuristic which checks
+for numbers preceding the full stop and the word following it.
+
+\textbf{MxTerminator} \cite{sbd-mxterm} is a supervised sentence
+boundary disambiguator using maximum entropy models to predict whether
+a potential sentence terminator does indeed signal the end of a
+sentence. The prefix and suffix of the word containing the potential
+sentence terminator and the words preceding and following it are
+analyzed and their features are passed to the classifier. The features
+consist of the tokens' type, their capitalization and their membership
+status on a list of abbreviations which are either hand-prepared or
+induced from data.
+
+The biggest difference between TrTok and MxTerminator is that TrTok
+does not assume any particular selection of features and thus offers
+space for richer models (e.g. by extending the width of the context or
+providing more complex features like part of speech tags).
+
+An example of a system using more advanced features is the
+\textbf{Satz} system \cite{sbd-satz}, which uses possible part of
+speech tags as features in the machine learning algorithm.
+
+Unsupervised learning systems are the most distinct from TrTok amongst
+all the sentence boundary detection algorithms as they usually require
+no manual configuration nor any training data to function properly. A
+great example of an unsupervised sentence boundary disambiguator is
+the Punkt system \cite{sbd-punkt}.
+
+\textbf{Punkt} relies mostly on collocation detection techniques but
+also makes use of an orthographic heuristic to analyze the test data
+in several passes and disambiguate abbreviations and sentence
+terminators. The system has shown remarkable performance without
+needing any manual tuning or training data.
