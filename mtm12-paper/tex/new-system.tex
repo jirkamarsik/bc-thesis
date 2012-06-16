@@ -2,7 +2,13 @@
 \label{sec:system}
 
 TrTok is implemented by a parallel execution of several configurable
-pipeline steps.
+pipeline steps. This pipeline can be repurposed to train the embedded
+classifier using tokenized data, to tokenize new data using a trained
+classifier and to evaluate the predictions of a trained classifier on
+manually tokenized data.
+
+We will describe the important pipeline steps one by one, in the order
+in which they process data when tokenizing new text.
 
 \subsection{RoughTokenizer}
 
