@@ -25,6 +25,8 @@
 % amssymb  (for various symbols)
 % If XeLaTeX is used, fontspec and xltxtra are loaded as well.
 
+\usepackage{mystyle}
+
 % Definitions
 % ===========
 % You can use your own macros defined by \newcommand, \providecommand,
@@ -45,7 +47,7 @@
 % AFTER \begin{document}. Note that \subtitle is not allowed anymore due to
 % problems with indexing in science databases. If needed use colon in the title.
 
-\title{Title of My Article\titlelinebreak{} with a Forced Linebreak}
+\title{TrTok: A Fast and Trainable Tokenizer for Natural Languages}
 
 
 % Now put the affiliated institutes first, then author names and the labels
@@ -56,29 +58,26 @@
 % corresponding) and his or her email and full address must be provided.
 % PLEASE, use Unicode (utf8) encoding (e.g ï instead of \"{i}).
 
-\institute{label1}{IBM}
-\institute{label2}{CNGL, Dublin City University}
-\institute{label3}{Center for Language and Speech Processing, Johns Hopkins University}
-\institute{label4}{Carnegie Mellon University}
+\institute{sjtu}{Shanghai Jiao Tong University}
+\institute{ufal}{Institute of Formal and Applied Linguistics,
+                 Charles University in Prague}
 
 \author{
-  firstname=Humpty,
-  surname=Dumpty,
-  institute=label1,
+  firstname=Jiří,
+  surname=Maršík,
+  institute=sjtu,
+  email={jiri.marsik89@gmail.com}
 }
 \author{
-  firstname=Mock,
-  surname=Turtle,
-  institute={label2,label4},
+  firstname=Ondřej,
+  surname=Bojar,
+  institute=ufal,
   corresponding=yes,
-  email={turtle@seacoast.wl},
-  address={Carnegie Mellon University\\407 S. Craig Street, Pittsburgh, PA 15213, United States}
-}
-\author{
-  firstname=Cheshire,
-  initials=C.,
-  surname=Cat,
-  institute=label3,
+  email={bojar@ufal.mff.cuni.cz},
+  address={Institute of Formal and Applied Linguistics\\
+           Charles University in Prague\\
+           Malostranské náměstí 25\\
+           118 00 Praha 1, Czech Republic}
 }
 
 % If all authors belong to the same institute, you can use simpler syntax:
@@ -97,8 +96,8 @@
 % The title and authors' names are used in the running head. If they are
 % long, you should define short versions. These definitions are optional. You
 % define them only if they are needed. The example follows:
-\shorttitle{Short title}
-\shortauthor{H. Dumpty, M. Turtle, C. Cat}
+\shorttitle{TrTok: A Trainable Tokenizer}
+\shortauthor{J. Maršík, O. Bojar}
 
 % Now print the title by:
 \maketitle
@@ -110,10 +109,18 @@
 % part of the article.
 
 \begin{abstract}
-The abstract of the article...
+We present a universal data-driven tool for segmenting and tokenizing
+text. The presented tokenizer lets the user define where token and
+sentence boundaries should be considered. These instances are then
+judged by a classifier which is trained from provided tokenized data.
+The features passed to the classifier are also defined by the user.
+This level of customizability makes the tokenizer a versatile tool
+which we show is capable of sentence detection in English text as well
+as word segmentation in Chinese text. In the case of English sentence
+detection, the system outperformed previous methods.
 \end{abstract}
 
-\section{Donut}
+
 % The body of the article
 % =======================
 % The PBML class is modelled after the standard article class. This means
@@ -122,17 +129,14 @@ The abstract of the article...
 % \subsection and \subsubsection.
 
 % In addition to the \cite command, you can use natbib style of citations:
-\citet{PDT2} shows \ldots \\
-\ldots tree-based annotation (as e.g.~\citealp{PDT2}).
+% \citet{PDT2} shows \ldots \\
+% \ldots tree-based annotation (as e.g.~\citealp{PDT2}).
 
-% For figures and tables always use "figure" resp. "table" floating environments
-% and always supply a caption. See the paragraph about color images below.
-\begin{figure}
- \begin{center}
-  \includegraphics[width=\textwidth]{example_figure}
-  \caption{Example figure}\label{fig:example}
- \end{center}
-\end{figure}
+\input{tex/new-intro}
+\input{tex/new-previous-work}
+\input{tex/new-system}
+\input{tex/new-eval}
+\input{tex/new-outro}
 
 
 % Bibliography
@@ -142,7 +146,7 @@ The abstract of the article...
 % automatically. The \cite command is also modified so that it does not
 % collide with other articles. You process the bibliography by BibTeX in the
 % standard way and include it by:
-\bibliography{mybib}
+\bibliography{sbd,maxent,seg,web,data,software}
 
 \end{document}
 
