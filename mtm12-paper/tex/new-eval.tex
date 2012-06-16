@@ -59,15 +59,15 @@ available for training to the supervised learning methods.
 \subsection{Performance Measurement}
 
 The performance of the evaluated systems was measured by their success
-in classifying instances of the full stop character. The text contains
-other sentence terminators such as the question mark and the
-exclamation mark, but they almost never figure as anything else but
-sentence terminators in the text. Other occasional sentence delimiters
-such as dashes, semicolons, colons and line breaks were ignored as
-well, since the other systems usually do not have a solution for them.
-This way the comparison is fair. Furthermore, the full stop is the
-most common and ambiguous of the sentence delimiters, so it makes
-sense to focus on it.
+(accuracy) in classifying instances of the full stop character. The
+text contains other sentence terminators such as the question mark and
+the exclamation mark, but they almost never figure as anything else
+but sentence terminators in the text. Other occasional sentence
+delimiters such as dashes, semicolons, colons and line breaks were
+ignored as well, since the other systems usually do not have a
+solution for them. This way the comparison is fair. Furthermore, the
+full stop is the most common and ambiguous of the sentence delimiters,
+so it makes sense to focus on it.
 
 Besides the systems' accuracy, we also measure the time spent
 processing the testing data and we present the median of 11 runs to
@@ -154,7 +154,7 @@ other languages without significant work.
 method to TrTok. Whereas MxTerminator inspects the prefix and suffix
 of the full-stop-containing word and the words preceding and
 following it, TrTok::MxTerm-like splits the period into its own rough
-token and examines two rough tokens from both sides of it.
+token and examines two rough tokens on both sides of it.
 
 TrTox::MxTerm-like also nicely demonstrates the ease with which new
 tokenization setups can be defined in TrTok. The entire setup
@@ -184,13 +184,13 @@ abbreviation lists.
 Finally, \textbf{TrTok::Groomed} is a relatively large hand-made
 tokenization setup ported from a previous version of the tokenizer. It
 considers 24 different potential sentence terminators, it includes 7
-distinct lists of abbreviations (prefix and suffix titles, abbreviated
-names of months\ldots) totalling 303 types and it implements features
+distinct lists of abbreviations totalling 303 types (prefix and suffix
+titles, abbreviated names of months\ldots) and it implements features
 for detecting the case of tokens, for noticing numbers which happen to
-be in the range of years or the days of the month, etc\ldots These
-features are contributed by rough tokens within 8 tokens from the full
-stop. The 2 closest tokens on either side of the full stop also
-contribute their token type as a feature.
+be in the range of years or the days of the month, etc\ldots\ \ These
+features are extracted from rough tokens within 8 tokens distance from
+the full stop. The 2 closest tokens on either side of the full stop
+also contribute their token type as a feature.
 
 Due to the large number of potential tokenization operations (and thus
 rough tokens) and the host of user-defined features, TrTok::Groomed's
@@ -215,9 +215,9 @@ We ported the key features of one of the top contestants (which also
 happens to employ a maximum entropy classifier)
 \cite{seg-chinese-maxent} in the 2005 Second International Chinese
 Word Segmentation Bakeoff into TrTok and evaluated its performance
-using the bakeoff evaluation scripts, see
-Table~\ref{tbl:bakeoff-score}. The results achieved are approximately
-a median of the scores reached by submissions to the Bakeoff.
+using the bakeoff evaluation scripts. The results achieved (see
+Table~\ref{tbl:bakeoff-score}) are approximately a median of the
+scores reached by submissions to the Bakeoff.
 
 \begin{table}
   \begin{center}

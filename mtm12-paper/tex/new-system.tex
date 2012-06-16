@@ -87,7 +87,7 @@ expression or a list of rough tokens. For a feature defined using a
 regular expression, a rough token is said to have that feature if and
 only if the regular expression matches the entire rough token. In the
 case of a feature defined using a list of rough tokens, a rough token
-is said to have the feature if and only if it is on the list.
+is said to have that feature if and only if it is on the list.
 
 This way it is easy to specify features which try to analyze the shape
 of rough tokens using regular expressions or to simply give a list of
@@ -96,13 +96,14 @@ exceptions such as abbreviations).
 
 \subsection{Classifier}
 
-The Classifier is the other ``hard worker'' of the system (besides the
+The Classifier is the other busy element in the pipeline (besides the
 RoughTokenizer). Its job is to disambiguate the potential tokenization
 operations identified by the RoughTokenizer, i.e. it decides whether a
 \maysplit{} truly splits a word into two tokens, whether a \mayjoin{}
-joins two words into one token and whether a \maybreaksentence{} truly
-ends a sentence. It does so by consulting a maximum entropy classifier
-for every location containing these potential tokenization operations.
+truly joins two words into one token and whether a \maybreaksentence{}
+truly ends a sentence. It does so by consulting a maximum entropy
+classifier for every location containing these potential tokenization
+operations.
 
 The features passed to the classifier consist of the features of rough
 tokens in the context surrounding the potential tokenization operation
@@ -119,8 +120,8 @@ model the joint influence of some features).
 
 The classifier then marks each location with a potential tokenization
 operation as either a sentence boundary, token boundary or no boundary
-(the location is inside a token). Using this classification, any
-potential tokenization operations are finally disambiguated.
+(meaning the location is inside a token). Using this classification,
+any potential tokenization operations are finally disambiguated.
 
 \subsection{OutputFormatter}
 
