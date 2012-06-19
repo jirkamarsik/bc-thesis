@@ -98,15 +98,10 @@ it does not perform as well as the original Satz system did
 author's possession.
 
 The \textbf{RE} system, \textbf{MxTerminator} and \textbf{Punkt} were
-described in Section~\ref{sec:previous-work}. The implementation of RE
-used for our experiments was the one provided
-here\footnote{\texttt{http://www.ppgia.pucpr.br/∼silla/softwares/yasd.zip}},
-the implementation of MxTerminator was obtained from
-here\footnote{\texttt{ftp://ftp.cis.upenn.edu/pub/adwait/jmx/jmx.tar.gz}}
-and the implementation of Punkt is the one from NLTK. As for training,
-Punkt received the entire Brown corpus (training data and testing
-data) without any annotations while MxTerm was trained using the
-training data.
+described in Section~\ref{sec:previous-work}. For training, Punkt
+received the entire Brown corpus (training data and testing data)
+without any annotations while MxTerm was trained using the training
+data.
 
 Punkt achieves remarkable performance and stands as the strongest
 competitor to TrTok in the field of multilingual sentence detection.
@@ -119,9 +114,8 @@ the specification of MxTerminator with only minor deviations (such as
 signalling surrounding whitespace as features).
 
 We performed experiments both with the ready-to-use sentence detection
-model for English distributed via OpenNLP's
-website\footnote{\texttt{http://opennlp.sourceforge.net/models-1.5/en-sent.bin}}
-and with a model which was trained on our training data.
+model for English distributed via OpenNLP's website and with a model
+which was trained on our training data.
 
 The \textbf{Stanford CoreNLP} sentence splitter works by applying its
 tokenizer to the input text which makes the distinction between a full
