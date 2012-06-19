@@ -79,31 +79,23 @@ bring the implementation speed of the systems into context as well.
 terminator.
 
 \textbf{Trtok::Baseline} is the simplest tokenizer which can be
-written in TrTok. The reason that this performs noticeably better than
-the Absolute Baseline is that even if we do not specify any contextual
-features explicitly, TrTok still passes the built-in feature
-\texttt{0:\%WHITESPACE} to the classifier, which tells it whether the
-full stop in question is followed by any whitespace or not. The
-classifier has then learned that periods not followed by whitespace
-usually do not mean the end of a sentence and uses that to perform
-better than the Absolute Baseline.
+written in TrTok. However, even the simplest TrTok configuration
+always uses the whitespace following the possible tokenization
+operation as a feature and thus it is able to perform better than the
+Absolute Baseline.
 
 \textbf{TrTok::Satz-like} is a straightforward attempt at translating
 the Satz system to TrTok. The POS-tagged training data was used to
 construct lexicons for each different part of speech tag (NLTK's
 method of simplifying tags was used to reduce the number of different
-tags to help fight data sparsity). The classifier was then given all
-the retrieved part of speech tags for the 3 rough tokens preceding and
-following a full stop.
+tags to help fight data sparsity). The POS tags for 3 tokens on either
+side of the full stop were used as the features.
 
-In contrast to Satz, our version uses a different system of tags, a
-different machine learning algorithm and most importantly our version
-does not try to guess the part of speech tags for words which are not
-found in the lexicon. All of these decisions are for the worse (except
-maybe for the choice of machine learning algorithm and hypothesis
-representation) and so TrTok::Satz-like does not perform as well as
-the original Satz system would have \cite{sbd-satz}. Sadly, the
-implementation of Satz is no longer in the author's possession.
+TrTok::Satz-like's system of tags is not as refined as the original
+and it does not use its fallback regular expression heuristics and so
+it does not perform as well as the original Satz system did
+\cite{sbd-satz}. Sadly, the implementation of Satz is no longer in the
+author's possession.
 
 The \textbf{RE} system, \textbf{MxTerminator} and \textbf{Punkt} were
 described in Section~\ref{sec:previous-work}. The implementation of RE
@@ -129,20 +121,16 @@ signalling surrounding whitespace as features).
 We performed experiments both with the ready-to-use sentence detection
 model for English distributed via OpenNLP's
 website\footnote{\texttt{http://opennlp.sourceforge.net/models-1.5/en-sent.bin}}
-and with a model which was trained on our training data. The
-parameters for optimally training the model were estimated using
-10-fold cross-validation on the training data.
+and with a model which was trained on our training data.
 
 The \textbf{Stanford CoreNLP} sentence splitter works by applying its
-tokenizer to the input text which will make the distinction between a
-full stop as part of an abbreviation or an ordinal number as opposed
-to being a sentence terminator. Thus the task of sentence splitting is
-trivial after the tokenization has been correctly performed.
-
-The tokenization is implemented using a lexical analyzer generator,
-JFlex (not unlike how TrTok uses Quex to implement the
-RoughTokenizer). It is a deterministic program guided by a collection
-of heuristics.
+tokenizer to the input text which makes the distinction between a full
+stop as part of an abbreviation or an ordinal number as opposed to a
+full stop as a sentence terminator. Thus the task of sentence
+splitting is trivial after the tokenization has been performed. The
+tokenizer is a rule-based program implemented using a lexical analyzer
+generator, JFlex (not unlike how TrTok uses Quex to implement the
+RoughTokenizer).
 
 The Stanford Tokenizer's performance is excellent, especially
 considering it has not had the chance to train itself on the target
@@ -150,16 +138,11 @@ corpus. However, the Stanford Tokenizer is written explicitly for
 English and it is likely that its performance would not carry over to
 other languages without significant work.
 
-\textbf{TrTok::MxTerm-like} is a translation of the MxTerminator
-method to TrTok. Whereas MxTerminator inspects the prefix and suffix
-of the full-stop-containing word and the words preceding and
-following it, TrTok::MxTerm-like splits the period into its own rough
-token and examines two rough tokens on both sides of it.
-
-TrTox::MxTerm-like also nicely demonstrates the ease with which new
-tokenization setups can be defined in TrTok. The entire setup
-consisted of creating a directory, collecting the abbreviations in a
-single file and writing 5 lines of configuration, 2 or 3 of which
+\textbf{TrTok::MxTerm-like} is a direct translation of the
+MxTerminator method to TrTok. It is a nice demonstration of the ease
+with which new tokenization setups can be defined in TrTok. The entire
+setup consisted of creating a directory, collecting the abbreviations
+in a single file and writing 5 lines of configuration, 2 or 3 of which
 could be easily obsoleted by adopting saner defaults in TrTok and 1 of
 which is purely for convenience.
 
@@ -181,7 +164,7 @@ TrTok::Easy also points out that the difference in performance between
 TrTok and MxTerminator/OpenNLP cannot be explained by the different
 abbreviation lists.
 
-Finally, \textbf{TrTok::Groomed} is a relatively large hand-made
+Finally, \textbf{TrTok::Groomed} is a large hand-made
 tokenization setup ported from a previous version of the tokenizer. It
 considers 24 different potential sentence terminators, it includes 7
 distinct lists of abbreviations totalling 303 types (prefix and suffix
