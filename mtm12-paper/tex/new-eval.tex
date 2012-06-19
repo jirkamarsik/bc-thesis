@@ -113,9 +113,9 @@ maximum entropy classifier. The implementation is nearly identical to
 the specification of MxTerminator with only minor deviations (such as
 signalling surrounding whitespace as features).
 
-We performed experiments both with the ready-to-use sentence detection
-model for English distributed via OpenNLP's website and with a model
-which was trained on our training data.
+We performed experiments both with the ready-made model for English
+distributed via OpenNLP's website and with a model which was trained
+on our training data.
 
 The \textbf{Stanford CoreNLP} sentence splitter works by applying its
 tokenizer to the input text which makes the distinction between a full
@@ -169,9 +169,9 @@ features are extracted from rough tokens within 8 tokens distance from
 the full stop. The 2 closest tokens on either side of the full stop
 also contribute their token type as a feature.
 
-Due to the large number of potential tokenization operations (and thus
-rough tokens) and the host of user-defined features, TrTok::Groomed's
-speed lags significantly behind the other TrTok setups.
+Due to the large number of potential tokenization operations and
+user-defined features, TrTok::Groomed's speed lags significantly
+behind the other TrTok setups.
 
 Interestingly, there is not much difference in the performance of
 TrTok::Groomed, TrTok::MxTerm-like and TrTok::Easy. This tells us that
@@ -182,11 +182,11 @@ contextual features for performing the task of sentence detection.
 
 \subsection{Chinese Word Segmentation}
 
-Since TrTok is basically a general program for splitting text into
-sequences (sentences) which are in turn composed of other sequences
-(tokens) based on user-defined contextual features, TrTok can be used
-for more than just sentence detection. One other segmentation task we
-had hoped might be solvable using TrTok is Chinese word segmentation.
+Since TrTok is a general program for splitting text into sequences
+(sentences) which are in turn composed of other sequences (tokens)
+based on user-defined features, TrTok can be used for more than just
+sentence detection. One other segmentation task we had hoped might be
+solvable using TrTok is Chinese word segmentation.
 
 We ported the key features of one of the top contestants (which also
 happens to employ a maximum entropy classifier)
