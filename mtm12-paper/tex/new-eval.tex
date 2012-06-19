@@ -5,6 +5,36 @@ We evaluated our implementation of TrTok compared to a wide range of
 prominent implementations and approaches to sentence detection. The
 results are presented in Table~\ref{tbl:grand-melee}.
 
+\subsection{Dataset}
+
+The experiments were conducted on the Brown corpus \cite{data-brown}
+as is supplied through NLTK \cite{software-nltk}. A representative
+(covering each category of text proportionately) 20\% of the corpus
+was used as the testing data. This number was chosen so that the
+testing data would be sure to contain at least 1000 instances of a
+non-sentence-terminating full stop; the resulting test set ended up
+containing 1481 such full stops. The rest of the data was made
+available for training to the supervised learning methods.
+
+\subsection{Performance Measurement}
+
+The performance of the evaluated systems was measured by their success
+(accuracy) in classifying instances of the full stop character. The
+text contains other sentence terminators such as the question mark and
+the exclamation mark, but they almost never figure as anything else
+but sentence terminators in the text. Other occasional sentence
+delimiters such as dashes, semicolons, colons and line breaks were
+ignored as well, since the other systems usually do not have a
+solution for them. This way the comparison is fair. Furthermore, the
+full stop is the most common and ambiguous of the sentence delimiters,
+so it makes sense to focus on it.
+
+Besides the systems' accuracy, we also measure the time spent
+processing the testing data and we present the median of 11 runs to
+bring the implementation speed of the systems into context as well.
+
+\subsection{Sentence Detection Methods}
+
 \begin{table}
   \small
   \begin{center}
@@ -44,36 +74,6 @@ results are presented in Table~\ref{tbl:grand-melee}.
     consisted of 11376 sentences and 232893 tokens.}
   \label{tbl:grand-melee}
 \end{table}
-
-\subsection{Dataset}
-
-The experiments were conducted on the Brown corpus \cite{data-brown}
-as is supplied through NLTK \cite{software-nltk}. A representative
-(covering each category of text proportionately) 20\% of the corpus
-was used as the testing data. This number was chosen so that the
-testing data would be sure to contain at least 1000 instances of a
-non-sentence-terminating full stop; the resulting test set ended up
-containing 1481 such full stops. The rest of the data was made
-available for training to the supervised learning methods.
-
-\subsection{Performance Measurement}
-
-The performance of the evaluated systems was measured by their success
-(accuracy) in classifying instances of the full stop character. The
-text contains other sentence terminators such as the question mark and
-the exclamation mark, but they almost never figure as anything else
-but sentence terminators in the text. Other occasional sentence
-delimiters such as dashes, semicolons, colons and line breaks were
-ignored as well, since the other systems usually do not have a
-solution for them. This way the comparison is fair. Furthermore, the
-full stop is the most common and ambiguous of the sentence delimiters,
-so it makes sense to focus on it.
-
-Besides the systems' accuracy, we also measure the time spent
-processing the testing data and we present the median of 11 runs to
-bring the implementation speed of the systems into context as well.
-
-\subsection{Sentence Detection Methods}
 
 \textbf{Absolute Baseline} simply marks every full stop as a sentence
 terminator.
@@ -132,13 +132,13 @@ corpus. However, the Stanford Tokenizer is written explicitly for
 English and it is likely that its performance would not carry over to
 other languages without significant work.
 
-\textbf{TrTok::MxTerm-like} is a translation of the MxTerminator to
-TrTok. It is a nice demonstration of the ease with which new
-tokenization setups can be defined in TrTok. The entire setup
-consisted of creating a directory, collecting the abbreviations in a
-single file and writing 5 lines of configuration, 2 or 3 of which
-could be easily obsoleted by adopting saner defaults in TrTok and 1 of
-which is purely for convenience.
+\textbf{TrTok::MxTerm-like} is a translation of MxTerminator to TrTok.
+It is a nice demonstration of the ease with which new tokenization
+setups can be defined in TrTok. The entire setup consisted of creating
+a directory, collecting the abbreviations in a single file and writing
+5 lines of configuration, 2 or 3 of which could be easily obsoleted by
+adopting saner defaults in TrTok and 1 of which is purely for
+convenience.
 
 The reason why MxTerminator does not achieve the same performance
 could be that the maximum entropy trainer used in MxTerminator limits
