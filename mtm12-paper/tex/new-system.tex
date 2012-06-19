@@ -26,13 +26,12 @@ different tokens even though they are not separated by whitespace
 
 A location within a span of white characters might be labeled as a
 \mayjoin{} signalling that the characters preceding and following the
-whitespace area might be parts of the same token, as in the case of
-spaces entered in long numbers for readability (e.g.
-\example{``12~345''}).
+whitespace might be parts of the same token, as in the case of
+spaces entered in long numbers (e.g. \example{``12~345''}).
 
 Finally, a location in the text may be marked as a \maybreaksentence{}
-if the characters preceding it and the characters following it might
-belong to different sentences.
+if the characters preceding and following it might belong to different
+sentences.
 
 \begin{figure}
   \begin{center}
@@ -62,6 +61,12 @@ by user-defined rules which each consist of a pair of regular
 expressions. The respective tokenization operation is signalled if the
 characters leading up to and following a position match the regular
 expressions in one of these rules.
+
+If we look back at Figure~\ref{fig:decision-points}, we might imagine
+more robust settings also placing a \maybreaksentence{} after the
+apostrophe/single quote, while others might be more daring and not
+place a \maybreaksentence{} after the point in ``2.0'', because it is
+followed by a non-blank character.
 
 TrTok collects these rules and generates a Quex program implementing a
 fast FSM, which gets compiled and loaded in
