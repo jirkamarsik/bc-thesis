@@ -63,12 +63,6 @@ expressions. The respective tokenization operation is signalled if the
 characters leading up to and following a position match the regular
 expressions in one of these rules.
 
-If we look back at Figure~\ref{fig:decision-points}, we might imagine
-more robust settings also placing a \maybreaksentence{} after the
-apostrophe/single quote, while others might be more daring and not
-place a \maybreaksentence{} after the point in ``2.0'', because it is
-followed by a non-blank character.
-
 TrTok collects these rules and generates a Quex program implementing a
 fast FSM, which gets compiled and loaded in
 (Quex\footnote{\texttt{http://quex.sourceforge.net}} is a fast and
