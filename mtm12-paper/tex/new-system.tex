@@ -99,9 +99,9 @@ exceptions such as abbreviations).
 The Classifier is the other busy element in the pipeline (besides the
 RoughTokenizer). Its job is to disambiguate the potential tokenization
 operations identified by the RoughTokenizer, i.e. it decides whether a
-\maysplit{} truly splits a word into two tokens, whether a \mayjoin{}
+\maysplit{} splits a word into two tokens, whether a \mayjoin{}
 truly joins two words into one token and whether a \maybreaksentence{}
-truly ends a sentence. It does so by consulting a maximum entropy
+ends a sentence. It does so by consulting a maximum entropy
 classifier for every location containing these potential tokenization
 operations.
 
