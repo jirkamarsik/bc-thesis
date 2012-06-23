@@ -29,12 +29,14 @@ algorithm. The scheme folder also allows a few other configuration
 files for convenience. An important thing to note is that the scheme
 folders can be nested and that the inner schemes inherit all the files
 of the outer scheme, unless they provide their own files of the same
-name.
+name. This is useful in cases where e.g.\ some features or training
+data are applicable to all texts of a language but refinements exist
+for various domains or tokenization conventions.
 
 The rest of the parameters are input files and various options for
 adjusting the behavior of the tokenizer.
 
-TrTok requires CMake and Quex at runtime, while a host of
-multi-platform libraries are required at compile time. Further details
-on the installation and use of TrTok can be found in the bundled
+TrTok requires CMake and Quex at runtime, while several multi-platform
+libraries are also required at compile time. Further details on the
+installation and use of TrTok can be found in the bundled
 documentation.

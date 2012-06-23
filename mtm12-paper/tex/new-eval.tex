@@ -3,7 +3,7 @@
 
 We evaluated our implementation of TrTok compared to a wide range of
 prominent implementations and approaches to sentence detection. The
-results are presented in Table~\ref{tbl:grand-melee}.
+results are in Table~\ref{tbl:grand-melee}.
 
 \subsection{Dataset}
 
@@ -21,13 +21,13 @@ available for training to the supervised learning methods.
 The performance of the evaluated systems was measured by their success
 (accuracy) in classifying instances of the full stop character. The
 text contains other sentence terminators such as the question mark and
-the exclamation mark, but they almost never figure as anything else
-but sentence terminators in the text. Other occasional sentence
-delimiters such as dashes, semicolons, colons and line breaks were
-ignored as well, since the other systems usually do not have a
-solution for them. This way the comparison is fair. Furthermore, the
-full stop is the most common and ambiguous of the sentence delimiters,
-so it makes sense to focus on it.
+the exclamation mark, but they almost never serve as anything else but
+sentence terminators in the text. Other occasional sentence delimiters
+such as dashes, semicolons, colons and line breaks were ignored as
+well, since the other systems usually do not have a solution for them.
+This way, the comparison is fair. Furthermore, the full stop is the
+most common and ambiguous of the sentence delimiters, so it makes
+sense to focus on it.
 
 Besides the systems' accuracy, we also measure the time spent
 processing the testing data and we present the median of 11 runs to
@@ -147,7 +147,7 @@ converges very slowly compared to L-BFGS \cite{maxent-algorithms}.
 Another reason might be the fact that both MxTerminator and OpenNLP
 cut off infrequent features.
 
-The high performance of TrTok::MxTerm-like led us to try and see what
+The high accuracy of TrTok::MxTerm-like led us to try and see what
 happens when we simplify the tokenization setup even further, which
 led to \textbf{TrTok::Easy} which works the same way as
 TrTok::MxTerm-like, but it does not use any abbreviation lists, merely
@@ -197,6 +197,7 @@ Table~\ref{tbl:bakeoff-score}) are approximately a median of the
 scores reached by submissions to the Bakeoff.
 
 \begin{table}
+  \small
   \begin{center}
     \begin{tabular}{ | l | r | r | r | r | }
       \hline

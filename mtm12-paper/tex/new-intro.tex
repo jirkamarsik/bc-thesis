@@ -28,19 +28,19 @@ written in any language. To achieve such a goal, TrTok relies on the
 user determining the specifics of training and tokenization and
 providing the necessary training data.
 
-TrTok's novelty comes in the openness and formalization of the
-tokenization process and in its resulting general applicability. It is
-a continuation of the approach outlined by \citet{sbd-trtok-orig}. The
-process is divided into several discrete stages, most of which are
-heavily customizable. For example, the user is able to say where in
-the text should TrTok consider breaking up or joining tokens or
-sentences, how should TrTok represent the context of these decision
-points to the underlying classifier, how should the classifier be
-trained, how should existing whitespace be treated and more.
+Continuing the approach outlined by \citet{sbd-trtok-orig}, TrTok's
+novelty comes in the openness and formalization of the tokenization
+process and in its resulting general applicability. The process is
+divided into several discrete stages, most of which are heavily
+customizable. For example, the user is able to say where in the text
+TrTok should consider breaking up or joining tokens or sentences, how
+TrTok should represent the context of these decision points to the
+underlying classifier, how the classifier should be trained, how
+existing whitespace should be treated and more.
 
 TrTok was also built to be a practical tool, which means it can
-transparently process text interspersed with XML markup and HTML
-entities and was designed to run fast.
+transparently process text interspersed with XML tags and HTML
+entities and it was designed to run fast.
 
 The major inconveniences of TrTok are that due to its customizability
 it needs to be properly set up and due to its reliance on machine
