@@ -7,7 +7,7 @@ not all of these corpora are immediately useful since not all of them
 are partitioned into words and sentences. This is in odds with the
 premise that words and sentences, not chunks of text, form the basic
 processing units of most NLP applications. This is where tokenization
-and segmentation has to step in.
+and segmentation have to step in.
 
 Segmentation (a term we use for what is also referred to as sentence
 detection or sentence boundary disambiguation) has been tackled using
@@ -25,23 +25,24 @@ receives a lot of attention \cite{seg-bakeoff}.
 
 TrTok aims to be a practical tool for tokenizing and segmenting text
 written in any language. To achieve such a goal, TrTok relies on the
-user determining the specifics of training and tokenization and
+user determining the specifics of training and tokenization, and
 providing the necessary training data.
 
 Continuing the approach outlined by \citet{sbd-trtok-orig}, TrTok's
 novelty comes in the openness and formalization of the tokenization
 process and in its resulting general applicability. The process is
-divided into several discrete stages, most of which are heavily
-customizable. For example, the user is able to say where in the text
-TrTok should consider breaking up or joining tokens or sentences, how
-TrTok should represent the context of these decision points to the
-underlying classifier, how the classifier should be trained, how
-existing whitespace should be treated and more.
+divided into several discrete configurable stages, most of which are
+heavily customizable. For example, the user is able to say where in
+the text TrTok should consider breaking up or joining tokens or
+sentences, how TrTok should represent the context of these decision
+points to the underlying classifier, how the classifier should be
+trained, how existing whitespace should be treated and more.
 
 TrTok was also built to be a practical tool, which means it can
 transparently process text interspersed with XML tags and HTML
 entities and it was designed to run fast.
 
-The major inconveniences of TrTok are that due to its customizability
-it needs to be properly set up and due to its reliance on machine
-learning methods, it requires manually tokenized training data.
+The major inconveniences of TrTok are that, 1) due to its
+customizability it needs to be properly set up and, 2) due to its
+reliance on machine learning methods, it requires manually tokenized
+training data.

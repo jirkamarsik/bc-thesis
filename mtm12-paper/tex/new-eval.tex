@@ -3,17 +3,17 @@
 
 We evaluated our implementation of TrTok compared to a wide range of
 prominent implementations and approaches to sentence detection. The
-results are in Table~\ref{tbl:grand-melee}.
+results are given in Table~\ref{tbl:grand-melee}.
 
 \subsection{Dataset}
 
 The experiments were conducted on the Brown corpus \cite{data-brown}
-as is supplied through NLTK \cite{software-nltk}. A representative
+as supplied through NLTK \cite{software-nltk}. A representative
 (covering each category of text proportionately) 20\% of the corpus
 was used as the testing data. This number was chosen so that the
-testing data would be sure to contain at least 1000 instances of a
+testing data would be sure to contain at least 1,000 instances of a
 non-sentence-terminating full stop; the resulting test set ended up
-containing 1481 such full stops. The rest of the data was made
+containing 1,481 such full stops. The rest of the data was made
 available for training to the supervised learning methods.
 
 \subsection{Performance Measurement}
@@ -29,9 +29,10 @@ This way, the comparison is fair. Furthermore, the full stop is the
 most common and ambiguous of the sentence delimiters, so it makes
 sense to focus on it.
 
-Besides the systems' accuracy, we also measure the time spent
-processing the testing data and we present the median of 11 runs to
-bring the implementation speed of the systems into context as well.
+Besides the systems' accuracy, we also measure the time spent for
+processing the whole testing data and we present the median of 11 runs
+to bring the implementation speed of the systems into consideration as
+well.
 
 \subsection{Sentence Detection Methods}
 
@@ -71,7 +72,7 @@ bring the implementation speed of the systems into context as well.
   \caption[Performance of sentence detectors on the Brown corpus] {The
     performance of the various sentence detectors on full stops from
     the Brown corpus testing data. The 1.15 MB of testing data
-    consisted of 11376 sentences and 232893 tokens.}
+    consisted of 11,376 sentences and 232,893 tokens.}
   \label{tbl:grand-melee}
 \end{table}
 
@@ -84,24 +85,23 @@ always uses the whitespace following the possible tokenization
 operation as a feature and thus it is able to perform better than the
 Absolute Baseline.
 
-\textbf{TrTok::Satz-like} is a straightforward attempt at translating
-the Satz system to TrTok. The POS-tagged training data was used to
-construct lexicons for each different part of speech tag (NLTK's
-method of simplifying tags was used to reduce the number of different
-tags to help fight data sparsity). The POS tags for 3 tokens on either
-side of the full stop were used as the features.
+\textbf{TrTok::Satz-like} is a straightforward attempt at
+reconstructing the Satz system in TrTok. The POS-tagged training data
+was used to construct lexicons for each different part of speech tag
+(NLTK's method of simplifying tags was used to reduce the number of
+different tags to overcome data sparsity). The POS tags for three
+tokens on either side of the full stop were used as the features.
 
 TrTok::Satz-like's system of tags is not as refined as the original
-and it does not use its fallback regular expression heuristics and so
-it does not perform as well as the original Satz system did
-\cite{sbd-satz}. Sadly, the implementation of Satz is no longer in the
-author's possession.
+and it does not use its fallback regular expression heuristics and
+hence it does not perform as well as the original Satz system did
+\cite{sbd-satz}.
 
 The \textbf{RE} system, \textbf{MxTerminator} and \textbf{Punkt} were
 described in Section~\ref{sec:previous-work}. For training, Punkt
 received the entire Brown corpus (training data and testing data)
-without any annotations while MxTerm was trained using the training
-data.
+without any annotations while MxTerminator was trained using the
+training data.
 
 Punkt achieves remarkable performance and stands as the strongest
 competitor to TrTok in the field of multilingual sentence detection.
@@ -123,7 +123,7 @@ stop as part of an abbreviation or an ordinal number as opposed to a
 full stop as a sentence terminator. Thus the task of sentence
 splitting is trivial after the tokenization has been performed. The
 tokenizer is a rule-based program implemented using a lexical analyzer
-generator, JFlex (not unlike how TrTok uses Quex to implement the
+generator, JFlex (similar to how TrTok uses Quex to implement the
 RoughTokenizer).
 
 The Stanford Tokenizer's performance is excellent, especially
@@ -132,13 +132,13 @@ corpus. However, the Stanford Tokenizer is written explicitly for
 English and it is likely that its performance would not carry over to
 other languages without significant work.
 
-\textbf{TrTok::MxTerm-like} is a translation of MxTerminator to TrTok.
-It is a nice demonstration of the ease with which new tokenization
-setups can be defined in TrTok. The entire setup consisted of creating
-a directory, collecting the abbreviations in a single file and writing
-5 lines of configuration, 2 or 3 of which could be easily obsoleted by
-adopting saner defaults in TrTok and 1 of which is purely for
-convenience.
+\textbf{TrTok::MxTerm-like} is a reconstruction of MxTerminator in
+TrTok. It is a nice demonstration of the ease with which new
+tokenization setups can be defined in TrTok. The entire setup
+consisted of creating a directory, collecting the abbreviations in a
+single file and writing five lines of configuration, two or three of
+which could be easily obsoleted by adopting saner defaults in TrTok
+and one of which is purely for convenience.
 
 The reason why MxTerminator does not achieve the same performance
 could be that the maximum entropy trainer used in MxTerminator limits
@@ -150,24 +150,24 @@ cut off infrequent features.
 The high accuracy of TrTok::MxTerm-like led us to try and see what
 happens when we simplify the tokenization setup even further, which
 led to \textbf{TrTok::Easy} which works the same way as
-TrTok::MxTerm-like, but it does not use any abbreviation lists, merely
-the token types surrounding the full stop. Therefore, TrTok::Easy does
-not rely on any external linguistic knowledge and is fairly language
-universal, given that we have enough training data. The performance of
-TrTok::Easy also points out that the difference in performance between
-TrTok and MxTerminator/OpenNLP cannot be explained by the different
-abbreviation lists.
+TrTok::MxTerm-like, but which does not use any abbreviation lists,
+merely the token types surrounding the full stop. Therefore,
+TrTok::Easy does not rely on any external linguistic knowledge and is
+fairly language universal, given that we have enough training data.
+The performance of TrTok::Easy also points out that the difference in
+performance between TrTok and MxTerminator/OpenNLP cannot be explained
+by the different abbreviation lists.
 
-Finally, \textbf{TrTok::Groomed} is a large hand-made
-tokenization setup ported from a previous version of the tokenizer. It
-considers 24 different potential sentence terminators, it includes 7
-distinct lists of abbreviations totalling 303 types (prefix and suffix
-titles, abbreviated names of months\ldots) and it implements features
-for detecting the case of tokens, for noticing numbers which happen to
-be in the range of years or the days of the month, etc\ldots\ \ These
-features are extracted from rough tokens within 8 tokens distance from
-the full stop. The 2 closest tokens on either side of the full stop
-also contribute their token type as a feature.
+Finally, \textbf{TrTok::Groomed} is a large, hand-made tokenization
+setup ported from a previous version of the tokenizer. It considers 24
+different potential sentence terminators, it includes seven distinct
+lists of abbreviations totalling 303 types (prefix and suffix titles,
+abbreviated names of months, etc.) and it implements features for
+detecting the case of tokens, for noticing numbers which happen to be
+in the range of years, or the days of the month, etc\ldots\ \ These
+features are extracted from rough tokens within eight tokens distance
+from the full stop. The two closest tokens on either side of the full
+stop also contribute their token type as a feature.
 
 Due to the large number of potential tokenization operations and
 user-defined features, TrTok::Groomed's speed lags significantly
@@ -192,9 +192,9 @@ We ported the key features of one of the top contestants (which also
 happens to employ a maximum entropy classifier)
 \cite{seg-chinese-maxent} in the 2005 Second International Chinese
 Word Segmentation Bakeoff into TrTok and evaluated its performance
-using the bakeoff evaluation scripts. The results achieved (see
+using the official evaluation scripts. The results achieved (see
 Table~\ref{tbl:bakeoff-score}) are approximately a median of the
-scores reached by submissions to the Bakeoff.
+scores reported for submissions to the Bakeoff.
 
 \begin{table}
   \small

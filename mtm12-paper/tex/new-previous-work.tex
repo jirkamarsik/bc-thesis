@@ -25,21 +25,21 @@ induced from data.
 
 The biggest difference between TrTok and MxTerminator is that TrTok
 does not assume any particular selection of features and thus offers
-space for richer models (e.g. by extending the width of the context or
-providing more complex features like part of speech tags).
+space for richer models (e.g., by extending the width of the context
+or providing more complex features like part of speech tags).
 
 An example of a system using more advanced features is the
 \textbf{Satz} system \cite{sbd-satz}, which uses possible part of
-speech tags as features in the machine learning algorithm.
+speech (POS) tags as features in the machine learning algorithm.
 
 Unsupervised learning systems are the most distinct from TrTok amongst
 all the sentence boundary detection algorithms as they usually require
 no manual configuration nor any training data to function properly. A
 great example of an unsupervised sentence boundary disambiguator is
-the Punkt system \cite{sbd-punkt}.
+the \textbf{Punkt} system \cite{sbd-punkt}.
 
-\textbf{Punkt} relies mostly on collocation detection techniques but
-also makes use of an orthographic heuristic to analyze the test data
-in several passes and disambiguate abbreviations and sentence
-terminators. The system has shown remarkable performance without
-needing any manual tuning or training data.
+Punkt relies mostly on collocation detection techniques but also makes
+use of an orthographic heuristic to analyze the test data in several
+passes and disambiguate abbreviations and sentence terminators. The
+system has shown remarkable performance without needing any manual
+tuning or training data.
