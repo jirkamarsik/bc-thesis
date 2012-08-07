@@ -123,6 +123,13 @@ operation as either a sentence boundary, token boundary or no boundary
 (meaning the location is inside a token). Using this classification,
 any potential tokenization operations are finally disambiguated.
 
+The model used in the Classifier unit is a maximum entropy model
+trained using the Maximum Entropy Modeling Toolkit for Python and
+C++\footnote{\texttt{http://homepages.inf.ed.ac.uk/lzhang10/maxent\_toolkit.html}}.
+Training is performed either via L-BFGS or GIS, depending on the
+user's choice. Other parameters of the learner, such as the number of
+iterations to spend on training, are controlled by the user as well.
+
 \subsection{OutputFormatter}
 
 The OutputFormatter is the point at which the stream of rough tokens
